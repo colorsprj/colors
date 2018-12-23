@@ -6,7 +6,7 @@ craftman,COLORS Project
 craftmannw,COLORS Project
 id,forCOLORS
 craftmanurl,http://sites.google.com/site/colorsprj/
-homeurl,http://dl.dropbox.com/u/264803/ghost/colors/forCOLORS/
+homeurl,https://raw.githubusercontent.com/colorsprj/colors/master/forCOLORS/
 
 //ìßâﬂê›íË
 use_self_alpha,true
