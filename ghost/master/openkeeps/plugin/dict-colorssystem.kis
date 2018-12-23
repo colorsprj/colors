@@ -1,0 +1,582 @@
+# サービス関数群===============================================================
+
+SMarker : (
+	#"\f[color,255,191,79]\f[shadowcolor,212,125,0]"
+	"■"
+	#"\f[shadowcolor,default]\f[color,default]"
+)
+
+HR : "----------------------------------------------------------"
+
+# 時刻
+kp.callback.OnLoad : $(
+	set date.year   "$(date %y)";
+	set date.month  "$(date %n)";
+	set date.day    "$(date %e)";
+	set time.hour   "$(date %k)";
+	set time.minute "$(date %N)";
+	set time.second "$(date %r)";
+)
+
+=kis
+# 画像を表示する基底関数
+# 第1引数: 画像(imgフォルダ前提、.png省略)
+# 第2引数以降: オプション（省略可能)
+function IconBase $(
+	return (
+		"\_b[img/"
+		$@arg[1]
+		".png"
+		$(clear @arg[0..1])
+		$(foreach @option @arg ","${@option})
+		"]"
+	);
+);
+
+# 画像をインラインで左上を透過して表示する
+# 第1引数: 画像(imgフォルダ前提、.png省略)
+# 第2引数以降: オプション（省略可能)
+function IconIN $(
+	clear @arg[0];
+	setstr  @arg2 $(shift @arg);
+	pushstr @arg2 "inline";
+	copy @arg @arg2;
+	return $(xargs @arg2 IconBase);
+);
+
+# 画像をインラインで左上を透過せず表示する
+# 第1引数: 画像(imgフォルダ前提、.png省略)
+# 第2引数以降: オプション（省略可能)
+function IconIO $(
+	clear @arg[0];
+	setstr  @arg2 $(shift @arg);
+	pushstr @arg2 "inline";
+	pushstr @arg2 "opaque";
+	copy @arg @arg2;
+	return $(xargs @arg2 IconBase);
+);
+
+# 画像をインラインでアルファチャンネルを使用して表示する
+# 第1引数: 画像(imgフォルダ前提、.png省略)
+# 第2引数以降: オプション（省略可能)
+function IconIA $(
+	clear @arg[0];
+	setstr  @arg2 $(shift @arg);
+	pushstr @arg2 "inline";
+	pushstr @arg2 "--option=use_self_alpha";
+	copy @arg @arg2;
+	return $(xargs @arg2 IconBase);
+);
+
+# 画像種類を自動判別して画像をインライン表示する
+# 第1引数: 画像(imgフォルダ前提、.png省略)
+# 第2引数以降: オプション（省略可能)
+# 備考: 画像種類情報がなかった場合、左上で透過として扱う
+function Icon $(
+	clear @arg[0];
+	setstr @arg2 $(shift @arg);
+	setstr @method IconI$(entry IconType.$@arg2[0] "N");
+	copy @arg @arg2;
+	#logprint "＠＠＠ Icon=/"$(join @arg2 "/")"/ method=/"${@method}"/";
+	return $(xargs @arg2 ${@method});
+);
+
+# 画像アイコン付き選択肢を表示する
+# 第1引数: 画像(imgフォルダ前提、.png省略)
+# 第2引数: 選択肢の表示テキスト
+# 第3引数: 選択肢ID
+# 第4引数以降: 選択肢IDオプション(省略可能)
+function IconQ $(
+	clear @arg[0];
+	setstr @img $(shift @arg);
+	setstr @text $(shift @arg);
+	return (
+		"\__q["$(join @arg ",")"]"
+		$(Icon ${@img})
+		" "${@text}
+		"\__q"
+	);
+);
+
+# 機能: 表示テキストがTextAreaになっているIconQ
+# 第1引数: 画像(imgフォルダ前提、.png省略)
+# 第2引数: 表示テキストの全角での文字長
+# 第3引数: 選択肢の表示テキスト
+# 第4引数: 選択肢ID
+# 第5引数以降: 選択肢IDオプション(省略可能)
+function IconTxQ $(
+	clear @arg[0];
+	setstr @img $(shift @arg);
+	setstr @length $(shift @arg);
+	setstr @text $(TextArea ${@length} $(shift @arg));
+	return (
+		"\__q["$(join @arg ",")"]"
+		$(Icon ${@img})
+		" "${@text}
+		"\__q"
+	);
+);
+
+# 機能: 表示テキストがTextAreaになり、テキスト前後を[]で囲むIconQ
+# 第1引数: 画像(imgフォルダ前提、.png省略)
+# 第2引数: 表示テキストの全角での文字長
+# 第3引数: 選択肢の表示テキスト
+# 第4引数: 選択肢ID
+# 第5引数以降: 選択肢IDオプション(省略可能)
+function IconTxBQ $(
+	clear @arg[0];
+	setstr @img $(shift @arg);
+	setstr @length $(shift @arg);
+	setstr @text "["$(TextArea ${@length} $(shift @arg))"]";
+	return (
+		"\__q["$(join @arg ",")"]"
+		$(Icon ${@img})
+		" "${@text}
+		"\__q"
+	);
+);
+
+# 画像アイコンのみで選択肢を表示する
+# 第1引数: 画像(imgフォルダ前提、.png省略)
+# 第2引数: 選択肢ID
+# 第3引数以降: 選択肢IDオプション(省略可能)
+function IconOnlyQ $(
+	clear @arg[0];
+	setstr @img $(shift @arg);
+	return (
+		"\__q["$(join @arg ",")"]"
+		$(Icon ${@img})
+		"\__q"
+	);
+);
+
+# チェックボックス付き選択肢を表示する
+# 第1引数: 真ならON、偽ならOFF
+# 第2引数: 選択肢の表示テキスト
+# 第3引数: 選択肢ID
+# 第4引数以降: 選択肢IDオプション(省略可能)
+function CheckQ $(
+	clear @arg[0];
+	setstr @sw $(if $(shift @arg) "on" else "off");
+	setstr @text $(shift @arg);
+	return (
+		"\__q["$(join @arg ",")"]"
+		$(Icon check${@sw})
+		" "${@text}
+		"\__q"
+	);
+);
+
+# ラジオボタン付きの選択肢を表示する
+# 第1引数: 真ならON、偽ならOFF
+# 第2引数: 選択肢の表示テキスト
+# 第3引数: 選択肢ID
+# 第4引数以降: 選択肢IDオプション(省略可能)
+function RadioQ $(
+	clear @arg[0];
+	setstr @sw $(if $(shift @arg) "on" else "off");
+	setstr @text $(shift @arg);
+	return (
+		"\__q["$(join @arg ",")"]"
+		$(Icon radio${@sw})
+		" "${@text}
+		"\__q"
+	);
+);
+
+# プレビュー用のパーツのパスを返す
+# 第1引数: カテゴリ名
+# 第2引数: パーツ名
+# 戻り値:  ghost/masterからの相対パス名
+# 備考:    ColorsCurrentShellPathNameの存在を前提とする
+function GetPreviewImage $(
+	setstr @sid $(FindSurfaceID $@arg[1] $@arg[2]);
+	setstr @partstype $(GetPartsType $@arg[1] $@arg[2]);
+	split @files $(MakePartsFileName ${@sid} ${@partstype})  "|";
+	return "../../shell/"${ColorsCurrentShellPathName}"/parts/"$@files[0];
+);
+
+
+# 空の内容を表示上隠す
+function IfAny $[ $@arg[1] || "（未確定）"];
+
+# 機能:指定文字数（全角）に満たない場合、後方を全角スペースで埋める
+# 第1引数:文字数
+# 第2引数:文字列
+# 戻り値:全角スペースで埋められた文字列、2で割れない場合は半角SPCを埋める
+function FillSpc $(
+	setstr @l 0;
+	loop $(length $@arg[2]) $(
+		setstr @i ${-1};
+		inc @l;
+		setstr @char $(char_at $@arg[2] ${@i});
+		if $[ $(find kp.ascii $(getcode @char)) < 0 ] $(inc @l);
+	);
+	return $@arg[2]$(
+		loop $(if $[ ${@l} >= $[ $@arg[1] * 2 ] ] 0 else $[ ( $[ $@arg[1] * 2 ] - ${@l} ) /2 ]) "　" ;
+		if $[ ${@l} % 2  == 1 ] " ";
+	);
+);
+# 機能:指定文字数（全角）に満たない場合、前方を全角スペースで埋める
+# 第1引数:文字数
+# 第2引数:文字列
+# 戻り値:全角スペースで埋められた文字列、2で割れない場合は半角SPCを埋める
+function FillFSpc $(
+	setstr @l 0;
+	loop $(length $@arg[2]) $(
+		setstr @i ${-1};
+		inc @l;
+		setstr @char $(char_at $@arg[2] ${@i});
+		if $[ $(find kp.ascii $(getcode @char)) < 0 ] $(inc @l);
+	);
+	return $(
+		loop $(if $[ ${@l} >= $[ $@arg[1] * 2 ] ] 0 else $[ ( $[ $@arg[1] * 2 ] - ${@l} ) /2 ]) "　" ;
+		if $[ ${@l} % 2  == 1 ] " ";
+	)$@arg[2];
+);
+
+
+# 機能: 全角15文字に満たない場合、後方を全角スペースで埋める
+# 第1引数:文字列
+# 戻り値:全角スペースで埋められた文字列
+function FillSpc15 $(FillSpc 15 $@arg[1]);
+
+# 機能: 指定長さ以下に制限
+# 第1引数: 全角での文字数
+# 第2引数: 文字列
+# 戻り値: 制限された文字列
+# 備考: 長すぎる場合は末尾に…を付ける。つけた後の文字数を指定文字数以下にする
+function LimitLength $(
+	# リミット=指定長さ＋「…」
+	setstr @limit $[ $@arg[1] * 2 - 2 ];
+	# 初期文字列
+	setstr @str $@arg[2];
+	# 長さを調べるループ
+	setstr @l 0;
+	loop $(length $@arg[2]) $(
+		setstr @i ${-1};
+		inc @l;
+		if $[ $(find kp.ascii $(char_at $@arg[2] ${@i})) < 0 ] $(inc @l);
+		if $[ ${@l} > ${@limit} ] $(
+			# 指定文字列長に達した
+			setstr @str $(substr $@arg[2] 0 ${@i})"…";
+			break;
+		);
+	);
+	return ${@str};
+);
+
+# 機能: 指定長さ以下に制限し、不足分は後方を全角スペースで埋める
+# 第1引数: 全角での文字数
+# 第2引数: 文字列
+# 備考: 第2引数が空欄の場合「（未確定）」として扱う
+function TextArea $(
+	return $(FillSpc $@arg[1] $(LimitLength $@arg[1] $(IfAny $@arg[2])));
+);
+
+# 機能: 指定長さ以下に制限し、不足分は後方を全角スペースで埋め、前後を[]で囲う
+# 第1引数: 全角での文字数
+# 第2引数: 文字列
+# 備考: 第2引数が空欄の場合「（未確定）」として扱う
+function TextAreaB $(
+	return "["$(FillSpc $@arg[1] $(LimitLength $@arg[1] $(IfAny $@arg[2])))"]";
+);
+
+# 機能: 与えられた文字列がURLとして正当化どうかチェックする
+# 第1引数: 文字列
+# 戻り値: URLなら真、違うなら偽
+function isValidURL $(
+	if $[ $(size @arg) != 2 ] $(return);
+	setstr @tempurl $@arg[1];
+	
+	setstr @valid 0;
+	# (http|https|file)://が先頭にあるか
+	if $(match_at ${@tempurl} "http://") $(
+		setstr @tempurl $(substr ${@tempurl} $(length "http://"));
+		inc @valid;
+	);
+	if $(match_at ${@tempurl} "https://") $(
+		setstr @tempurl $(substr ${@tempurl} $(length "https://"));
+		inc @valid;
+	);
+	if $(match_at ${@tempurl} "file://") $(
+		setstr @tempurl $(substr ${@tempurl} $(length "file://"));;
+		inc @valid;
+	);
+	# 空白文字だけではないか
+	if $[ ${@tempurl} != "" ] $(inc @valid);
+	# URL用文字のみから成り立っているか
+	if $(ischaracters ${@tempurl} $(get isValidURL)) $(inc @valid);
+	
+	return $(if $[ ${@valid} == 3 ] "true" else "false");
+);
+
+=dict
+# URL用文字列候補
+isValidURL : ABCDEFGHIJKLMNOPQRSTUVWXYZ
+isValidURL : abcdefghijklmnopqrstuvwxyz
+isValidURL : 0123456789._-+%&~/
+=end
+
+# 機能: 全角数字を半角数字に直した上で、数字以外を弾いて数字にする
+function ZInteger $(
+	return $(Integer $(tr $@arg[1] ０１２３４５６７８９ 0123456789));
+);
+
+# 第1引数 : エントリ名
+# 第2引数 : 重複回避のために履歴を持つ数(省略可能、省略時はエントリの単語数)
+# 備考    : 「エントリ名.backup」、「エントリ名.backup.buffer」という
+#           エントリを占有する
+#           GetWordHistoricalコマンドが必要
+#           通常のHistoricalコマンドと違い、エントリをプロテクトしない
+function Historical_Noprotect $(
+	if $[ $(.size @arg) != 2 && $(.size @arg) != 3 ] $(return);
+	.setstr @history $(
+		if $[ $(.size @arg) == 3 ] $@arg[2] else $[ $(.size $@arg[1]) / 2 ];
+	);
+	if $[ $(.size $@arg[1]) <= 2 ] $(return);
+	if $[ $(.size $@arg[1].backup) == 0 ] $(.copy $@arg[1] $@arg[1].backup);
+	.set $@arg[1] "$(GetWordHistorical "$@arg[1]".backup "${@history}")";
+);
+
+# 機能:RequestヘッダのうちReferenceを抽出
+# 「System.Request.Reference[0-9]+」に該当するエントリを、"|"で接続して返す
+function GetReferenceList $(
+	#「System.Request.」が頭に付くもののリストを作成
+	listsub @SystemRequestList System.Request;
+	#SystemRequestリストから中身を@listに一時格納
+	foreach @list @SystemRequestList $(
+		#@list内容がReferenceなら@referenceに追加
+		if $(match_at ${@list} System.Request.Reference) $(
+			push @reference ${@list};
+		);
+	);
+	return $(join @reference "|");
+);
+
+# 機能:ChoiceInfo.*とRefMap.*を生成する
+#      ChoiceInfo: Reference2以降をChoiceInfo.1以降に列挙
+#      RefMap:     Reference値内に「○=××」形式でkey-valueヘッダを形成
+#                  一つのReference内に一つのkey-valueを前提とする
+# 備考:RefMap.<key>エントリにvalueを格納する
+#      同一keyがあった場合、Reference数字順に積む。
+#      要は華和梨ソース内部のmmapと一緒。
+function ParseReference $(
+	listtree @header System.Request;
+	cleartree ChoiceInfo;
+	cleartree RefMap;
+	
+	# @reflistの"a"は番兵
+	setstr @reflist "a";
+	# ヘッダーを解析
+	foreach @item @header $(
+		# Referenceなら解析対象とする
+		# Reference[0-9]+が対象
+		if $[ ! $(match_at ${@item} "System.Request.Reference") ] $(continue);
+		setstr @no $(substr ${@item} 24);
+		# Reference以降が数字じゃない似非ヘッダもいらない
+		if $[ ! $(isdigit ${@no}) ] $(continue);
+		# Reference0,1以外はChoiceInfo.*に積む
+		if $[ ${@no} != 0 && ${@no} != 1 ] $(
+			setstr ChoiceInfo.$[ ${@no} - 1 ] ${${@item}};
+		);
+		# Reference値中に「=」がないものもRefMapには不要
+		if $[ ${${@item}} !~ "=" ] $(continue);
+		# これ以降は対象となるReference[0-9]+なヘッダ
+		# 華和梨の特性で順不同なので、昇順に挿入ソート
+		loop $(size @reflist) $(
+			setstr @i ${-1};
+			if $[ ${@no} <= $@reflist[${@i}] ] $(
+				# @noが検索位置の値より小さいか等しい⇒挿入位置
+				insertstr @reflist[${@i}] ${@no};
+				break;
+			);
+		);
+	);
+	
+	# @reflistの番兵削除
+	clear @reflist[-1];
+	
+	# 該当Referenceをkey,valueに分解してRefMapに積む
+	foreach @refno @reflist $(
+		clear @element;
+		split @element ${System.Request.Reference${@refno}} "=";
+		pushstr RefMap.$(shift @element) $(join @element "=");
+	);
+);
+
+# 機能:「お待ちください」ウィンドウを表示する
+# 第1引数: 「しばらくお待ちください」の前に表示するメッセージ
+# 第2引数: メッセージ表示後に飛ぶポストプロセスエントリ
+# 第3引数: メッセージ表示前に行うプリプロセスエントリ（省略可能）
+function WaitMsg $(
+	if $[ $(size @arg) <3 ] $(return);
+	return (
+		${MenuHeader.None}
+		\n\n\n\n
+		　$(Icon wait)$@arg[1]しばらくお待ち下さい。
+		\n\n\n\n
+		$(if $[ $@arg[3] != "" ] ${$@arg[3]})
+		"\![raise,OnDelayDisplayExecute,"$@arg[2]"]"
+	);
+);
+
+
+# パンくずリスト---------------------------------------------------------------
+
+# 機能: パンくずリストを返す
+# 第1引数: リストを作成するエントリ名
+# 第2引数: 1ページのリスト長
+# 第3引数: ページ管理に使用するエントリ名
+# 第4引数: リストがクリックされたら戻るメニューID名
+# 第5引数以降: リストの選択肢に付けるオプション(省略可能)
+# 備考:    返したパンくずリストは、Nをオプションの数として、現在ページを
+#          ChoiceInfo.＜N+1＞エントリで与えられるものとする
+function TopicPath $(
+	if $[ $(size @arg) < 5 ] $(return);
+	
+	setstr @pagelength $@arg[2];
+	setstr @maxpage $[ ( $(size $@arg[1]) - 1 ) / ${@pagelength} + 1 ];
+	# ページ管理に使用するChoiceInfo.を決定する
+	setstr @N $[ $(size @arg) - 4 ];
+	setstr @nowpage  $(NonNegative
+		$(if $(size ChoiceInfo.${@N}) ${ChoiceInfo.${@N}} else ${$@arg[3]})
+	);
+	if $[ ${@nowpage} >= ${@maxpage} ] $(
+		setstr @nowpage $[ ${@maxpage} - 1 ];
+	);
+	# ページ管理エントリにページ数を設定
+	setstr $@arg[3] ${@nowpage};
+	# 選択肢エントリの中身
+	copy @arg @qlist;
+	clear @qlist[0..3];
+	setstr @q $(join @qlist ",");
+	# ページ表示上限・下限設定
+	if $[ ${@nowpage} - 4 <= 0 ] $(
+		# 下限リミット
+		setstr @startpage 0;
+		setstr @endpage $(if $[ ${@startpage} + 9 < ${@maxpage} ] $[ ${@startpage} + 9 ] else ${@maxpage});
+	) else if $[ ${@nowpage} + 5 > ${@maxpage} ] $(
+		# 上限リミット
+		setstr @endpage ${@maxpage};
+		setstr @startpage $(if $[ ${@endpage} - 9 > 0 ] $[ ${@endpage} - 9 ] else 0);
+	) else $(
+		# 上限・下限とも引っかからない
+		setstr @startpage $[ ${@nowpage} - 4 ];
+		setstr @endpage $[ ${@nowpage} + 5 ];
+	);
+	#setstr @startpage $(if $[ ${@nowpage} - 4 > 0 ] $[ ${@nowpage} - 4 ] else 0);
+	#setstr @endpage   $(if $[ ${@startpage} + 9 < ${@maxpage} ] $[ ${@startpage} + 9 ] else ${@maxpage});
+	# パンくずリスト作成
+	setstr @i ${@startpage};
+	while $[ ${@i} < ${@endpage} ] $(
+		pushstr @retstr (
+			"\__q["${@q}","${@i}"]"
+			$(
+				if $[ ${@nowpage} == ${@i} ] (
+					"\f[bold,true]"
+					"\f[height,14]"
+				)
+			)
+			" "
+			$(FillFSpc 1 $[ ${@i} + 1])
+			" "
+			$(
+				if $[ ${@nowpage} == ${@i} ] (
+					"\f[height,default]"
+					"\f[bold,default]"
+				)
+			)
+			"\__q"
+		);
+		inc @i;
+	);
+	# ヘッダ、フッタ
+	setstr @header (
+		$(if $[ ${@maxpage} > 1 ] "\__q["${@q}",0]\f[color,80,80,255]\f[bold,true]")
+		"≪"
+		$(if $[ ${@maxpage} > 1 ] "\f[bold,default]\f[default]\__q")
+		$(if $[ ${@nowpage} != 0 ] "\__q["${@q}","$[ ${@nowpage} - 1 ]"]\f[color,128,128,255]" else "\f[color,160,160,160]")
+		"\f[bold,true]"
+		" < "
+		"\f[bold,default]"
+		"\f[default]"
+		$(if $[ ${@nowpage} != 0 ] "\__q")
+	);
+	setstr @footer (
+		$(if $[ ${@nowpage} != ${@maxpage} - 1 ] "\__q["${@q}","$[ ${@nowpage} + 1 ]"]\f[color,128,128,255]" else "\f[color,160,160,160]")
+		"\f[bold,true]"
+		" > "
+		"\f[bold,default]"
+		"\f[default]"
+		$(if $[ ${@nowpage} != ${@maxpage} - 1 ] "\__q")
+		$(if $[ ${@maxpage} > 1 ] "\__q["${@q}","$[ ${@maxpage} - 1 ]"]\f[color,80,80,255]\f[bold,true]")
+		"≫"
+		$(if $[ ${@maxpage} > 1 ] "\f[bold,default]\f[default]\__q")
+	);
+	return "　"${@header}$(join @retstr "|")${@footer}"\n\n";
+);
+
+
+
+# メニュースレッド定義---------------------------------------------------------
+# 第1引数: メニュースレッドツリー名(MenuThread.は除く)
+function MenuThreadDefine $(
+	if $[ $(size MenuThread.$@arg[1]) == 0 || $@arg[1] == "" ] $(return);
+	cleartree MenuThreadCtrl.$@arg[1];
+	setstr MenuThreadCtrl.$@arg[1] 1;
+	foreach @item MenuThread.$@arg[1] $(
+		# 開閉スイッチを初期化
+		setstr MenuThreadCtrl.$@arg[1].sw.${@item} "false";
+	);
+);
+
+# メニュースレッド作成
+# 第1引数: メニュースレッドツリー名(MenuThread.は除く)
+# 第2引数: 表示に使うメニューエントリ名
+function MenuThread $(
+	if $[ $(size MenuThread.$@arg[1]) == 0 || $@arg[1] == "" ] $(return);
+	# まだスレッドを定義していないなら定義する
+	if $[ ${MenuThreadCtrl.$@arg[1]} != 1 ] $(MenuThreadDefine $@arg[1]);
+	
+	foreach @item MenuThread.$@arg[1] $(
+		setstr @sw ${MenuThreadCtrl.$@arg[1].sw.${@item}};
+		echo (
+			$(if ${@sw} $(IconIN downtriangle) else $(IconIN sidetriangle))
+			"\__q[MenuThreadCtrl,"$@arg[1]","${@item}","$@arg[2]"]"
+			$(if ${@sw} "\f[bold,true]")
+			$(FillSpc 26 ${MenuThread.$@arg[1].${@item}.title})
+			$(if ${@sw} "\f[bold,default]")
+			"\__q"
+			\n\n[half]
+		);
+		if ${@sw} $(
+			foreach @q MenuThread.$@arg[1].${@item}.contents "　　"${@q}\n;
+			echo \n[half];
+		);
+	);
+
+);
+=dict
+# メニュースレッド開閉受付
+Select.MenuThreadCtrl : $(
+	# ChoiceInfo.1: メニュースレッド名
+	# ChoiceInfo.2: 選択されたスレッドアイテム名
+	# ChoiceInfo.3: 戻るエントリ名(Select.除く)
+	
+	# 指定されたスイッチの状態を保存
+	setstr @oldsw ${MenuThreadCtrl.${ChoiceInfo.1}.sw.${ChoiceInfo.2}};
+	# 一旦すべてのスイッチをオフに
+	listsub @list MenuThreadCtrl.${ChoiceInfo.1}.sw;
+	foreach @sw @list $(setstr ${@sw} "false");
+	
+	# 指定されたスイッチを反転
+	setstr MenuThreadCtrl.${ChoiceInfo.1}.sw.${ChoiceInfo.2} $[ ! ${@oldsw} ];
+	
+	#指定されたメニューを開く
+	entry Select.${ChoiceInfo.3};
+)
+=end
+
+=end
+#==============================================================================

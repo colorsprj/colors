@@ -1,0 +1,30 @@
+
+//テキスト開始位置
+origin.x,31
+origin.y,31
+
+font.height,11
+
+//テキスト描画範囲
+validrect.left,31
+validrect.top,31
+validrect.right,196
+validrect.bottom,277
+
+//自動改行で折り返すX座標。
+wordwrappoint.x,196
+
+number.y,-32
+
+// スクロールマーカ矢印座標
+arrow0.x,205
+arrow0.y,54
+arrow1.x,205
+arrow1.y,243
+
+// SSTPマーカ座標
+sstpmarker.x,47
+sstpmarker.y,280
+
+sstpmessage.x,70
+sstpmessage.y,280

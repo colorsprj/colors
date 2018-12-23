@@ -1,0 +1,23 @@
+declare	RECIPE/1.0	COLORS
+select	素体	肌_CC
+mayuselect	2
+paint	素体	肌_CC		206	172	151
+select	後髪	ロングストレート_CC
+select	耳	デフォルト_SKIN
+select	素体オプション	つの_CC
+paint	素体オプション	つの_CC		215	209	191
+select	素体オプション	デフォルト
+select	素体オプション	人魚しっぽ_CC
+paint	素体オプション	人魚しっぽ_CC		165	211	209
+select	素体オプション	胸_SKIN
+select	瞳色	左右_CC
+paint	瞳色	左右_CC		139	218	211
+select	目の形	細つり目
+select	瞳ハイライト	左下
+select	口	デフォルト
+select	インナー１	星ブラ_CC
+paint	インナー１	星ブラ_CC		255	255	128
+select	横髪	ぱっつんロング_CC
+select	前髪	ぱっつん_CCC
+select	眉２	下がりめ眉
+paint	結髪	ロングストレート_CC		216	213	203

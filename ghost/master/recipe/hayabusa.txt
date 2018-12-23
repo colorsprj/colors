@@ -1,0 +1,43 @@
+declare	RECIPE/1.0	COLORS
+select	素体	肌_CC
+mayuselect	2
+paint	素体	肌_CC		255	226	191
+select	背景	無地_CC
+paint	背景	無地_CC		10	10	10
+select	背景装飾	宇宙
+select	横髪	ぱっつん_CC
+select	前髪	斜めナチュラル_CCC
+select	眉２	デフォルト
+select	アクセサリー５	はやぶさカプセル_CCC
+paint	アクセサリー５	はやぶさカプセル_CCC		251	210	21
+select	アクセサリー２	アンテナパーツ_CCT
+paint	アクセサリー２	アンテナパーツ_CCT	2toneCC2	255	255	255	251	210	21
+select	後髪	結髪用シンプル_CC
+select	帽子・ヘッドドレス１	パラボラアンテナ_CC
+paint	帽子・ヘッドドレス１	パラボラアンテナ_CC		232	239	244
+select	アクセサリー３	はやぶさパネル_CCT
+paint	アクセサリー３	はやぶさパネル_CCT	2toneCC2	141	153	254	172	172	172
+select	素体オプション背後	はやぶさボディ_CC
+paint	素体オプション背後	はやぶさボディ_CC		251	210	21
+select	耳	デフォルト_SKIN
+select	素体オプション	デフォルト
+select	瞳色	左右_CC
+paint	瞳色	左右_CC		114	128	254
+select	目の形	デフォルト
+select	瞳ハイライト	左下
+select	口	デフォルト
+select	眼鏡	角丸_CCT
+paint	眼鏡	角丸_CCT	2toneCC2	90	102	122	255	255	255
+select	靴下	タイツ_CC
+paint	靴下	タイツ_CC		10	10	10
+select	靴下	網タイツ_CC
+paint	靴下	網タイツ_CC		89	55	55
+select	インナー３	ロンググローブ_CC
+paint	インナー３	ロンググローブ_CC		203	216	218
+select	靴	厚底ストラップシューズ_CCC
+paint	靴	厚底ストラップシューズ_CCC		232	242	244
+select	ズボン	短パン_CC
+paint	ズボン	短パン_CC		251	210	21
+select	トップス１	ノースリーブシャツ_CCT
+paint	トップス１	ノースリーブシャツ_CCT	2toneCC2	251	210	21	251	210	21
+paint	横髪	ぱっつん_CC		90	102	122

@@ -1,0 +1,182 @@
+#########################################################################
+#マウスイベント・ツールチップ通知処理
+#########################################################################
+
+event.OnMouseEnter : $(Talk OnMouseEnter.$(Reference 3).$(Reference 4))
+
+event.OnMouseLeave : $(Talk OnMouseLeave.$(Reference 3).$(Reference 4))
+
+event.OnMouseEnterAll : $(Talk OnMouseEnterAll.$(Reference 3))
+
+event.OnMouseLeaveAll : $(Talk OnMouseLeaveAll.$(Reference 3))
+
+event.OnMouseDown : $(Talk OnMouseDown.$(Reference 3).$(Reference 4))
+
+event.OnMouseUp : $(Talk OnMouseUp.$(Reference 3).$(Reference 4))
+
+event.OnMouseHover : $(Talk OnMouseHover.$(Reference 3).$(Reference 4))
+
+event.OnChoiceHover : $(Talk SelectHover.$(EntNamReference 1))
+
+resource.balloon_tooltip : ${balloon_tooltip.$(Reference 1)}
+#選択肢ID
+
+resource.tooltip : ${tooltip.$(Reference 3).$(Reference 4)}
+
+# マウス反応エントリーポイントを生成
+Colors.Callback.OnShellInfoChanged : $(
+	cleartree C0Stroke;
+	foreach @area ColorsMouseArea.${ColorsCurrentShellName} $(
+		set    C0Stroke.${@area}       "$(if $[ ${SelectMode} != 'on' ] ${Mouse.Stroke.0."${@area}"})";
+		setstr C0Stroke.limit.${@area} 50;
+	);
+	setstr C0Stroke.option "loopall";
+)
+
+#########################################################################
+# 着せ替え系共通処理
+#########################################################################
+
+#コモンダイアログ使った時。idエントリを呼び出す。
+event.OnSystemDialog:$(Talk Dialog.$(Reference 1))
+
+#コモンダイアログ使ってキャンセルした場合。Cancel.${id}エントリを呼び出す。
+event.OnSystemDialogCancel:$(Talk DialogCancel.$(Reference 1))
+
+#選択肢情報付加「OnChoiceSelectEx」
+:rem
+選択肢に付加したい情報をReference2以降にセット。
+\q[（Reference0：選択肢表示文）","（Reference1：選択肢ジャンプ先エントリ名）","（Reference2：付加情報1）","（Reference3：付加情報2）～]
+選択肢ジャンプ先で、${ChoiceInfo.1}～の形で受け取る。
+PageMemoはページ履歴用エントリ。本体はメニューページに。
+:endrem
+
+# Referenceヘッダを解析してChoiceInfo.*、RefMap.*を生成
+event.OnChoiceSelectEx : $(ParseReference)
+
+# ChoiceInfo.*を消す
+event2.OnChoiceSelect : $(cleartree ChoiceInfo)
+
+# シェルリロードを越えてメニューを表示させる
+event.OnShellChanged : $(
+	if $(KTM.GetMailNo OverShellReload) $(
+		KTM.RunTask ${KisekaeTaskNo};
+	);
+)
+
+# シェルリロードを越えて処理をするタスク
+task.OverShellReload.cond : $[ ${System.Request.Status} != "talking" ]
+task.OverShellReload.proc : $(
+	# 処理投入可能
+	if $(KTM.LockMutex AITalk) $(
+		# 処理するエントリ名は最後のものだけが有効なので、それ以外を読み飛ばす
+		while $(KTM.GetMailNo OverShellReload) $(
+			setstr @talk $(KTM.GetMailMessage OverShellReload);
+			KTM.DeleteMail OverShellReload;
+		);
+		KTM.PostMail AITalk ${@talk};
+		KTM.PostMail SYSTEM M_RLS_MTX AITalk;
+		KTM.PostMail SYSTEM M_STOP ${KisekaeTaskNo};
+	);
+)
+
+# タスクの生成とヘッダスタック生成
+=kis
+setstr KisekaeTaskNo $(
+	KTM.CreateTask
+	"OverShellReloadExecute"
+	task.OverShellReload.cond
+	task.OverShellReload.proc
+	KTM.RANK0
+);
+=end
+
+# 機能:シェルリロード
+# 第1引数:MenuBookmarkに設定するエントリ名
+# 備考:SurfaceIDテーブルを再構成する
+=kis
+function ShellReload $(
+	echo "\![change,shell,"${System.Shell}"]";
+	KTM.PostMail OverShellReload $@arg[1];
+	FindSurfaceIDAll;
+	UpdateCurrentExportablePartsList;
+);
+=end
+
+# OnUserInputCancelイベント
+event.OnUserInputCancel : $(
+	Talk $(
+		if $[ ${System.Request.Reference1} == "timeout" ]
+			"TalkInputCancelTimeOut."
+		else
+			"TalkInputCancel."
+	)$(EntNamReference 0);
+)
+
+#########################################################################
+# ネットワーク更新チェック処理
+#########################################################################
+
+event.OnUpdateCheckComplete : $(
+	if $[ $(Reference 0) != "none" ] (
+		# 更新を発見したのでタスクトレーに表示する
+		\C
+		"\![set,trayballoon,--title=COLORSのアップデートがあります,--text=ここをクリックするとCOLORSをアップデートします。,--icon=info]"
+	);
+)
+
+# タスクトレーバルーンのクリック
+event.OnTrayBalloonClick : $(
+	# Reference0を使って条件分岐
+	Talk TrayBalloonClick.$(encode_entryname $(SReference 0));
+)
+
+#########################################################################
+# 着せ替えパーツ プレビュー
+#########################################################################
+
+# プレビューを表示する座標
+PreviewXY : "50,50"
+
+# 0 -> プレビューを表示しない
+# 1 -> 表示し続ける
+#PreviewMode : 1
+
+# 着せ替えパーツ選択時のプレビュー
+SelectHover.PartsChoice, SelectHover.PartsChoiceOff : $(
+	if ${PreviewMode} (
+		\C
+		\!["quicksession,true"]
+		\1\b[10]\c
+		\_l["350,10"]
+		$(IconOnlyQ no PreviewClose)
+		\_b["img/checker.png,"${PreviewXY}",--option=use_self_alpha"]
+		\_b[$(GetPreviewImage ${PresentCategory} $(EntNamReference 2))","${PreviewXY}",--option=use_self_alpha"]
+		\!["quicksession,false"]
+		$(setstr PreviewFlag "true")
+	);
+)
+
+# ステータス表示時のプレビュー
+SelectHover.Page.Kisekae.StatePartsChoiceOff : $(
+	if ${PreviewMode} (
+		\C
+		\!["quicksession,true"]
+		\1\b[10]\c
+		\_l["350,10"]
+		$(IconOnlyQ no PreviewClose)
+		\_b["img/checker.png,"${PreviewXY}",--option=use_self_alpha"]
+		\_b[$(GetPreviewImage $(EntNamReference 2) $(EntNamReference 3))","${PreviewXY}",--option=use_self_alpha"]
+		\!["quicksession,false"]
+		$(setstr PreviewFlag "true")
+	);
+)
+
+# プレビューを閉じる
+Select.PreviewClose : (
+	\C
+	\!["quicksession,true"]
+	\1\c\b[-1]
+	\!["quicksession,false"]
+	$(clear PreviewFlag)
+)

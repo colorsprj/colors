@@ -1,0 +1,35 @@
+declare	RECIPE/1.0	COLORS
+select	素体	肌_CC
+mayuselect	1
+paint	素体	肌_CC		255	231	210
+select	靴下	クルーソックス_CC
+paint	靴下	クルーソックス_CC		230	230	230
+select	靴	ローファー_CCC
+paint	靴	ローファー_CCC		77	65	62
+select	スカート	プリーツスカート膝上_CC
+paint	スカート	プリーツスカート膝上_CC		103	99	141
+select	スカート装飾	プリーツスカート膝上裾ライン_CC
+paint	スカート装飾	プリーツスカート膝上裾ライン_CC		231	241	239
+select	トップス１	半袖Ｔシャツ_CC
+select	トップス１装飾	半袖Ｔシャツ袖口_CC
+paint	トップス１装飾	半袖Ｔシャツ袖口_CC		221	236	233
+select	ネクタイ・帯	セーラー襟スカーフ_CC
+paint	ネクタイ・帯	セーラー襟スカーフ_CC		90	96	131
+select	アクセサリー４	セーラー襟_CCT
+paint	アクセサリー４	セーラー襟_CCT	2toneCC1	103	99	141
+select	眉１	中太眉_CC
+select	横髪	ストレート肩ライン超え_CC
+select	前髪	斜め分け横はね右_CCC
+select	結髪	ポニーテール肩ライン超え_CC
+select	アクセサリー２	ポニテ用リボン下垂れあり_CC
+paint	アクセサリー２	ポニテ用リボン下垂れあり_CC		255	223	243
+select	後髪	結髪用シンプル_CC
+select	耳	デフォルト_SKIN
+select	素体オプション	デフォルト
+select	瞳色	左右_CC
+paint	瞳色	左右_CC		128	113	104
+select	目の形	普通目
+select	瞳ハイライト	細目用
+select	口	デフォルト
+paint	眉	中太眉_CC		58	50	48
+paint	結髪	ストレート肩ライン超え_CC		109	103	101

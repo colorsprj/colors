@@ -1,0 +1,79 @@
+=kis
+#==============================================================================
+#
+# 華和梨 Phase 8.2.0 起動時読み込み辞書
+#
+#==============================================================================
+
+#デバッグ用設定================================================================
+# ログファイル作成設定
+#loglevel error warning info baseevents rscevents mouseevents;
+#logfile kawari-$(date %H%M%S).log;
+
+# デバッガON/OFF
+#debugger on;
+
+# セキュリティレベル設定
+securitylevel middle;
+
+# エラーメッセージを日本語(Shift_JIS)に設定
+rccharset Shift_JIS;
+
+#==============================================================================
+
+
+#辞書読み込み==================================================================
+
+# OpenKEEPS システム読み込み
+load openkeeps\loader.kis;
+
+#関数「colors」で一括してcolors.dllを操作
+saoriregist SAORI/colors.dll colors preload;
+function colors $(clear @arg[0] ; xargs @arg callsaori colors);
+function excolors $(
+	clear @arg[0];
+	cleartree ExColors;
+	xargs @arg callsaorix colors ExColors;
+);
+
+#YAYA as SAORIを関数にマッピング
+saoriregist SAORI/yaya.dll yaya preload;
+function copy_file $(clear @arg[0] ; xargs @arg callsaori yaya fcopy);
+function copy_file_all $(clear @arg[0] ; xargs @arg callsaori yaya fcopyall);
+function move_file $(clear @arg[0] ; xargs @arg callsaori yaya fmove);
+function move_file_all $(clear @arg[0] ; xargs @arg callsaori yaya fmoveall);
+function rename_file $(clear @arg[0] ; xargs @arg callsaori yaya frename);
+function remove_file $(clear @arg[0] ; xargs @arg callsaori yaya fdel);
+function remove_file_all $(clear @arg[0] ; xargs @arg callsaori yaya fdelall);
+function dup_file $(clear @arg[0] ; xargs @arg callsaori yaya fdup);
+function dup_file_all $(clear @arg[0] ; xargs @arg callsaori yaya fdupall);
+function create_directory $(clear @arg[0] ; xargs @arg callsaori yaya mkdir);
+function remove_directory $(clear @arg[0] ; xargs @arg callsaori yaya rmdir);
+function md5file $(callsaori yaya fdigest $@arg[1] MD5);
+
+#textcopy2を関数にマッピング
+saoriregist SAORI/textcopy2.dll textcopy2 preload;
+function toclipboard $(callsaori textcopy2 $@arg[1]);
+
+#call_funcを関数にマッピング
+saoriregist SAORI/call_func.dll dllcall preload;
+function add_func $(clear @arg[0] ; xargs @arg callsaori dllcall add_func);
+function call_func $(clear @arg[0] ; xargs @arg callsaori dllcall call_func);
+function remove_func $(clear @arg[0] ; xargs @arg callsaori dllcall remove_func);
+function alloc_mem $(clear @arg[0] ; xargs @arg callsaori dllcall alloc_mem);
+function get_mem $(clear @arg[0] ; xargs @arg callsaori dllcall get_mem);
+function set_mem $(clear @arg[0] ; xargs @arg callsaori dllcall set_mem);
+function free_mem $(clear @arg[0] ; xargs @arg callsaori dllcall free_mem);
+
+# ゴースト専用辞書、トーク
+load character.kis;
+
+#==============================================================================
+
+
+#辞書読み込み後処理============================================================
+
+KawariSystemBoot;
+
+#==============================================================================
+=end

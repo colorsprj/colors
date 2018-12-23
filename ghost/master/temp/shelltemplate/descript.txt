@@ -1,0 +1,28 @@
+//文字コード設定
+charset,Shift_JIS
+
+//ファイルセット種別
+type,shell
+
+//シェルの名前
+name,COLORSで作ったシェル
+
+//シェルのID名。半角英数のみ。
+id,made of COLORS
+
+//シェルの作者名。半角英数のみ。
+craftman,COLORS user
+
+//シェルの作者名
+craftmanw,COLORSユーザー
+
+//作者のURL
+craftmanurl,http://wikiwiki.jp/colors-prj/
+
+
+//透過PNGを使うための設定。透過PNGを使わずにPNAを使う場合は削除して下さい。
+seriko.use_self_alpha,1
+
+//シェルの自由移動設定。固定したい場合は削除して下さい。
+seriko.alignmenttodesktop,free
+

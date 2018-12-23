@@ -1,0 +1,15 @@
+=kis
+# セーブデータに@付きエントリが入っている問題に対処
+# 2010/8/1
+if $[ ${ColorsUpdate.vars.rgbatdelete} != "1" ] $(
+	listtree @rgblist RGB;
+	foreach @entry @rgblist $(
+		# @入りのエントリはそもそも使ってない
+		if $[ $(match ${@entry} "@") >= 0 ] $(
+			clear ${@entry};
+		);
+	);
+	setstr ColorsUpdate.vars.rgbatdelete 1;
+);
+
+=end

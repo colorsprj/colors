@@ -1,0 +1,27 @@
+=kis
+# 2010/10/4パーツの一部を差し替える
+if $[ ${ColorsUpdate.vars.101004partsupdate} != "1" ] $(
+	PushCurrentShellName "COLORS";
+	# 101004パーツ追加後なら実施
+	# 今回のネットワーク更新で、追加パーツは正常なものに差し替わったため
+	if $[ $(FindSurfaceID "アクセサリー１" "蝶羽根左") != "" ] $(
+		# @dir=差し替え画像データのパス
+		setstr @dir $(cncpath ${System.DataPath} "update/kis/101011_02");
+		# @sid1=アクセサリー１・蝶羽根左のSurface ID
+		setstr @sid1 $(FindSurfaceID "アクセサリー１" "蝶羽根左");
+		# @sid2=前髪・真ん中分けあご下丈のSurface ID
+		setstr @sid2 $(FindSurfaceID "前髪" "真ん中分けあご下丈");
+		
+		# 画像ファイル差し替え
+		# @sid1群
+		PNGCopy $(cncpath ${@dir} "tyouhidari2.png") ${@sid1}"_CCT_3";
+		PNGCopy $(cncpath ${@dir} "tyouhidari2.png") ${@sid1}"_CCT_4";
+		# @sid2群
+		PNGCopy $(cncpath ${@dir} "hmaegami1.png") ${@sid2}"_CCC_1";
+		HairColorCopy $(cncpath ${@dir} "hmaegami1.png") ${@sid2}"_CCC_2";
+	);
+	# 後始末
+	PopCurrentShellName;
+	setstr ColorsUpdate.vars.101004partsupdate 1;
+);
+=end

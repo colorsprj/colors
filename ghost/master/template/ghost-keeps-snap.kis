@@ -1,0 +1,478 @@
+###########################################
+#スナップショット機能
+###########################################
+
+#背景前景選択メニューへのジャンプ用アンカー
+Anchor.Page.Kisekae.BGFG : ${Select.Page.Kisekae.BGFG}
+
+#スナップショットメインメニュー
+Select.Page.Snap : (
+	${MenuHeader.Snap}
+	${LeaveSelectMode}
+	${SurfaceReset}
+	$(setstr MenuBookmark Select.Page.Snap)
+	\0\s[0]\p[2]
+	　"\f[color,160,160,160]"現在のキャラクターをpng画像ファイルとして出力します。\f[default]\n\n
+	\n
+	　$(IconQ face $(FillSpc 25 "表情選択メニュー") SnapSurfaceChoice)\n\n[half]
+	　　"\f[color,160,160,160]"（背景を付けたい時→\_a[Page.Kisekae.BGFG]「背景・前景」\_a）\f[default]\n
+	${SnapSurfaceMenu}
+	\n\n\n
+	　$(IconQ earth $(FillSpc 22 "スナップショットギャラリー" ) SnapGallery)\n\n
+	　　"\f[color,160,160,160]"ブラウザでスナップショット投稿掲示板を開きます。\n
+	　　 インターネットに接続されている必要があります。\f[default]
+	\n\n\n
+	${DressNaviMenu2}
+)
+
+#スナップショットギャラリーへのリンク
+Select.SnapGallery : (
+	"\![open,browser,http://bbs8.as.wakwak.ne.jp/bbs.cgi?id=12055]"
+	${Select.Page.Snap}
+)
+
+###############################################################################
+#表情選択共通UI
+#選択されたサーフィス番号は
+#	\0\s[${SSEyebrow}${SSEyes}${SSMouth}]$( if $[ ${BlushMode} == 1 ] \i[31000])
+#になる。
+#この共通UIを呼び出すページでSurfaceChoieBookmarkにそのページ名をセットすること
+
+SurfaceChoice : (
+	使用する表情を作成して下さい。
+	\n\n
+	$(Icon eyebrow)" \_l[@0,@4]"眉"\_l[@0,@-4]"\n\n[half]
+	　　
+	" "$(RadioQ $[ ${SSEyebrow} == "1" ] 通常　　 SSEyebrowSelect 1)
+	" "$(RadioQ $[ ${SSEyebrow} == "2" ] 驚き　　 SSEyebrowSelect 2)
+	" "$(RadioQ $[ ${SSEyebrow} == "3" ] 困り　　 SSEyebrowSelect 3)
+	" "$(RadioQ $[ ${SSEyebrow} == "4" ] 怒り　　 SSEyebrowSelect 4)
+	\n\n
+	$(Icon eye)" \_l[@0,@4]"目"\_l[@0,@-4]"\n\n[half]
+	　　
+	" "$(RadioQ $[ ${SSEyes} == "0" ] 開き　　 SSEyesSelect 0)
+	" "$(RadioQ $[ ${SSEyes} == "1" ] 半目　　 SSEyesSelect 1)
+	" "$(RadioQ $[ ${SSEyes} == "2" ] 閉じ　　 SSEyesSelect 2)
+	" "$(RadioQ $[ ${SSEyes} == "3" ] 笑い　　 SSEyesSelect 3)
+	\n\n
+	$(Icon mouth)" \_l[@0,@4]"口"\_l[@0,@-4]"\n\n[half]
+	　　
+	" "$(RadioQ $[ ${SSMouth} == "0" ] 開き　　 SSMouthSelect 0)
+	" "$(RadioQ $[ ${SSMouth} == "1" ] 閉じ　　 SSMouthSelect 1)
+	" "$(RadioQ $[ ${SSMouth} == "2" ] 笑い　　 SSMouthSelect 2)
+	" "$(RadioQ $[ ${SSMouth} == "3" ] 微笑　　 SSMouthSelect 3)
+	\n\n
+	$(Icon blush)" \_l[@0,@4]"赤面"\_l[@0,@-4]"\n\n[half]
+	　　
+	" "$(CheckQ $[ ${BlushMode} == "1" ] $(FillSpc 21 "あり") BlushSwitch)
+	\n\n\n[half]
+	　$(IconQ reset "表情リセット" SurfaceReset)
+	　　$(IconQ copy "表情タグコピー" SurfaceCopy)\n\n[half]
+	\0\s[${SSEyebrow}${SSEyes}${SSMouth}]
+	$(if $[ ${BlushMode} == 1 ] \i[31000])
+	\p[2]
+)
+
+#表情パーツ選択時の処理
+Select.SSEyebrowSelect : (
+	$(setstr SSEyebrow ${ChoiceInfo.1})
+	${Select.${SurfaceChoieBookmark}}
+)
+Select.SSEyesSelect : (
+	$(setstr SSEyes ${ChoiceInfo.1})
+	${Select.${SurfaceChoieBookmark}}
+)
+Select.SSMouthSelect : (
+	$(setstr SSMouth ${ChoiceInfo.1})
+	${Select.${SurfaceChoieBookmark}}
+)
+Select.BlushSwitch : (
+	$(setstr BlushMode $(if $[ ${BlushMode} == "1" ] "0" else "1"))
+	${Select.${SurfaceChoieBookmark}}
+)
+Select.SurfaceReset : (
+	${SurfaceReset}
+	${Select.${SurfaceChoieBookmark}}
+)
+
+#サーフィスリセット処理
+SurfaceReset : $(
+	setstr SSEyebrow 1;
+	setstr SSEyes    0;
+	setstr SSMouth   3;
+	setstr BlushMode 0;
+)
+
+#サーフィス番号クリップボードコピー
+Select.SurfaceCopy : (
+	$(
+		toclipboard (
+			\0
+			\s[${SSEyebrow}${SSEyes}${SSMouth}]
+			$(if $[ ${BlushMode} == 1 ] \i[31000])
+		);
+	)
+	${Select.${SurfaceChoieBookmark}}
+)
+
+###############################################################################
+#選択メニュー各種
+
+#スナップショット表情選択メニュー
+Select.SnapSurfaceChoice : (
+	${MenuHeader.Snap}
+	$(
+		setstr MenuBookmark Select.Page.Snap;
+		setstr SurfaceChoieBookmark SnapSurfaceChoice;
+	)
+	#表情選択UI表示
+	${SurfaceChoice}
+	#罫線表示
+	${HR}
+	#実行ボタン表示
+	${SnapSurfaceMenu}
+	${DressNaviMenu}
+)
+
+SnapSurfaceMenu : (
+	\n\n[half]
+	　$(IconQ cut $(FillSpc 25 "加工（拡大縮小・切り抜き）") SnapSurfaceSelected EditIMG)
+	\n\n
+	　$(IconQ go $(FillSpc 25 "現在の状態で作成") SnapSurfaceSelected SnapShot)
+	\n\n
+)
+
+
+#表情選択後モードによる振り分け
+Select.SnapSurfaceSelected : $(
+	setstr SnapMode ${ChoiceInfo.1};
+	MakeSingleSurfaceIMG;
+	if $[ ${SnapMode} == "SnapShot" ] (
+		${InputSnapSave}
+	) else (
+		${EditIMG}
+	);
+)
+
+
+#加工選択
+EditIMG : (
+	${MenuHeader.Snap}
+	■加工する\n\n
+	　$(IconQ cut    $(FillSpc 22 "切り抜き") RegionIMG)\n\n
+	　$(IconQ resize $(FillSpc 22 "拡大縮小") ResizeIMG)\n\n
+	　$(IconQ cut2   $(FillSpc 22 "顔周りのみを正方形に切り抜く") IconImg)\n
+	\n\n
+	#$(IconQ back13p $(FillSpc 22 "戻る") SnapSurfaceChoice)\n
+	${DressNaviMenu}
+)
+
+######################################################################################
+#領域選択共通
+#呼び出しエントリ名は「RegionSelect」。
+#取得した座標は「SelectModeCoordinates」にコンマ区切りでセットされる。
+#ばらしたものはRegionSelect.EndXとかに。
+#この機能を呼び出すページを「SelectModeCallback」に、
+#「SelectModeBookmark」に領域選択完了後の戻り先ページ名をセットすること。
+
+
+# 領域選択初期値
+kp.callback.OnLoad : $(
+	if $[ $(size RegionSelect.StartX) == 0 ] $(setstr RegionSelect.StartX 0);
+	if $[ $(size RegionSelect.StartY) == 0 ] $(setstr RegionSelect.StartY 0);
+	if $[ $(size RegionSelect.EndX) == 0 ]   $(setstr RegionSelect.EndX   0);
+	if $[ $(size RegionSelect.EndY) == 0 ]   $(setstr RegionSelect.EndY   0);
+	setstr RegionSelect.Width  $[ ${RegionSelect.EndX} - ${RegionSelect.StartX} ];
+	setstr RegionSelect.Height $[ ${RegionSelect.EndY} - ${RegionSelect.StartY} ];
+)
+
+#領域選択モード開始共通UI
+RegionSelect : (
+	$(
+		setstr SelectMode on;
+		clear RegionElement;
+	)
+	画像上でマウスをドラッグして、領域を選択してください。\n
+	正方形に切り出す場合はShiftキーを押しながら選択してください。
+	\n\n\n
+	"\0\![enter,selectmode,rect,"${RegionSelect.StartX}","${RegionSelect.StartY}","${RegionSelect.EndX}","${RegionSelect.EndY}"]"
+	\p[2]
+	■始点・終点を指定する\n\n
+	　\![*]始点
+	　（\q[$(FillSpc 3 " "${RegionSelect.StartX})","InputRegion","StartX]","\q[$(FillSpc 3 " "${RegionSelect.StartY})","InputRegion","StartY]）\n\n
+	　\![*]終点
+	　（\q[$(FillSpc 3 " "${RegionSelect.EndX})","InputRegion","EndX]","\q[$(FillSpc 3 " "${RegionSelect.EndY} )","InputRegion","EndY]）\n\n
+	■幅・高さを指定する\n\n
+	　\![*]幅　
+	　（\q[$(FillSpc 3 " "${RegionSelect.Width})","InputRegion","Width]）px\n\n
+	　\![*]高さ
+	　（\q[$(FillSpc 3 " "${RegionSelect.Height})","InputRegion","Height]）px\n\n
+	\n\n
+	$(IconTxQ go 27 選択範囲をこれで決定する RegionSelected)\n\n[half]
+)
+
+#ユーザ数値入力
+Select.InputRegion : (
+	${MenuHeader.Snap}
+	$(setstr RegionElement ${ChoiceInfo.1})
+	「${InputRegion.${RegionElement}}」" "の数値を入力して下さい
+	"\![open,inputbox,RegionSelect,0,"${RegionSelect.${RegionElement}}"]"
+)
+
+# 表示する内容
+InputRegion.StartX : 始点x座標
+InputRegion.StartY : 始点y座標
+InputRegion.EndX   : 終点x座標
+InputRegion.EndY   : 終点y座標
+InputRegion.Width  : 横幅ピクセル
+InputRegion.Height : 高さピクセル
+
+#ユーザ数値入力キャンセル
+TalkInputCancel.RegionSelect : ${SelectModeCallback}
+
+#ユーザ数値入力完了
+TalkInput.RegionSelect : (
+	$(setstr RegionSelect.${RegionElement} $(ZInteger $(Reference 1)))
+	"\0\![leave,selectmode]"
+#	${Select.RegionIMG}
+)
+
+#領域選択マウスアップ
+event.OnSelectModeMouseUp : $(
+	if $[ $(Reference 0) == "0" ] "\C\0\![leave,selectmode]";
+)
+
+#event.OnSelectModeCancel : $(echo きゃんせる)
+
+#領域選択完了共通
+Select.RegionSelected : (
+	$(clear SelectMode)
+	"\C\0\![leave,selectmode]"
+	${${SelectModeBookmark}}
+)
+
+#領域選択モード終了イベント（共通）。「SelectModeBookmark」に設定したエントリに戻る
+event.OnSelectModeComplete : $(
+	#数値直接入力時
+	if $[ $(size RegionElement) != 0 ] $(
+		#高さ・幅入力時→座標を計算してセット
+		if $[ ${RegionElement} == "Width" || ${RegionElement} == "Height" ]  $(
+			# 入力数値の健全性をチェック、おかしければ補正
+			entry RegionValueValidation.FromPixel;
+			# 始点は変わらず、終点が動く設定になっている
+			setstr RegionSelect.EndX   $[ ${RegionSelect.StartX} + ${RegionSelect.Width}  ];
+			setstr RegionSelect.EndY   $[ ${RegionSelect.StartY} + ${RegionSelect.Height} ];
+		);
+		# 座標入力の場合、高さ・幅をあとで計算するのでここでは処理不要
+	) else $(
+		#マウス操作で領域取得時
+		#SelectModeCoordinatesに取得座標をセット
+		setstr SelectModeCoordinates $(Reference 2);
+		split @Coordinates ${SelectModeCoordinates} ",";
+		
+		setstr RegionSelect.StartX $@Coordinates[0];
+		setstr RegionSelect.StartY $@Coordinates[1];
+		setstr RegionSelect.EndX   $@Coordinates[2];
+		setstr RegionSelect.EndY   $@Coordinates[3];
+	);
+	
+	# 画像領域からはみ出した部分の処理
+	entry RegionValueValidation.FromPoint;
+	# 高さ・幅を確定
+	setstr RegionSelect.Width  $[ ${RegionSelect.EndX} - ${RegionSelect.StartX} ];
+	setstr RegionSelect.Height $[ ${RegionSelect.EndY} - ${RegionSelect.StartY} ];	
+	if $[ ${SelectMode} == "on" ] ${${SelectModeCallback}};
+)
+
+# 座標指定からの数値の健全性確保
+RegionValueValidation.FromPoint : $(
+	# 最小
+	if $[ ${RegionSelect.StartX} < 0 ] $(setstr RegionSelect.StartX 0);
+	if $[ ${RegionSelect.StartY} < 0 ] $(setstr RegionSelect.StartY 0);
+	if $[ ${RegionSelect.EndX} < 0 ]   $(setstr RegionSelect.EndX   0);
+	if $[ ${RegionSelect.EndY} < 0 ]   $(setstr RegionSelect.EndY   0);
+	# 最大
+	if $[ ${RegionSelect.StartX} > ${ShellImage.Width} ] $(
+		setstr RegionSelect.StartX ${ShellImage.Width};
+	);
+	if $[ ${RegionSelect.StartY} > ${ShellImage.Height} ] $(
+		setstr RegionSelect.StartY ${ShellImage.Height};
+	);
+	if $[ ${RegionSelect.EndX} > ${ShellImage.Width} ] $(
+		setstr RegionSelect.EndX   ${ShellImage.Width};
+	);
+	if $[ ${RegionSelect.EndY} > ${ShellImage.Height} ] $(
+		setstr RegionSelect.EndY   ${ShellImage.Height};
+	);
+	# 大小が逆転していたら入れ替える
+	if $[ ${RegionSelect.StartX} > ${RegionSelect.EndX} ] $(
+		setstr @swap ${RegionSelect.StartX};
+		setstr RegionSelect.StartX ${RegionSelect.EndX};
+		setstr RegionSelect.EndX   ${@swap};
+	);
+	if $[ ${RegionSelect.StartY} > ${RegionSelect.EndY} ] $(
+		setstr @swap ${RegionSelect.StartY};
+		setstr RegionSelect.StartY ${RegionSelect.EndY};
+		setstr RegionSelect.EndY   ${@swap};
+	);
+)
+
+# ピクセル指定からの数値の健全性確保
+RegionValueValidation.FromPixel : $(
+	# 最小でも1ピクセルはある
+	if $[ ${RegionSelect.Width}  < 1 ] $(setstr RegionSelect.Width  1);
+	if $[ ${RegionSelect.Height} < 1 ] $(setstr RegionSelect.Height 1);
+	# 最大
+	if $[ ${RegionSelect.Width} > ${ShellImage.Width} ] $(
+		setstr RegionSelect.Width ${ShellImage.Width};
+	);
+	if $[ ${RegionSelect.Height} > ${ShellImage.Height} ] $(
+		setstr RegionSelect.Height ${ShellImage.Height};
+	);
+)
+
+# 座標値の健全性確保（共通部）
+#RegionValueValidation.Common :
+
+###############################################################################
+#領域選択
+
+#領域選択ページ表示
+Select.RegionIMG : (
+	${MenuHeader.Snap}
+	$(
+		setstr MenuBookmark EditIMG;
+		setstr SelectModeBookmark "SelectMode.Snapshot";
+		setstr SelectModeCallback "Select.RegionIMG" ;
+	)
+	${RegionSelect}
+	${DressNaviMenu}
+)
+
+#領域選択決定後の処理
+SelectMode.Snapshot : (
+	$(
+		clear SelectMode;
+		split @Coordinates ${SelectModeCoordinates} ",";
+		setstr @w $[ $@Coordinates[2]-$@Coordinates[0] ];
+		setstr @h $[ $@Coordinates[3]-$@Coordinates[1] ];
+		setstr DIB.Surface $(
+			colors cut ${DIB.Surface} $@Coordinates[0] $@Coordinates[1] ${@w} ${@h};
+		);
+	)
+	${Select.ResizeIMG}
+)
+
+###############################################################################
+#拡大縮小
+
+Select.ResizeIMG : (
+	${MenuHeader.Snap}
+	$(
+		setstr MenuBookmark EditIMG;
+		#現在の縦横サイズが${ShellImage.Width}${ShellImage.Height}に入る
+		setstr imgW ${ShellImage.Width};
+	)
+	■拡大・縮小\n\n
+	　\![*]\q[$(FillSpc 25 "ピクセルで大きさを指定する")","InputImgPx]\n\n
+	　\![*]\q[$(FillSpc 25 "パーセントで大きさを指定する")","InputImgPer]\n\n
+	#	"\n\p[2]　\__q[InputSnapSave"]\_b[img/disk.png","inline","opaque] $(FillSpc 25 "サイズを変えずに保存" )\__q\n\n
+	\n
+	　$(IconQ disk $(FillSpc 25 "サイズを変えずに保存") InputSnapSave)\n\n
+	${DressNaviMenu}
+)
+
+Select.InputImgPx : (
+	${MenuHeader.Snap}
+	画像の横幅を入力して下さい（単位はピクセル）
+	\!["open,inputbox,ImgPx,0,"${imgW}]
+)
+
+Select.InputImgPer : (
+	${MenuHeader.Snap}
+	画像の拡大・縮小率を入力して下さい（単位はパーセント）
+	\!["open,inputbox,ImgPer,0,100"]
+)
+
+TalkInputCancel.ImgPx :  ${Select.Page.Snap}
+TalkInputCancel.ImgPer : ${Select.Page.Snap}
+
+TalkInput.ImgPx : (
+	$(
+		setstr iconsize $(ZInteger $(Reference 1));
+		# 1以下のピクセルはあり得ないので補正
+		if $[ ${iconsize} < 1 ] $(setstr iconsize 1);
+		setstr DIB.Surface $(colors resize ${DIB.Surface} "bicubic" ${iconsize} "0");
+	)
+	${InputSnapSave}
+)
+
+TalkInput.ImgPer : (
+	$(
+		setstr iconsize $(ZInteger $(Reference 1));
+		# 1%以下はあり得ないので補正
+		if $[ ${iconsize} < 1 ] $(setstr iconsize 1);
+		setstr DIB.Surface $(colors resize ${DIB.Surface} "bicubic" ${iconsize} );
+	)
+	${InputSnapSave}
+)
+
+###############################################################################
+#アイコン切り出し
+
+Select.IconImg : (
+	$(
+		#シェル同梱テキストから顔エリア数値読み込み
+		ClearColorsShellInitialConfig;
+		load $(cncpath ${ColorsCurrentShellPath} "colorsshell.txt");
+		#切り出し処理
+		setstr DIB.Surface $(
+			colors cut ${DIB.Surface} $face.xy[0] $face.xy[1] $face.wh[0] $face.wh[1];
+		);
+	)
+	${Select.ResizeIMG}
+)
+
+
+###############################################################################
+#名前をつけて保存
+
+Select.InputSnapSave : ${InputSnapSave}
+
+InputSnapSave : (
+	${MenuHeader.Snap}
+	\n\n
+	保存先を指定して下さい。
+	\n
+	"\![open,dialog,save,--title=COLORSスナップショット・名前を付けて保存,--filter=PNG|*.png,--name=COLORS"${SSEyebrow}${SSEyes}${SSMouth}$(if $[ ${BlushMode} == 1 ] "_1" )".png,--id=SnapSave]"
+)
+
+DialogCancel.SnapSave : ${Select.Page.Snap}
+
+Dialog.SnapSave : $(
+	#保存ダイアログで入力された名前をSnapImgNameにセット
+	setstr SnapImgName $(Reference 2);
+	
+	#拡張子png指定が抜けていれば付け足す
+	if $[ $(tolower $(substr ${SnapImgName} -4)) != ".png" ] $(
+		setstr SnapImgName ${SnapImgName}".png";
+	);
+	colors save ${DIB.Surface} ${SnapImgName};
+	colors clear;
+	entry SnapshotComplete;
+)
+
+#保存完了
+SnapshotComplete : (
+	${MenuHeader.Snap}
+	\0\s[0]\p[2]
+	\n\n
+	保存しました。
+	\n\n\n
+	　\![*]\q[$(FillSpc 22 "スナップショットギャラリー" )","SnapGallery]\n\n
+	　　"\f[color,160,160,160] "ブラウザでスナップショット投稿掲示板を開きます。\n
+	　　" "インターネットに接続されている必要があります。\f[default]
+	\n\n\n
+	${DressNaviMenu2}
+)
+

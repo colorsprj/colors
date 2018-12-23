@@ -1,0 +1,8 @@
+=kis
+# レシピで不要なエントリ「RGB.Skin」が増殖している問題の対処
+if $[ ${ColorsUpdate.vars.rgbskindelete} != "1" ] $(
+	clear RGB.Skin;
+	setstr ColorsUpdate.vars.rgbskindelete 1;
+);
+
+=end

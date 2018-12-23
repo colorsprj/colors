@@ -1,0 +1,22 @@
+=kis
+# 2010/10/31パーツの一部を修復する
+if $[ ${ColorsUpdate.vars.101031partsupdate} != "1" ] $(
+	PushCurrentShellName "COLORS";
+	# 1011103パーツ追加後なら実施
+	# 今回のネットワーク更新で、追加パーツは正常なものに差し替わったため
+	if $[ $(FindSurfaceID "トップス４" "スーツジャケット") != "" ] $(
+		# @dir=差し替え画像データのパス
+		setstr @dir $(cncpath ${System.DataPath} "update/kis/101105_02");
+		# @sid1=トップス４・スーツジャケットのSurface ID
+		setstr @sid1 $(FindSurfaceID "トップス４" "スーツジャケット");
+
+		# 画像ファイル差し替え
+		# @sid1群
+		PNGCopy $(cncpath ${@dir} "61002_CC_1_.png") ${@sid1}"_CC_1";
+		PNGCopy $(cncpath ${@dir} "61002_CC_1_.png") ${@sid1}"_CC_2";
+	);
+	# 後始末
+	PopCurrentShellName;
+	setstr ColorsUpdate.vars.101031partsupdate 1;
+);
+=end

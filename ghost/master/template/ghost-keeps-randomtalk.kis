@@ -1,0 +1,749 @@
+# 設定エントリー --------------------------------------------------------------
+
+# ランダムトークフォルダ
+ColorsRandomtalkPath : "usertalk/randomtalk"
+# マウス反応トークフォルダ
+ColorsMouseAreaPath  : "usertalk/mouse"
+# 起動・終了反応トークフォルダ
+ColorsBootEndPath  : "usertalk/bootend"
+
+
+# 総合メニュー =================================================================
+
+Select.Page.Dic : (
+	$(setstr MenuBookmark Page.KisekaeTop)
+	${MenuHeader.Dic}
+	${LeaveSelectMode}
+	${SurfaceReset}
+	\n
+	$(IconQ face $(FillSpc15 表情選択メニューを開く) Page.Dic.SurfaceChoice)\n\n
+	$(IconQ earth $(FillSpc 22 "トークの作り方入門") Howtospeak)\n\n[half]
+	　"\f[color,160,160,160]"ブラウザで「トークの作り方入門」を開きます。\n
+	　インターネットに接続されている必要があります。\f[default]
+	\n\n
+	$(MenuThread Dic Page.Dic)
+	\n\n[half]
+	${DressNaviMenu2}
+)
+
+# トークの作り方入門へのリンク
+Select.Howtospeak : (
+	"\![open,browser,http://colors.shillest.net/howtouse/howtospeak]"
+	${Select.Page.Dic}
+)
+
+
+# メニュースレッド
+#通常トーク
+MenuThread.Dic : Randomtalk
+MenuThread.Dic.Randomtalk.title : "通常トーク"
+MenuThread.Dic.Randomtalk.contents (
+	$(IconQ fopen $(FillSpc15 トークファイルを選ぶ) Page.Dic.FileSelect)\n[half],
+	$(IconQ folder $(FillSpc15 トークのフォルダを開く) Page.Dic.FolderOpen)\n[half],
+	$(IconQ newfile $(FillSpc15 新しいトークファイルを作る) Page.Dic.NewFile)\n[half],
+	\n[half],
+	$(IconQ reload $(FillSpc15 トークファイルを読み直す) Page.Dic.Reload)\n[half]
+)
+
+# マウス反応
+MenuThread.Dic : Mouse
+MenuThread.Dic.Mouse.title : "マウス反応"
+MenuThread.Dic.Mouse.contents (
+	$(IconQ editfile $(FillSpc15 マウス反応領域セットを編集する) Page.Dic.MouseRegionMenu)\n[half],
+	$(IconQ fopen $(FillSpc 15 マウス反応トークファイルを選ぶ) Page.Dic.MouseFileSelect)\n[half],
+	$(IconQ folder $(FillSpc 15 マウス反応トークのフォルダを開く) Page.Dic.MouseFolderOpen)\n[half],
+	$(IconQ newfile $(FillSpc15 新しいマウス反応トークファイルを作る) Page.Dic.MouseTalkNewFile)\n[half],
+	\n[half],
+	$(IconQ reload $(FillSpc15 マウス反応トークファイルを読み直す) Page.Dic.MouseReload)
+)
+# 起動・終了
+MenuThread.Dic : Bootend
+MenuThread.Dic.Bootend.title : "起動・終了反応"
+MenuThread.Dic.Bootend.contents (
+	$(IconQ fopen $(FillSpc 15 起動・終了反応トークファイルを選ぶ) Page.Dic.BootendFileSelect)\n[half],
+	$(IconQ folder $(FillSpc 15 起動・終了反応トークのフォルダを開く) Page.Dic.BootendFolderOpen)\n[half],
+	$(IconQ newfile $(FillSpc15 新しい起動・終了反応トークファイルを作る) Page.Dic.BootendTalkNewFile)\n[half],
+	\n[half],
+	$(IconQ reload $(FillSpc15 起動・終了反応トークファイルを読み直す) Page.Dic.BootendReload)
+)
+
+
+# ランダムトーク --------------------------------------------------------------
+
+# トークファイルを選ぶ
+Page.Dic.RandomtalkSelect : 0
+
+Select.Page.Dic.FileSelect : (
+	$(setstr MenuBookmark Select.Page.Dic)
+	${MenuHeader.Dic}
+	${SMarker}トークファイル選択\n\n[half]
+	$(
+		# ページ設定
+		clear TMsentencelist;
+		listsub TMsentencelist sentence;
+		setstr @pagelength 13;
+		# パンくずリスト作成
+		TopicPath
+			TMsentencelist
+			${@pagelength}
+			Page.Dic.RandomtalkSelect
+			Page.Dic.FileSelect
+		;
+		# ページ作成
+		setstr @i     $[ ${Page.Dic.RandomtalkSelect} * ${@pagelength} ];
+		setstr @limit $[ ( ${Page.Dic.RandomtalkSelect} + 1 ) * ${@pagelength} ];
+		while $[ ${@i} < ${@limit} && ${@i} < $(size TMsentencelist) ] $(
+			setstr @talkfile $TMsentencelist[${@i}];
+			setstr @filename $(sub ${@talkfile} "sentence." "");
+			echo 　　$(RadioQ
+				$[ ${SentenceFile} == ${@filename} ]
+				$(FillSpc15 ${@filename})
+				Page.Dic.FileSelected
+				${@filename}
+			)\n\n[half];
+			inc @i;
+		);
+	)
+	\n
+	　　$(IconQ reload $(FillSpc15 トークファイルを読み直す) Page.Dic.Reload)\n[half]
+	\n
+	${DressNaviMenu2}
+)
+
+Select.Page.Dic.FileSelected : (
+	$(setstr SentenceFile ${ChoiceInfo.1})
+	$(setstr UserExport.SentenceFile ${SentenceFile})
+	${Select.Page.Dic.FileSelect}
+)
+
+# トークフォルダを開く
+Select.Page.Dic.FolderOpen : \![open","file","$(cncpath ${ColorsRandomtalkPath})\\]${Select.Page.Dic}
+
+# 新しいトークファイルを開く
+Select.Page.Dic.NewFile  : (
+	$(setstr MenuBookmark Select.Page.Dic)
+	${MenuHeader.Dic}
+	トークファイルに名前を付けてください。
+	\!["open,inputbox,InputTalkfileName,-1"]
+	\!["quicksession,false"]
+	\e
+)
+
+TalkInput.InputTalkfileName : $(
+	setstr @newfile $(EntNamReference 1)".txt";
+	if $[ ! $(isexist $(cncpath ${ColorsRandomtalkPath} ${@newfile})) ] $(
+		setstr  @template "# トークを「sentence :」の後に書いてください。";
+		pushstr @template "# 「sentence :」は何個でも書くことが出来ます。";
+		pushstr @template "# 下記「sentence:」先頭の「#」を消してから使ってください。";
+		pushstr @template "";
+		pushstr @template "#sentence :";
+		textsave $(cncpath ${ColorsRandomtalkPath} ${@newfile}) @template;
+	);
+	echo \![open","file","$(cncpath ${ColorsRandomtalkPath})\\${@newfile}];
+)${Select.Page.Dic}
+TalkInputCancel.InputTalkfileName : ${Select.Page.Dic}
+
+# 表情選択メニューを開く
+Select.Page.Dic.SurfaceChoice : (
+	$(set MenuBookmark Page.Dic)
+	$(set SurfaceChoieBookmark Page.Dic.SurfaceChoice)
+	${MenuHeader.Dic}
+	${SurfaceChoice}
+	${DressNaviMenu2}
+)
+
+# トークファイルを読み直す
+Select.Page.Dic.Reload : $(ReloadRandomtalkDictionaries)${Select.Page.Dic}
+
+
+# ランダムトーク機能部 --------------------------------------------------------
+
+=kis
+# ランダムトーク辞書群を読み込み
+# 戻り値:辞書群で追加された全てのエントリを"|"で接続したもの
+function LoadRandomtalkDictionaries $(
+	# usertalkフォルダの中身を取得
+	readdir @files $(cncpath ${ColorsRandomtalkPath});
+	if $(size @files) $(
+		foreach @f @files $(
+			setstr @lf $(tolower ${@f});
+			setstr @path $(cncpath ${ColorsRandomtalkPath} ${@f});
+			if $[ $(match_at $(reverse ${@lf}) "txt.") && $(.isfile ${@path}) ] $(
+				# テンプレート辞書だった
+				logprint "[load: UserRandomtalkDictionary("${@path}")]";
+				clear @before;
+				clear @after;
+				listtree @before .;
+				load ${@path};
+				listtree @after .;
+				setstr @dicname $(encode_entryname $(substr ${@f} 0 $[ $(length ${@f}) -4]));
+				# 辞書をsentence.<@dicname>に移動
+				move sentence sentence.${@dicname};
+				# 移動した辞書は重複回避設定
+				Historical_Noprotect sentence.${@dicname};
+				# 新規に追加になったエントリを探す
+				setstr @pos $(find @after "sentence");
+				if $[ ${@pos} >= 0 ] $(clear @after[${@pos}]);
+				setstr @i 0;
+				while $[ ${@i} < $(size @after) ] $(
+					if $(match_at $@after[${@i}] "@") $(
+						clear @after[${@i}];
+						continue;
+					);
+					setstr @pos $(find @before $@after[${@i}]);
+					if $[ ${@pos} >= 0 ] $(
+						clear @after[${@i}];
+						clear @before[${@pos}];
+						continue;
+					);
+					inc @i;
+				);
+				# この時点でafterにあるエントリは、推定でユーザが追加したもの
+				copy @after @userword;
+			);
+		);
+	);
+	# ユーザの追加したエントリ名を"|"でつなげて返す
+	return $(join @userword "|");
+);
+
+# ランダムトーク辞書群を再読み込み
+# 備考: SentenceWordエントリに、辞書群で追加した全てのエントリ名がある
+function ReloadRandomtalkDictionaries $(
+	# 存在しているはずのプロキシを一旦退避
+	move sentence @backup;
+	
+	# 辞書ファイル中でロードしたエントリ群を消去
+	foreach @entry SentenceWord $(clear ${@entry});
+
+	# ランダムトーク辞書群をクリアし、読み直す
+	cleartree sentence;
+	setstr SentenceWord "";
+	split SentenceWord $(LoadRandomtalkDictionaries) "|";
+	clear SentenceWord[0];
+
+	# プロキシを元に戻す
+	copy @backup sentence;
+);
+=end
+
+# 起動時にランダムトーク辞書読み込み
+kp.callback.OnLoad : $(
+	# 現在のsentenceがあれば、sentence.defaultに移動
+	move sentence sentence.default;
+
+	# 辞書を読み込み、追加された全てのエントリをSentenceWordエントリに保存
+	setstr SentenceWord "";
+	split SentenceWord $(LoadRandomtalkDictionaries) "|";
+	clear SentenceWord[0];
+
+	# sentenceエントリにプロキシ設定
+	set sentence "${sentence.${SentenceFile}}";
+	# SentenceFileにデフォルト値設定
+	if $[ $(size SentenceFile) == 0 ] $(
+		#setstr SentenceFile "default";
+		# Revision Hayabusa特例
+		setstr SentenceFile "hayabusa";
+		setstr UserExport.SentenceFile ${SentenceFile};
+	);
+)
+
+
+#マウス反応 ===================================================================
+
+# マウス反応領域セットを編集する
+Select.Page.Dic.MouseRegionMenu : (
+	${MenuHeader.Dic}
+	${SMarker}マウス反応領域編集\n\n[half]
+	$(
+		listsub @AreaList ColorsMouseArea.${ColorsCurrentShellName};
+		foreach @areaentry @AreaList $(
+			setstr @area $(sub ${@areaentry} ColorsMouseArea.${ColorsCurrentShellName}. "");
+			clear @num;
+			foreach @i ${@areaentry} $(pushstr @num $(FillFSpc 2 ${@i}));
+			echo 　　$(CheckQ $[ $(find ColorsActiveMouseArea.${ColorsCurrentShellName} ${@area}) >= 0 ] $(TextArea 8 ${@area}) Dic.SwitchMouseArea ${@area})：$(IconTxBQ editfile 13 $(join @num ",") Page.Dic.MouseEditArea ${@area})\n\n;
+		);
+	)
+	　$(IconQ newfile $(TextArea 25 "領域を追加する" ) Page.Dic.MouseNewArea)\n\n[half]
+	　$(IconQ back13p $(TextArea 25 "領域編集を終了する" ) Page.Dic)\n\n
+	${DressNaviMenu2}
+)
+
+# マウス反応エリアの使用／不使用を反転する
+Select.Dic.SwitchMouseArea : $(
+	if $[ ${ChoiceInfo.1} == "" ] (
+		${Select.Page.Dic.MouseRegionMenu}
+	) else $(
+		setstr @pos $(find ColorsActiveMouseArea.${ColorsCurrentShellName} ${ChoiceInfo.1});
+		if $[ ${@pos} < 0 ] $(
+			# 不使用だった
+			pushstr ColorsActiveMouseArea.${ColorsCurrentShellName} ${ChoiceInfo.1};
+		) else $(
+			# 使用中だった
+			clear ColorsActiveMouseArea.${ColorsCurrentShellName}[${@pos}];
+		);
+		#echo ${Select.Page.Dic.MouseRegionMenu};
+		# surfaces.txtに書き込む
+		EditMouseArea;
+		# シェルリロードして反映する
+		WaitMsg マウス反応エリアを設定中です。 SwitchMouseAreaPostprocess;
+	);
+)
+
+# マウス反応エリア設定完了
+SwitchMouseAreaPostprocess : $(ShellReload Select.Page.Dic.MouseRegionMenu)
+
+# 新しいマウス反応エリアを作成する
+Select.Page.Dic.MouseNewArea : (
+	${MenuHeader.Dic}
+	$(
+		setstr SelectModeBookmark "MouseNewRegionSelected";
+		setstr SelectModeCallback "Select.Page.Dic.MouseNewArea";
+	)
+	"\![enter,collisionmode]"
+	$(setstr MouseCollisionMode true)
+	${RegionSelect}
+	${DressNaviMenu2}
+)
+
+# 新しいマウス反応エリア座標が決まった
+MouseNewRegionSelected : (
+	${MenuHeader.Dic}
+	${ResetCollisionMode}
+	"　座標："${SelectModeCoordinates}\n\n
+	領域の名前を入力して下さい（半角英数）
+	$(
+		if ${Error.Page.Dic.MouseArea} (
+			\n[half]※英数字のみ有効です。\n
+		)
+	)
+	"\![open,inputbox,RegionName,0]"
+	\n\n
+)
+
+# 新しいマウス反応エリアの名前が決まった
+TalkInput.RegionName : $(
+	setstr PresentMouseArea $(SReference 1);
+	if $(isalnum ${PresentMouseArea}) (
+		$(
+			clear Error.Page.Dic.MouseArea;
+			set    C0Stroke.${PresentMouseArea} "$(if $[ ${SelectMode} != 'on' ] ${Mouse.Stroke.0."${PresentMouseArea}"})";
+			setstr C0Stroke.limit.${PresentMouseArea} 50;
+		)
+		${MouseRegionSelected}
+	) else (
+		$(setstr Error.Page.Dic.MouseArea 1)
+		${MouseNewRegionSelected}
+	)
+)
+
+# キャンセル
+TalkInputCancel.RegionName : ${Select.Page.Dic}
+
+
+# 既存のマウス反応エリアを編集する
+Select.Page.Dic.MouseEditArea : (
+	${MenuHeader.Dic}
+	$(
+		setstr SelectModeBookmark "MouseRegionSelected";
+		setstr SelectModeCallback "Select.Page.Dic.MouseEditArea";
+		setstr PresentMouseArea ${ChoiceInfo.1};
+	)
+	${RegionSelect}
+	${DressNaviMenu2}
+)
+
+MouseRegionSelected : (
+	$(
+		clear ColorsMouseArea.${ColorsCurrentShellName}.${PresentMouseArea};
+		if $[ $(find ColorsMouseArea.${ColorsCurrentShellName} ${PresentMouseArea}) < 0 ] $(
+			pushstr ColorsMouseArea.${ColorsCurrentShellName} ${PresentMouseArea};
+		);
+		split @coordinates ${SelectModeCoordinates} ",";
+		foreach @value @coordinates $(
+			pushstr ColorsMouseArea.${ColorsCurrentShellName}.${PresentMouseArea} ${@value};
+		);
+		if $[ $(find ColorsActiveMouseArea.${ColorsCurrentShellName} ${PresentMouseArea}) >= 0 ] $(
+			# いまアクティブなエリアを書き換えた
+			# surfaces.txtに書き込む
+			EditMouseArea;
+			# シェルリロードして反映する
+			WaitMsg マウス反応エリアを設定中です。 SwitchMouseAreaPostprocess;
+		) else $(
+			# アクティブではないエリアを設定した
+			echo ${Select.Page.Dic.MouseRegionMenu};
+		);
+	)
+	#${Select.Page.Dic.MouseRegionMenu}
+)
+
+# マウス反応トークファイルを選ぶ ----------------------------------------------
+
+Page.Dic.MouseSelect : 0
+
+Select.Page.Dic.MouseFileSelect : (
+	$(setstr MenuBookmark Select.Page.Dic)
+	${MenuHeader.Dic}
+	${SMarker}マウス反応トークファイル選択\n\n[half]
+	$(
+		clear MMmouselist;
+		listsub MMmouselist MMTree;
+		setstr @pagelength 13;
+		# パンくずリスト作成
+		TopicPath
+			MMmouselist
+			${@pagelength}
+			Page.Dic.MouseSelect
+			Page.Dic.MouseFileSelect
+		;
+		# ページ作成
+		setstr @i     $[ ${Page.Dic.MouseSelect} * ${@pagelength} ];
+		setstr @limit $[ ( ${Page.Dic.MouseSelect} + 1 ) * ${@pagelength} ];
+		while $[ ${@i} < ${@limit} && ${@i} < $(size MMmouselist) ] $(
+			setstr @talkfile $MMmouselist[${@i}];
+			setstr @filename $(sub ${@talkfile} "MMTree." "");
+			echo 　　$(RadioQ
+				$[ ${MouseFile} == ${@filename} ]
+				$(FillSpc15 ${@filename})
+				Page.Dic.MouseFileSelected
+				${@filename}
+			)\n\n[half];
+			inc @i;
+		);
+	)
+	\n
+	　　$(IconQ reload $(FillSpc15 マウス反応トークファイルを読み直す) Page.Dic.MouseReload)\n\n[half]
+	\n
+	${DressNaviMenu2}
+)
+
+Select.Page.Dic.MouseFileSelected : (
+	$(setstr MouseFile ${ChoiceInfo.1})
+	$(setstr UserExport.MouseFile ${MouseFile})
+	$(ReloadMouseDictionaries)
+	${Select.Page.Dic.MouseFileSelect}
+)
+
+# 新しいマウス反応トークファイルを開く ----------------------------------------
+Select.Page.Dic.MouseTalkNewFile  : (
+	$(setstr MenuBookmark Select.Page.Dic)
+	${MenuHeader.Dic}
+	マウス反応トークファイルに名前を付けてください。
+	\!["open,inputbox,InputMouseTalkfileName,-1"]
+	\!["quicksession,false"]
+	\e
+)
+
+TalkInput.InputMouseTalkfileName : (
+	$(
+		setstr @newfile "mouse_"$(EntNamReference 1)".txt";
+		if $[ ! $(isexist $(cncpath ${ColorsMouseAreaPath} ${@newfile})) ] $(
+			setstr  @template "#Mouse.DoubleClick.0.＜マウス反応領域＞ : ある領域をダブルクリックした時の反応";
+			pushstr @template "#Mouse.DoubleClick.0                    : 領域外をダブルクリックした時の反応";
+			pushstr @template "#Mouse.Click.0.＜マウス反応領域＞       : ある領域をクリックした時の反応";
+			pushstr @template "#Mouse.Click.0                          : 領域外をクリックした時の反応";
+			pushstr @template "#Mouse.Stroke.0.＜マウス反応領域＞      : ある領域を撫でた時の反応";
+			textsave $(cncpath ${ColorsMouseAreaPath} ${@newfile}) @template;
+		);
+	)
+	\![open","file","$(cncpath ${ColorsMouseAreaPath})\\${@newfile}]
+	${Select.Page.Dic}
+)
+TalkInputCancel.InputMouseTalkfileName : ${Select.Page.Dic}
+
+# マウス反応トークフォルダを開く ----------------------------------------------
+Select.Page.Dic.MouseFolderOpen : \![open","file","$(cncpath ${ColorsMouseAreaPath})\\]${Select.Page.Dic}
+
+# トークファイルを読み直す ----------------------------------------------------
+Select.Page.Dic.MouseReload : $(ReloadMouseDictionaries)${Select.Page.Dic}
+
+# マウス反応機能部 ------------------------------------------------------------
+
+=kis
+# マウス反応辞書群を読み込み
+# 戻り値:辞書群で追加された全てのエントリを"|"で接続したもの
+function LoadMouseDictionaries $(
+	# usertalkフォルダの中身を取得
+	readdir @files $(cncpath ${ColorsMouseAreaPath});
+	if $(size @files) $(
+		foreach @f @files $(
+			setstr @lf $(tolower ${@f});
+			setstr @path $(cncpath ${ColorsMouseAreaPath} ${@f});
+			if $[ $(match_at $(reverse ${@lf}) "txt.") && $(.isfile ${@path}) && $(match_at ${@lf} "mouse_") ] $(
+				# テンプレート辞書だった
+				logprint "[load: UserMouseDictionary("${@path}")]";
+				clear @before;
+				clear @after;
+				listtree @before .;
+				load ${@path};
+				listtree @after .;
+				setstr @dicname $(encode_entryname $(substr ${@f} 6 $[ $(length ${@f}) - 4 - 6]));
+				# 辞書をMMTree.<@dicname>に移動
+				movetree Mouse MMTree.${@dicname};
+				setstr MMTree.${@dicname} "true";
+				# 新規に追加になったエントリを探す
+				setstr @i 0;
+				while $[ ${@i} < $(size @after) ] $(
+					# ローカルエントリは対象外
+					if $(match_at $@after[${@i}] "@") $(
+						clear @after[${@i}];
+						continue;
+					);
+					# マウス反応エントリは処理済みなので対象外
+					if $[ $(match_at $@after[${@i}] "Mouse.") || $@after[${@i}] == "Mouse" ] $(
+						clear @after[${@i}];
+						continue;
+					);
+					setstr @pos $(find @before $@after[${@i}]);
+					if $[ ${@pos} >= 0 ] $(
+						clear @after[${@i}];
+						clear @before[${@pos}];
+						continue;
+					);
+					inc @i;
+				);
+				# この時点でafterにあるエントリは、推定でユーザが追加したもの
+				copy @after @userword;
+			);
+		);
+	);
+	# ユーザの追加したエントリ名を"|"でつなげて返す
+	return $(join @userword "|");
+);
+
+# ランダムトーク辞書群を再読み込み
+# 備考: SentenceWordエントリに、辞書群で追加した全てのエントリ名がある
+function ReloadMouseDictionaries $(
+	# 存在しているはずの実体をクリア
+	cleartree Mouse;
+	
+	# 辞書ファイル中でロードしたエントリ群を消去
+	foreach @entry MMTreeWord $(clear ${@entry});
+
+	# ランダムトーク辞書群をクリアし、読み直す
+	cleartree MMTree;
+	setstr MMTreeWord "";
+	split MMTreeWord $(LoadMouseDictionaries) "|";
+	clear MMTreeWord[0];
+
+	# Mouseツリーに実体を元に戻す
+	copytree MMTree.${MouseFile} Mouse;
+);
+
+=end
+
+# 起動時にランダムトーク辞書読み込み
+kp.callback.OnLoad : $(
+	# 現在のsentenceがあれば、sentence.defaultに移動
+	movetree Mouse MMTree.default;
+
+	# 辞書を読み込み、追加された全てのエントリをMMTreeWordエントリに保存
+	setstr MMTreeWord "";
+	split MMTreeWord $(LoadMouseDictionaries) "|";
+	clear MMTreeWord[0];
+
+	# Mouseツリーに実体コピー
+	copytree MMTree.${MouseFile} Mouse;
+	# MouseFileにデフォルト値設定
+	if $[ $(size MouseFile) == 0 ] $(
+		setstr MMTree.default "true";
+		setstr MouseFile "default";
+		setstr UserExport.MouseFile ${MouseFile};
+	);
+)
+
+# 起動・終了反応 ==============================================================
+
+# 起動・終了反応トークファイルを選ぶ ------------------------------------------
+
+Page.Dic.BootendSelect : 0
+
+Select.Page.Dic.BootendFileSelect : (
+	$(setstr MenuBookmark Select.Page.Dic)
+	${MenuHeader.Dic}
+	${SMarker}起動・終了反応トークファイル選択\n\n[half]
+	$(
+		setstr @pagelength 13;
+		# パンくずリスト作成
+		TopicPath
+			BEMEntry
+			${@pagelength}
+			Page.Dic.BootendSelect
+			Page.Dic.BootendFileSelect
+		;
+		# ページ作成
+		setstr @i     $[ ${Page.Dic.BootendSelect} * ${@pagelength} ];
+		setstr @limit $[ ( ${Page.Dic.BootendSelect} + 1 ) * ${@pagelength} ];
+		#BootEndManagementEntryを見る
+		while $[ ${@i} < ${@limit} && ${@i} < $(size BEMEntry) ] $(
+			setstr @talkfile $BEMEntry[${@i}];
+			echo 　　$(RadioQ
+				$[ ${BootendFile} == ${@talkfile} ]
+				$(FillSpc15 ${@talkfile})
+				Page.Dic.BootendFileSelected
+				${@talkfile}
+			)\n\n[half];
+			inc @i;
+		);
+	)
+	\n
+	　　$(IconQ reload $(FillSpc15 起動・終了反応トークファイルを読み直す) Page.Dic.BootendReload)\n\n[half]
+	\n
+	${DressNaviMenu2}
+)
+
+Select.Page.Dic.BootendFileSelected : (
+	$(setstr BootendFile ${ChoiceInfo.1})
+	$(setstr UserExport.BootendFile ${BootendFile})
+	$(ReloadBootendDictionaries)
+	${Select.Page.Dic.BootendFileSelect}
+)
+
+# 新しい起動・終了反応トークファイルを開く ------------------------------------
+Select.Page.Dic.BootendTalkNewFile  : (
+	$(setstr MenuBookmark Select.Page.Dic)
+	${MenuHeader.Dic}
+	起動・終了反応トークファイルに名前を付けてください。
+	\!["open,inputbox,InputBootendTalkfileName,-1"]
+	\!["quicksession,false"]
+	\e
+)
+
+TalkInput.InputBootendTalkfileName : (
+	$(
+		setstr @newfile "bootend_"$(EntNamReference 1)".txt";
+		if $[ ! $(isexist $(cncpath ${ColorsBootEndPath} ${@newfile})) ] $(
+			setstr  @template "# 起動・終了トーク";
+			pushstr @template "#";
+			pushstr @template "# Boot.＜時間（2桁）＞.＜日付4桁＞  :  ＜起動トーク＞";
+			pushstr @template "# Boot.date.＜日付（4桁）＞         :  ＜起動トーク＞";
+			pushstr @template "# Boot.＜時間（2桁）＞              :  ＜起動トーク＞";
+			pushstr @template "# Boot                              :  ＜起動トーク＞";
+			pushstr @template "";
+			pushstr @template "# Close.＜時間（2桁）＞.＜日付4桁＞ :  ＜起動トーク＞";
+			pushstr @template "# Close.date.＜日付（4桁）＞        :  ＜起動トーク＞";
+			pushstr @template "# Close.＜時間（2桁）＞             :  ＜起動トーク＞";
+			pushstr @template "# Close                             : ＜終了トーク＞";
+			pushstr @template "";
+			textsave $(cncpath ${ColorsBootEndPath} ${@newfile}) @template;
+		);
+	)
+	\![open","file","$(cncpath ${ColorsBootEndPath})\\${@newfile}]
+	${Select.Page.Dic}
+)
+TalkInputCancel.InputBootendTalkfileName : ${Select.Page.Dic}
+
+# 起動・終了反応トークフォルダを開く ------------------------------------------
+Select.Page.Dic.BootendFolderOpen : \![open","file","$(cncpath ${ColorsBootEndPath})\\]${Select.Page.Dic}
+
+# トークファイルを読み直す ----------------------------------------------------
+Select.Page.Dic.BootendReload : $(ReloadBootendeDictionaries)${Select.Page.Dic}
+
+# 起動・終了反応機能部 --------------------------------------------------------
+
+=kis
+# 起動・終了反応辞書群を読み込み
+# 戻り値:辞書群で追加された全てのエントリを"|"で接続したもの
+function LoadBootendDictionaries $(
+	# usertalkフォルダの中身を取得
+	readdir @files $(cncpath ${ColorsBootEndPath});
+	if $(size @files) $(
+		foreach @f @files $(
+			setstr @lf $(tolower ${@f});
+			setstr @path $(cncpath ${ColorsBootEndPath} ${@f});
+			if $[ $(match_at $(reverse ${@lf}) "txt.") && $(.isfile ${@path}) && $(match_at ${@lf} "bootend_") ] $(
+				# テンプレート辞書だった
+				logprint "[load: UserBootendDictionary("${@path}")]";
+				clear @before;
+				clear @after;
+				listtree @before .;
+				load ${@path};
+				listtree @after .;
+				setstr @dicname $(encode_entryname $(substr ${@f} 8 $[ $(length ${@f}) - 4 - 8]));
+				# 辞書をBEMTree.<@dicname>に移動
+				movetree Boot  BEMTree.Boot.${@dicname};
+				movetree Close BEMTree.Close.${@dicname};
+				pushstr BEMEntry ${@dicname};
+				# 新規に追加になったエントリを探す
+				setstr @i 0;
+				while $[ ${@i} < $(size @after) ] $(
+					# ローカルエントリは対象外
+					if $(match_at $@after[${@i}] "@") $(
+						clear @after[${@i}];
+						continue;
+					);
+					# 起動・終了反応エントリは処理済みなので対象外
+					if $[ 
+						   $(match_at $@after[${@i}] "Boot.")
+						|| $(match_at $@after[${@i}] "Close.")
+						|| $@after[${@i}] == "Boot"
+						|| $@after[${@i}] == "Close"
+					] $(
+						clear @after[${@i}];
+						continue;
+					);
+					setstr @pos $(find @before $@after[${@i}]);
+					if $[ ${@pos} >= 0 ] $(
+						clear @after[${@i}];
+						clear @before[${@pos}];
+						continue;
+					);
+					inc @i;
+				);
+				# この時点でafterにあるエントリは、推定でユーザが追加したもの
+				copy @after @userword;
+			);
+		);
+	);
+	# ユーザの追加したエントリ名を"|"でつなげて返す
+	return $(join @userword "|");
+);
+
+# ランダムトーク辞書群を再読み込み
+# 備考: SentenceWordエントリに、辞書群で追加した全てのエントリ名がある
+function ReloadBootendDictionaries $(
+	# 存在しているはずの実体をクリア
+	cleartree Boot;
+	cleartree Close;
+	
+	# 辞書ファイル中でロードしたエントリ群を消去
+	foreach @entry BEMTreeWord $(clear ${@entry});
+
+	# ランダムトーク辞書群をクリアし、読み直す
+	clear BEMEntry;
+	cleartree BEMTree;
+	setstr BEMTreeWord "";
+	split BEMTreeWord $(LoadBootendDictionaries) "|";
+	clear BEMTreeWord[0];
+
+	# BootEndツリーに実体を元に戻す
+	copytree BEMTree.Boot.${BootendFile} Boot;
+	copytree BEMTree.Close.${BootendFile} Close;
+);
+
+=end
+
+# 起動時にランダムトーク辞書読み込み
+kp.callback.OnLoad : $(
+	# 現在のBootEndツリーがあれば、defaultツリーに移動
+	movetree Boot BEMTree.Boot.default;
+	movetree Close BEMTree.Close.default;
+
+	# 辞書を読み込み、追加された全てのエントリをMMTreeWordエントリに保存
+	setstr BEMTreeWord "";
+	split BEMTreeWord $(LoadBootendDictionaries) "|";
+	clear BEMTreeWord[0];
+
+	# BootEndツリーに実体コピー
+	copytree BEMTree.Boot.${BootendFile} Boot;
+	copytree BEMTree.Close.${BootendFile} Close;
+	# BootendFileにデフォルト値設定
+	if $[ $(size BootendFile) == 0 ] $(
+		setstr BEMTree.Boot.default "true";
+		setstr BEMTree.Close.default "true";
+		setstr BootendFile "default";
+		setstr UserExport.BootendFile ${BootendFile};
+	);
+)
+
+#==============================================================================

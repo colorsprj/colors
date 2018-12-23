@@ -1,0 +1,7 @@
+declare	RECIPE/1.0	COLORS
+cc	トップス４	スーツジャケット前開き	61003_CC_1_.png
+cct	帽子・ヘッドドレス２	ベレー帽	74006_CCT_1_.png	74006_CCT_3_.png
+cct	帽子・ヘッドドレス２	山高帽	74007_CCT_1_.png	74007_CCT_3_.png
+cct	帽子・ヘッドドレス２	シルクハット高め	74008_CCT_1_.png	74008_CCT_3_.png
+cct	帽子・ヘッドドレス２	ミニハット右	74009_CCT_1_.png	74009_CCT_3_.png
+cct	帽子・ヘッドドレス２	ミニハット左	74010_CCT_1_.png	74010_CCT_3_.png

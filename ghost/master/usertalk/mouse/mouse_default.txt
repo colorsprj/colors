@@ -1,0 +1,14 @@
+#Mouse.DoubleClick.0.＜マウス反応領域＞ : ある領域をダブルクリックした時の反応
+#Mouse.DoubleClick.0                    : 領域外をダブルクリックした時の反応
+#Mouse.Click.0.＜マウス反応領域＞       : ある領域をクリックした時の反応
+#Mouse.Click.0                          : 領域外をクリックした時の反応
+#Mouse.Stroke.0.＜マウス反応領域＞      : ある領域を撫でた時の反応
+
+Mouse.DoubleClick.0.head : \0\s[4]痛いです。\e
+
+Mouse.Stroke.0.head : \0\s[5]にゃあ。\e
+
+Mouse.Stroke.0.face : \0\s[4]困ります。\e
+
+Mouse.Stroke.0.bust : \0\s[4]やめて下さい。\e
+

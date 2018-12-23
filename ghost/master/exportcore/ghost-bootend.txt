@@ -1,0 +1,70 @@
+# 辞書・SAORIモジュール等読み込み完了時のコールバック
+# SHIORI Load時のコールバック相当品
+#System.Callback.OnLoad :
+
+# 起動イベント
+BootSentence: \1\s[10]\0\s[0]\e
+
+event.OnFirstBoot : ${event.OnBoot}
+event.OnBoot : $(
+	setstr @aistr "BootSentence";
+	foreach @item OnBootTree $(
+		if $(size ${@item}) $(
+			setstr @aistr ${@item};
+			break;
+		);
+	);
+	entry ${@aistr};
+)
+event.OnGhostChanged : ${event.OnBoot}
+#event.OnGhostCalled : 
+#event.OnGhostCallComplete : 
+#event.OnCacheRestore : 
+
+# 検索のためのツリー
+OnBootTree (
+	Boot.$(date %H).$(date %m%d),
+	Boot.date.$(date %m%d),
+	Boot.$(date %H),
+	Boot
+)
+
+
+# 終了イベント
+CloseSentence : \1\s[10]\0\s[0]
+
+event.OnClose : $(
+	setstr @aistr "CloseSentence";
+	foreach @item OnCloseTree $(
+		if $(size ${@item}) $(
+			setstr @aistr ${@item};
+			break;
+		);
+	);
+	entry ${@aistr};
+	echo \w8\w8\-;
+)
+event.OnGhostChanging : ${event.OnClose}
+
+#event.OnGhostCalling : 
+#event.OnOtherGhostBooted : 
+#event.OnOtherGhostClosed : 
+#event.OnCacheSuspend : 
+
+# 検索のためのツリー
+OnCloseTree (
+	Close.$(date %H).$(date %m%d),
+	Close.date.$(date %m%d),
+	Close.$(date %H),
+	Close
+)
+
+# SHIORI UnLoad時のコールバック
+#System.Callback.OnUnload :
+
+# 消滅イベント
+#event.OnVanishSelecting : 
+#event.OnVanishSelected : 
+#event.OnVanishCancel : 
+#event.OnVanishButtonHold : 
+#event.OnVanished : 

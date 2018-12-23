@@ -1,0 +1,41 @@
+declare	RECIPE/1.0	COLORS
+select	素体	肌_CC
+mayuselect	2
+paint	素体	肌_CC		255	228	196
+select	瞳ハイライト	細目用
+select	口	デフォルト
+select	靴下	ニーソックス_CC
+paint	靴下	ニーソックス_CC		49	49	49
+select	靴下装飾	ニーソックスストライプ_CC
+paint	靴下装飾	ニーソックスストライプ_CC		255	128	0
+select	インナー２	フリルキャミ_CC
+paint	インナー２	フリルキャミ_CC		64	64	64
+select	背景装飾	足元影_CC
+paint	背景装飾	足元影_CC		18	18	18
+select	インナー３	パフスリーブ_CC
+paint	インナー３	パフスリーブ_CC		64	64	64
+select	靴	厚底ストラップシューズ_CCC
+paint	靴	厚底ストラップシューズ_CCC		64	64	64
+select	スカート	膝丈すそ広がりスカート_CC
+paint	スカート	膝丈すそ広がりスカート_CC		60	60	60
+select	スカート装飾	膝丈すそ広がりスカートフリル_CC
+paint	スカート装飾	膝丈すそ広がりスカートフリル_CC		49	49	49
+select	トップス１装飾	フリルカフス_CCT
+paint	トップス１装飾	フリルカフス_CCT	2toneCC2	255	255	255	10	10	10
+select	トップス３	コルセット_CCT
+paint	トップス３	コルセット_CCT	2toneCC2	60	60	60	196	60	73
+select	後髪	ウエーブロング_CC
+select	素体オプション背後	コウモリ翼右_CC
+paint	素体オプション背後	コウモリ翼右_CC		64	64	64
+select	耳	デフォルト_SKIN
+select	瞳色	左右_CC
+paint	瞳色	左右_CC		124	126	197
+select	目の形	微つり目
+select	前髪	ぱっつん_CCC
+select	眉２	デフォルト
+select	帽子・ヘッドドレス２	魔女帽子_CCT
+paint	帽子・ヘッドドレス２	魔女帽子_CCT	2toneCC2	64	64	64	103	99	141
+select	アクセサリー５	紐リボンチョーカー_CC
+paint	アクセサリー５	紐リボンチョーカー_CC		196	60	73
+paint	結髪	ウエーブロング_CC		227	200	117
+paint	眉	デフォルト		49	49	49

@@ -1,0 +1,39 @@
+declare	RECIPE/1.0	COLORS
+select	素体	肌_CC
+mayuselect	2
+paint	素体	肌_CC		253	242	210
+select	横髪	二段ストレート_CC
+select	前髪	中寄りストレート_CCC
+select	眉２	デフォルト
+select	帽子・ヘッドドレス２	ゴシックヘッドドレス_CCT
+paint	帽子・ヘッドドレス２	ゴシックヘッドドレス_CCT	2toneCC2	70	73	89	10	10	10
+select	帽子・ヘッドドレス２装飾	薔薇コサージュ_CC
+paint	帽子・ヘッドドレス２装飾	薔薇コサージュ_CC		180	120	139
+select	アクセサリー５	薔薇コサージュ胸元_CC
+paint	アクセサリー５	薔薇コサージュ胸元_CC		180	120	139
+select	後髪	ロングストレート_CC
+select	素体オプション背後	翼_CC
+paint	素体オプション背後	翼_CC		70	73	89
+select	耳	デフォルト_SKIN
+select	素体オプション	デフォルト
+select	瞳色	左右_CC
+paint	瞳色	左右_CC		210	95	90
+select	目の形	細つり目
+select	瞳ハイライト	左下
+select	口	デフォルト
+select	靴	ロングブーツ_CC
+paint	靴	ロングブーツ_CC		70	73	89
+select	靴装飾	ロングブーツ用フリル_CCT
+paint	靴装飾	ロングブーツ用フリル_CCT	2toneCC2	255	255	255	10	10	10
+select	靴装飾	薔薇コサージュ_CC
+paint	靴装飾	薔薇コサージュ_CC		180	120	139
+select	服上下	リッチフリルワンピース_CC
+paint	服上下	リッチフリルワンピース_CC		255	255	255
+select	オーバースカート	編み上げオーバースカート_CC
+paint	オーバースカート	編み上げオーバースカート_CC		70	73	89
+select	オーバースカート装飾	オーバースカート模様逆十字_CC
+paint	オーバースカート装飾	オーバースカート模様逆十字_CC		255	255	255
+select	アクセサリー４	付け襟_CCT
+select	トップス４	ゴシック風編み上げジャケット_CCT
+paint	トップス４	ゴシック風編み上げジャケット_CCT	2toneCC2	70	73	89	10	10	10
+paint	横髪	二段ストレート_CC		224	224	222

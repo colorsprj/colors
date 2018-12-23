@@ -1,0 +1,8 @@
+declare	RECIPE/1.0	COLORS
+eye	目の形	たれ目ぱっちり	26013_.png	26013_skin_.png	26013_half_.png	26013_half_1_.png	26013_close_.png	26013_close_1_.png	26013_smile_.png
+cc	インナー３	スタンドカラーシャツ	39012_CC_1_.png
+cc	ズボン	膝上丈パンツ	43005_CC_1_.png
+cct	コート	膝上丈フロックコート	63000_CCT_1_.png	63000_CCT_3_.png
+mayuc	眉１	やや低めつり眉	67013_CC_1_.png	67013_surprise_CC_1_.png	67013_sad_CC_1_.png	67013_angry_CC_1_.png
+ccc	前髪	右目やや隠れ	70017_CCC_1_.png	70017_CCC_.png
+ccc	前髪	左目やや隠れ	70018_CCC_1_.png	70018_CCC_.png

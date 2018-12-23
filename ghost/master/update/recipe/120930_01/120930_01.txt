@@ -1,0 +1,3 @@
+declare	RECIPE/1.0	COLORS
+ccc	‘O”¯	‚­‚¹–Ñ‰E	70021_CCC_1_.png	70021_CCC_.png
+ccc	‘O”¯	‚­‚¹–Ñ¶	70022_CCC_1_.png	70022_CCC_.png

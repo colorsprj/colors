@@ -1,0 +1,55 @@
+# マウス反応イベント
+
+# ダブルクリック
+event.OnMouseDoubleClick : $(
+	setstr @R4 $(EntNamReference 4);
+	if $[ ${@R4} != "" && $(size Mouse.DoubleClick.0.${@R4}) ] (
+		${Mouse.DoubleClick.0.${@R4}}
+	) else (
+		${sentence}
+	);
+)
+
+# シングルクリック(エリア指定ありに限定)
+event.OnMouseClick : $(
+	setstr @R4 $(EntNamReference 4);
+	if $[ ${@R4} != "" && $(size Mouse.Click.0.${@R4}) ] (
+		${Mouse.Click.0.${@R4}}
+	);
+)
+
+# マウス触り
+
+event.OnMouseMove : $(
+	if $[ $(Reference 4) != "" ] $(
+		setstr characterscope $(NonNegReference 3);
+		setstr @mousezone $(EntNamReference 4);
+		# 当り判定領域内にカーソルがある
+		setstr @MouseState ${@characterscope}"/"${@mousezone};
+		if $[ ${@MouseState} == ${System.BeforeMouseState} ] $(
+			# カーソルは前回と同じ領域内にある
+			inc System.MouseCount;
+			if $[ ${System.MouseCount} >= 50 ] $(
+				# カウントが上限に達したのでトーク
+				echo ${Mouse.Stroke.0.${@mousezone}};
+				setstr System.MouseCount 0;
+			);
+		) else $(
+			# カーソルは前回と違う領域にある
+			setstr System.BeforeMouseState ${@MouseState};
+		);
+	) else $(
+		# 当り判定領域外
+		setstr System.MouseCount 0;
+	);
+)
+
+# 前回のマウス領域情報
+System.BeforeMouseState : ""
+
+# マウス領域カウンター
+System.MouseCount : 0
+
+
+# マウスホイール反応
+#event.OnMouseWheel : 

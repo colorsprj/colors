@@ -1,0 +1,18 @@
+declare	RECIPE/1.0	COLORS
+ccc	素体オプション	鹿角	tuno1.png	tuno2.png
+skin	耳	福耳	mimi.png
+cc	トップス４	条帛	himotops.png
+cct	スカート	裳	sukato1.png	sukato2.png
+cc	スカート装飾	裳帯	sukato3.png
+cc	アクセサリー４	二連アームブレスレット右	a-mumigi.png
+cc	アクセサリー４	二連アームブレスレット左	a-muhidari.png
+cc	アクセサリー４	二連ブレスレット右	buresumigi.png
+cc	アクセサリー４	二連ブレスレット左	buresuhidari.png
+cc	アクセサリー４	二連アンクレット右	asimigi.png
+cc	アクセサリー４	二連アンクレット左	asihidari.png
+eye	目の形	せんとくん	eye1.png	eye2.png	eye3.png	eye4.png	eye5.png	eye6.png	eye7.png
+skin	素体オプション	鼻	hana.png
+mayuc	眉１	下がりアーチ眉	mayu.png	mayuodoroki.png	mayukomari.png	mayuikari.png
+mouth	口	むにむに	kutithiraki.png	kutitoji.png	kutithirakiwarai.png	kutiwarai.png	kutimask.png
+skin	素体オプション	あごたるみ	nijuuago.png
+cc	肌オプション	白毫	byakugou.png

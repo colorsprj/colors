@@ -1,0 +1,14 @@
+=kis
+# 結髪・細めツインテール腰下を名前変更する
+if $[ ${ColorsUpdate.vars.renametwintail} != "1" ] $(
+	PushCurrentShellName "COLORS";
+	# 同パーツ追加後なら実施
+	# 今回のネットワーク更新で、追加パーツは正常なものに差し替わったため
+	if $[ $(FindSurfaceID "結髪" "細めツインテール腰下") != "" ] $(
+		setstr @r $(PartsRename 結髪 細めツインテール腰下 細めツインテール腰丈);
+	);
+	# 後始末
+	PopCurrentShellName;
+	setstr ColorsUpdate.vars.renametwintail 1;
+);
+=end

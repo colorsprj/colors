@@ -1,0 +1,53 @@
+declare	RECIPE/1.0	COLORS
+select	素体	肌_CC
+mayuselect	2
+paint	素体	肌_CC		254	235	203
+select	トップス２	女性用前開きベスト_CC
+paint	トップス２	女性用前開きベスト_CC		60	60	60
+select	エプロン	サロンエプロン_CC
+paint	エプロン	サロンエプロン_CC		234	241	242
+select	トップス３	コルセット_CCT
+paint	トップス３	コルセット_CCT	2toneCC2	60	60	60	196	60	73
+select	トップス３装飾	コルセット用ベルト_CC
+paint	トップス３装飾	コルセット用ベルト_CC		192	192	192
+select	アクセサリー４	チョーカー風フリル襟_CCT
+paint	アクセサリー４	チョーカー風フリル襟_CCT	2toneCC2	60	60	60
+select	横髪	あごラインナチュラル_CC
+select	前髪	中寄りナチュラル_CCC
+select	眉２	つり眉_CC
+select	結髪	ロールツインテール_CCC
+select	帽子・ヘッドドレス２	ホワイトブリム_CC
+paint	帽子・ヘッドドレス２	ホワイトブリム_CC		234	241	242
+select	帽子・ヘッドドレス２	細カチューシャ_CC
+paint	帽子・ヘッドドレス２	細カチューシャ_CC		46	46	46
+select	アクセサリー５	細リボン右_CC
+paint	アクセサリー５	細リボン右_CC		196	60	73
+select	アクセサリー５	細リボン左_CC
+paint	アクセサリー５	細リボン左_CC		196	60	73
+select	アクセサリー５	紐リボンチョーカー_CC
+paint	アクセサリー５	紐リボンチョーカー_CC		196	60	73
+select	後髪	結髪用シンプル_CC
+select	耳	デフォルト_SKIN
+select	耳	ねこ耳シャープ_CCC
+paint	耳	ねこ耳シャープ_CCC		46	46	46
+select	瞳色	左右_CC
+paint	瞳色	左右_CC		234	113	146
+select	目の形	つり目まつ毛付
+select	瞳ハイライト	中央
+select	口	小さめ
+select	靴下	タイツ_CC
+paint	靴下	タイツ_CC		60	60	60
+select	インナー３	パフスリーブブラウス_CCT
+paint	インナー３	パフスリーブブラウス_CCT	2toneCC2	234	241	242	60	60	60
+select	インナー３装飾	パフスリーブブラウス袖口装飾_CC
+paint	インナー３装飾	パフスリーブブラウス袖口装飾_CC		196	60	73
+select	インナー３装飾	フリルカフス左_CCT
+paint	インナー３装飾	フリルカフス左_CCT	2toneCC2	60	60	60
+select	靴	クロスストラップシューズ_CCC
+paint	靴	クロスストラップシューズ_CCC		10	10	10
+select	スカート	膝丈すそ広がりスカート_CC
+paint	スカート	膝丈すそ広がりスカート_CC		60	60	60
+select	スカート装飾	膝丈すそ広がりスカートフリル_CC
+paint	スカート装飾	膝丈すそ広がりスカートフリル_CC		234	241	242
+paint	結髪	あごラインナチュラル_CC		211	135	149
+paint	眉	つり眉_CC		116	82	82

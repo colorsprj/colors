@@ -1,0 +1,7 @@
+declare	RECIPE/1.0	COLORS
+cc	前景	角丸ドットフレーム	waku1.png
+norm	前景	ポラロイド風	pola.png
+norm	前景	映画フィルム風	cinema.png
+norm	前景	映画フィルム風横	cinema2.png
+cc	素体オプション背後	コウモリ翼左	bat.png
+cc	素体オプション背後	コウモリ翼右	bat2.png

@@ -1,0 +1,25 @@
+# 起動・終了トーク
+#
+# Boot.＜時間（2桁）＞.＜日付4桁＞  :  ＜起動トーク＞
+# Boot.date.＜日付（4桁）＞         :  ＜起動トーク＞
+# Boot.＜時間（2桁）＞              :  ＜起動トーク＞
+# Boot                              :  ＜起動トーク＞
+
+# Close.＜時間（2桁）＞.＜日付4桁＞ :  ＜起動トーク＞
+# Close.date.＜日付（4桁）＞        :  ＜起動トーク＞
+# Close.＜時間（2桁）＞             :  ＜起動トーク＞
+# Close                             : ＜終了トーク＞
+
+# 日付・時間指定サンプル
+#Boot.18.1224, Boot.19.1224, Boot.20.1224, Boot.21.1224, Boot.22.1224, Boot.23.1224 : \0\s[5]クリスマスイブの夜です。\e
+
+# 日付サンプル
+Boot.date.1031 : \0\s[5]Happy Halloween!\e
+
+# 時間サンプル
+Boot.18, Boot.19, Boot.20, Boot.21, Boot.22, Boot.23, Boot.00, Boot.01, Boot.02, Boot.03, Boot.04 : \0\s[5]こんばんは。
+Boot.05, Boot.06, Boot.07, Boot.08, Boot.09, Boot.10 : \0\s[5]おはようございます。\e
+Boot.11, Boot.12, Boot.13, Boot.14, Boot.15, Boot.16, Boot.17 : \0\s[5]こんにちは。\e
+
+Close : \0\s[5]さようなら。
+

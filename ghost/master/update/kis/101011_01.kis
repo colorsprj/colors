@@ -1,0 +1,62 @@
+=kis
+# マウス反応対応させるパッチ
+if $[ ${ColorsUpdate.vars.mousepatch} != "1" ] $(
+	# フォルダを準備する ------------------------------------------------------
+	# ランダムトークファイルを移転する
+	setstr @talkpath $(cncpath ${System.DataPath} "usertalk");
+	setstr @newtalkpath $(cncpath ${System.DataPath} "usertalk/randomtalk");
+	readdir @files ${@talkpath};
+	foreach @file @files $(
+		if $(isfile $(cncpath ${@talkpath} ${@file})) $(
+			if $(isexist $(cncpath ${@newtalkpath} ${@file})) $(
+				# アップデートされたファイルより既存ファイル優先
+				setstr @nul $(remove_file $(cncpath ${@newtalkpath} ${@file}));
+			);
+			setstr @nul $(move_file $(cncpath ${@talkpath} ${@file}) ${@newtalkpath});
+		);
+	);
+	# ランダムトークを読み直す
+	ReloadRandomtalkDictionaries;
+	
+	# surfaces.txtを変更する --------------------------------------------------
+	
+	# すべてのシェルに対して実行
+	foreach @shell ColorsShellList $(
+		setstr @shellpath $(cncpath "../../shell" ${ColorsShellList.${@shell}});
+		setstr  @files $(cncpath ${@shellpath} "surfaces.txt");
+		pushstr @files $(cncpath ${@shellpath} "surfaces_backup.txt");
+		
+		foreach @file @files $(
+			# 該当ファイルがない場合はそのまま戻る
+			if $[ ! $(isexist ${@file}) ] $(continue);
+			# 以下、ファイルは存在する
+			clear @text;
+			textload @text ${@file};
+			# 既に対応済みならそのまま戻る
+			if $[ $(find @text "//マウス反応") >= 0 ] $(continue);
+			# 以下、マウス反応対応していないファイル
+			# ファイル末尾に対応のための記述を追加
+			pushstr @text "////////////////////////////////////////////////////////////////////////////////";
+			pushstr @text "//マウス反応";
+			pushstr @text "";
+			pushstr @text "surface0-9,25,26,100-103,110-113,120-123,130-133,200-203,210-213,220-223,230-233,300-303,310-313,320-323,330-333,400-403,410-413,420-423,430-433";
+			pushstr @text "{";
+			pushstr @text "}";
+			# 変更処理完了
+			textsave ${@file} @text;
+		);
+	);
+	# COLORSシェルにデフォルトの反応エリアを追加する
+	cleartree ColorsMouseArea.COLORS;
+	cleartree ColorsActiveMouseArea.COLORS;
+	split ColorsMouseArea.COLORS "head,face,bust" ",";
+	split ColorsMouseArea.COLORS.head "82,50,213,117" ",";
+	split ColorsMouseArea.COLORS.face "119,121,178,167" ",";
+	split ColorsMouseArea.COLORS.bust "129,175,172,199" ",";
+	split ColorsActiveMouseArea.COLORS "head,face,bust" ",";
+	EditMouseArea;
+	
+	# 後始末 ------------------------------------------------------------------
+	setstr ColorsUpdate.vars.mousepatch 1;
+);
+=end

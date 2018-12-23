@@ -1,0 +1,356 @@
+#着せ替え=================================================================
+:rem
+検索用目次
+
+カテゴリー一覧表示
+カテゴリ内のパーツ一覧表示
+着せ替えパーツ選択時処理
+色替え
+
+:endrem
+
+
+#########################################################################
+#カテゴリ内のパーツ一覧表示
+#########################################################################
+
+
+#カテゴリを選択したらPartsMenu表示
+#ChoiceInfo.1で選択中カテゴリー名を受け取る。
+#ChoiceInfo.2で戻り先ページ名を受け取る。
+#Select.Category, Select.Page.Kisekae.Category : $(
+Select.Page.Kisekae.Category : $(
+	# 力技の保護処理
+	if $[ ${ChoiceInfo.1} == "" && ${PresentCategory} != "" ] $(
+		setstr ChoiceInfo.1 ${PresentCategory};
+	);
+	# メイン処理
+	setstr PresentCategory ${ChoiceInfo.1};
+	setstr MenuBookmark PartsMenu;
+	echo ${PartsMenu};
+)
+
+PartsMenu : (
+	${MenuHeader.kisekae2}\n
+	${PartsMenuMain}
+	${DressNaviMenu2}
+)
+
+PartsMenuMain : $(MakePartsMenu ${PresentCategory})
+
+# 着せ替えパーツ表示ページ
+Kisekae.Category.Page : 0
+
+# カテゴリのツールチップ
+balloon_tooltip.Page.Kisekae.Category : $(Reference 2)" カテゴリーへ"
+
+=kis
+# 機能: カンマ区切りの色情報から、色選択アイテムを生成する
+# 第1引数: 色情報（カンマ区切り、R,G,B）
+# 第2引数: 選択されたらジャンプする先
+# 第3引数: カテゴリ名（省略可能）
+# 第4引数: パーツ名（省略可能）
+# 第5引数: Save2toneInfo（省略可能）
+function ColorItem $(
+	setstr @HC $@arg[1];
+	if $[ $@arg[3] != "" ] $(pushstr @opt ","$@arg[3]);
+	if $[ $@arg[4] != "" ] $(pushstr @opt ","$@arg[4]);
+	if $[ $@arg[5] != "" ] $(pushstr @opt ","$@arg[5]);
+	# 「ジャンプ先」「色情報カンマ区切り」「カテゴリ名」「パーツ名」
+	return (
+		\f[height","14]
+		\f[color","${@HC}]
+		\f[shadowcolor","${@HC}]
+		\f[cursorbrushcolor","${@HC}]
+		\f[cursorfontcolor","${@HC}]
+		\q[ ■ ","$@arg[2]",\""${@HC}"\""$(join @opt)]
+		\f[cursorfontcolor","default]
+		\f[shadowcolor","default]
+		\f[cursorbrushcolor","default]
+		\f[color","default]
+		\f[height","default]
+	);
+);
+
+# 色選択肢を生成する
+# 第1引数: カテゴリ名
+# 第2引数: パーツ名(色識別子付)
+# 備考: 色替えパーツであることは別途担保すること
+function ColorChoiceItem $(
+	setstr @Category $@arg[1];
+	setstr @Parts    $@arg[2];
+	split  @RGBbase  $(RGBEntryName ${@Category} ${@Parts}) "|";
+	return (
+		"\f[height,14][\f[height,default]"
+		$(
+			if $[ $(size @RGBbase) == 1 ] (
+				# 単色色替え
+				$(ColorItem $(join ${@RGBbase} ",") ColorItemColorChange ${@Category} ${@Parts})
+			) else (
+				# 二色色替え
+				$(ColorItem $(join $@RGBbase[0] ",") ColorItemColorChange ${@Category} ${@Parts} "2toneCC1")
+				"\f[height,14]|\f[height,default]"
+				$(ColorItem $(join $@RGBbase[1] ",") ColorItemColorChange ${@Category} ${@Parts} "2toneCC2")
+			);
+		)
+		"\f[height,14]]\f[height,default]"
+	);
+	
+);
+
+# 表示用に「眉１」「眉２」を加工する
+# 第1引数: カテゴリー名
+function PrintCategory $(
+	setstr @Cname $(rsub $@arg[1] "眉１" "眉");
+	setstr @Cname $(rsub ${@Cname} "眉２" "眉");
+	return ${@Cname} ;
+);
+
+# パーツメニュー本体
+# 第1引数: カテゴリー名
+function MakePartsMenu $(
+	setstr @Category $@arg[1];
+	
+	echo 【$(PrintCategory ${@Category})-アイテム一覧】\n\n;
+	#「選択カテゴリ.」が頭に付くパーツリスト作成
+	clear PresentCategoryPartslist;
+	copy ${CPartsTable}.${@Category} PresentCategoryPartslist;
+	# カテゴリ種類によってラジオボタンとチェックボックスを選択
+	setstr @method $(
+		if $[ $(match ${DressupOption.${@Category}} "multiple") >= 0 ] (
+			"CheckQ"
+		) else (
+			"RadioQ"
+		);
+	);
+	# ページ設定
+	setstr @pagelength 12;
+	# パンくずリスト作成
+	TopicPath
+		PresentCategoryPartslist
+		${@pagelength}
+		Kisekae.Category.Page
+		Page.Kisekae.Category
+		${@Category}
+	;
+	# @Pにパーツリストからパーツを取り出し
+	setstr @i     $[ ${Kisekae.Category.Page} * ${@pagelength} ];
+	setstr @limit $[ ( ${Kisekae.Category.Page} + 1 ) * ${@pagelength} ];
+	while $[ ${@i} < ${@limit} && ${@i} < $(size PresentCategoryPartslist) ] $(
+		setstr @PartsNameC $PresentCategoryPartslist[${@i}];
+		setstr @P ${@Category}.${@PartsNameC};
+		# @PartsNameに「.」以下のパーツ名から「_CCC」「_CCP」「_CCT」「_CC」「_skinC」を抜いた表示用パーツ名をセット
+		setstr @PartsName $(DeleteColorID ${@PartsNameC});
+		# @P（カテゴリ.パーツ）が0（着せ替えオフ）ならパーツ名の選択肢表示
+		echo "　　";
+		echo $(${@method} ${${@P}} $(FillSpc 13 ${@PartsName}) PartsChoice$(if ${${@P}} "Off") ${@PartsNameC});
+		if $[ ${${@P}} && $(match ${@PartsNameC} "_CC") >= 0 ] $(
+			# 選択中パーツ名に「_CC」がある時。
+			# ChoiceInfo.1に選択パーツを入れる
+			echo "　"$(
+				Icon color;
+				FillSpc 4 " 色替え ";
+				ColorChoiceItem ${@Category} ${@PartsNameC};
+			);
+		);
+		echo "\\n\\n[half]";
+		inc @i;
+	);
+);
+=end
+
+#########################################################################
+#着せ替えパーツ選択時処理
+#########################################################################
+
+
+:rem
+選択されたパーツの着せ替え実行
+ChoiceInfo.1：選択パーツ
+:endrem
+Select.PartsChoice : $(
+	if $(isReloadChoice ${PresentCategory} ${ChoiceInfo.1}) (
+		# リロードが必要なので継続処理でメニューへ
+		\0
+		$(PartsSelect ${PresentCategory} ${ChoiceInfo.1})
+		$(ShellReload PartsMenu)
+	) else (
+		# リロード不要なのでそのままメニューへ
+		${MenuHeader.kisekae2}\n
+		\0
+		$(PartsSelect ${PresentCategory} ${ChoiceInfo.1})
+		\p[2]
+		${PartsMenuMain}
+		${DressNaviMenu}
+	)
+)
+
+
+=kis
+# 機能: 選択カテゴリがリロードを必要とするか否か判定する
+# 第1引数: 選択カテゴリ
+# 戻り値: 必要な場合は真、そうでない場合は偽
+function isReloadChoice $(
+	if $[ $@arg[1] == "目の形" || $@arg[1] == "口" ] $(
+		return true;
+	) else $(
+		return false;
+	);
+);
+=end
+
+#選択されたパーツの着せ替え解除
+Select.PartsChoiceOff : (
+	${MenuHeader.kisekae2}\n
+	\0
+	$(PartsRemove ${PresentCategory} ${ChoiceInfo.1})
+	\p[2]
+	#パーツ選択メニューに戻る
+	${PartsMenuMain}
+	${DressNaviMenu}
+)
+
+
+#########################################################################
+#色替え
+#########################################################################
+
+# 色替えメニュー表示
+# ChoiceInfo.1: パーツ
+# ChoiceInfo.2: 2色色替え情報
+Select.ColorChange: (
+	$(
+		# ＠＠＠力技対処＠＠＠
+		if $[ ${ChoiceInfo.1} == "" && ${PresentParts} != "" ] $(
+			setstr ChoiceInfo.1 ${PresentParts};
+		);
+		if $[ ${ChoiceInfo.2} == "" && ${Save2toneInfo} != "" ] $(
+			setstr ChoiceInfo.2 ${Save2toneInfo};
+		);
+		#setstr MenuBookmark PartsMenu;
+		#setstr BookmarkMemo1 ${PresentCategory};
+		setstr PresentParts ${ChoiceInfo.1};
+		setstr PresentPartsName $(DeleteColorID ${PresentParts});
+		#2色塗りレイヤー情報の保存
+		setstr Save2toneInfo ${ChoiceInfo.2};
+		# パーツ名情報はSave2toneInfoより信用出来る
+		if $[ $(match ${PresentParts} "_CCT") < 0 ] $(setstr Save2toneInfo "");
+	)
+	${MenuHeader.kisekae2}
+	【$(PrintCategory ${PresentCategory})-${PresentPartsName}色替え】\n\n
+	"　\![*]\q["$(TextArea 15 色を作る)",ColorDialog]\n\n[half]"
+	"　\![*]\q["$(TextArea 15 今までに作った色から選ぶ)",HistoryColor]\n[half]"
+	${DressNaviMenu}
+)
+
+# ColorItemを使った色替えメニューの中継エントリ
+Select.ColorItemColorChange : (
+	$(
+		# 色替えに必要なエントリをセット
+		setstr PresentCategory ${ChoiceInfo.2};
+		setstr PresentParts    ${ChoiceInfo.3};
+		setstr Save2toneInfo   ${ChoiceInfo.4};
+		# ChoiceInfo.*のシフト
+		# 色情報は今回不要のため
+		setstr ChoiceInfo.1 ${PresentParts};
+		setstr ChoiceInfo.2 ${Save2toneInfo};
+	)
+	${Select.ColorChange};
+)
+
+# 色のツールチップ
+balloon_tooltip.ColorItemColorChange : $(
+	split @RGB $(Reference 2) ",";
+	echo "R="$@RGB[0]", G="$@RGB[1]", B="$@RGB[2];
+)
+
+#色選択コモンダイアログ表示
+Select.ColorDialog: (
+	# 念のためエントリを復元
+	$(
+		setstr ChoiceInfo.1 ${PresentParts};
+		setstr ChoiceInfo.2 ${Save2toneInfo};
+	)
+	"\![open,dialog,color,--color=255 255 255,--id=ColorSelected]\n"
+)
+
+#色選択コモンダイアログキャンセル
+DialogCancel.ColorSelected : ${${MenuBookmark}}
+
+
+#色履歴メニュー
+#10個単位で改行しつつ選択肢表示
+Select.HistoryColor: (
+	${MenuHeader.kisekae2}
+	【$(PrintCategory ${PresentCategory})-${PresentPartsName}色替え】\n\n
+	$(
+		setstr @i 0;
+		foreach @HC HistoryColor $(
+			ColorItem ${@HC} ChoiceHistoryColor;
+			inc @i;
+			if $[ ${@i} % 12 == 0 ] $(echo \n\n);
+		);
+	)\n
+	${DressNaviMenu}
+)
+
+#色履歴から色選択された
+Select.ChoiceHistoryColor : (
+	$(
+		clear RGB ;
+		split RGB ${ChoiceInfo.1} ",";
+		# 念のためエントリを復元
+		setstr ChoiceInfo.1 ${PresentParts};
+		setstr ChoiceInfo.2 ${Save2toneInfo};
+	)
+	${ColorPaint}
+)
+
+# 色履歴のバルーンツールチップ
+balloon_tooltip.ChoiceHistoryColor : $(
+	split @RGB $(Reference 2) ",";
+	echo "R="$@RGB[0]", G="$@RGB[1]", B="$@RGB[2];
+)
+
+#カラーダイアログから色選択された
+Dialog.ColorSelected : (
+	$(
+		#Reference2に入ったRGB値を、黒色選択時の全透過回避処理をして@RGBにセット
+		#アルファチャンネル無し画像対策
+		setstr @RGB $(
+			if $[ $(Reference 2) == "0,0,0" ]
+				"10,10,10"
+			else
+				$(Reference 2)
+		);
+		
+		#色履歴「HistoryColor」エントリ先頭に@RGBを追加格納。
+		#同じものがあれば格納しない。
+		if $[ $(find HistoryColor ${@RGB}) == "-1" ] $(
+			unshift HistoryColor ${@RGB};
+		);
+		
+		#色履歴が100個超えたら最後のを消す。
+		if $[ $(size HistoryColor) > 100 ] $(
+			clear HistoryColor[-1];
+		);
+		SaveData;
+		
+		#RGBに@RGBを半角コンマで割って格納。
+		clear RGB ;
+		split RGB ${@RGB} ",";
+	)
+	${ColorPaint}
+)
+
+
+#色替え周辺処理部分
+#PresentCategory,PresentPartsが必要。
+ColorPaint : $(WaitMsg パーツの色替え中です。 ColorPaintMain)
+
+ColorPaintMain : $(
+	PartsColorPaint ${PresentCategory} ${PresentParts} ${Save2toneInfo} $RGB[0] $RGB[1] $RGB[2];
+	ShellReload ${MenuBookmark};
+)
+
+#==============================================================================

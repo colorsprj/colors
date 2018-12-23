@@ -1,0 +1,3459 @@
+#===============================================================================
+# 定義テキスト自動挿入 内部機能
+#===============================================================================
+
+# シェルパスの取得
+Execute.SelfInfo : $(
+	# ColorsShellPathRoot : シェルの存在するフォルダの一個上
+	setstr ColorsShellPathRoot $[ 
+		$(
+			split @path ${System.ShellPath} "/";
+			clear @path[-1];
+			join @path "/";
+		)
+		||
+		${ColorsDefaultShellPathRoot}
+	];
+	# ColorsDefaultShellName : デフォルトの操作するシェル名
+	# 現在着ているシェル名に一致
+	setstr ColorsDefaultShellName $[ ${System.Shell} || "COLORS" ];
+	# ColorsCurrentShellName : 操作しているシェル名
+	setstr ColorsCurrentShellName $[ ${System.Shell} || "COLORS" ];
+	# シェル確定時のコールバック
+	setstr @null $(get Colors.Callback.OnShellInfoChanged);
+)
+
+# 起動時にも暫定でいいのでシェルパスが欲しいかもしれない
+System.Callback.OnLoad : $(
+	setstr ColorsShellPathRoot $(
+		tr $(gsub ${System.DataPath} $(cncpath "ghost\\master") "shell") $(cncpath "\\") "/";
+	);
+	# 万が一のためのデフォルト値も
+	setstr ColorsDefaultShellPathRoot ${ColorsShellPathRoot};
+	# 起動時はとりあえずデフォルトシェルだと見なす
+	setstr ColorsDefaultShellName "COLORS";
+	setstr ColorsCurrentShellName "COLORS";
+	# シェル確定時のコールバック
+	setstr @null $(get Colors.Callback.OnShellInfoChanged);
+)
+
+# 作業対象のシェルの相対パス名
+# 最悪でもマスターシェルパス名「colors」を返す
+# 前提: ColorsShellListツリー
+ColorsCurrentShellPathName : $[ ${ColorsShellList.${ColorsCurrentShellName}} || "colors" ]
+
+# 作業対象のシェル名
+# System.ShellPathと互換
+# 前提:
+# -ColorsShellPathRootエントリ
+# -ColorsCurrentShellNameエントリ
+# -ColorsShellListツリー
+ColorsCurrentShellPath : (
+	${ColorsShellPathRoot}
+	"/"
+	${ColorsCurrentShellPathName}
+	"/"
+)
+
+# 操作対象のサーフェスIDのツリー名
+# 「SurfaceID.＜シェル名＞」の構造をしている
+CSurfaceID : SurfaceID.${ColorsCurrentShellName}
+
+# 操作対象のパーツ色替え区分のツリー名
+# 「PartsType.＜シェル名＞」の構造をしている
+CPartsType : PartsType.${ColorsCurrentShellName}
+
+# 操作対象の最大SurfaceIDおよびパーツ名のツリー名
+# 「MaxSurfaceID.＜シェル名＞」の構造をしている
+CMaxSurfaceID : MaxSurfaceID.${ColorsCurrentShellName}
+
+# 操作対象のパーツ表ツリー（SurfaceID昇順）
+# 「PartsTable.＜シェル名＞」の構造をしている
+# パーツ名は色識別子がある状態
+CPartsTable : PartsTable.${ColorsCurrentShellName}
+
+# 対象フォルダの位置
+EditShell.Path : $(cncpath "../../shell/"${ColorsCurrentShellPathName}"/")
+
+# surfaces.txtの所在
+EditSurfaces.Path : $(cncpath ${EditShell.Path}"surfaces.txt")
+
+# descript.txtの所在
+EditDescript.Path : $(cncpath ${EditShell.Path}"descript.txt")
+
+# パーツ追加ログファイルの所在
+EditLogFile.Path : $(cncpath ${EditShell.Path}"editlog.log")
+
+# 複数の追加作業を一括してやっているか？（やっている=1/やってない=0）
+EditSurfaces.multieditmode : 0
+
+# パーツ追加レシピコマンドと色識別子の変換テーブル
+RecipeCmdConvTbl.norm  : ""
+RecipeCmdConvTbl.cc    : "_CC"
+RecipeCmdConvTbl.ccc   : "_CCC"
+RecipeCmdConvTbl.ccp   : "_CCP"
+RecipeCmdConvTbl.cct   : "_CCT"
+RecipeCmdConvTbl.skin  : "_SKIN"
+RecipeCmdConvTbl.skinc : "_skinC"
+RecipeCmdConvTbl.eye   : ""
+RecipeCmdConvTbl.mayu  : ""
+RecipeCmdConvTbl.mayuc : "_CC"
+RecipeCmdConvTbl.mouth : ""
+
+
+#===============================================================================
+# 定義テキスト自動挿入 関数群
+#===============================================================================
+# Index:
+#   *基礎関数群
+#   *ログ系関数群
+#   *surfaces.txt・descript.txt編集支援関数群
+#   *surfaces.txt・descript.txt編集関数群
+#   *パーツ名変更用関数群
+#     **汎用surfaces.txt/descript.txt
+#     **目自動追加特化
+#     **眉自動追加特化
+#     **口自動追加特化
+#   *マウス反応領域操作関数群
+
+#-------------------------------------------------------------------------------
+# *基礎関数群
+
+=kis
+# 機能:EditSurfaces.textエントリにsurfaces.txtを格納
+# 備考:EditSurfaces.multieditエントリが真の場合はファイルを読み込まない
+function LoadSurfacesText $(
+	if $[ ! $(isSurfacesMultiedit) ] $(
+		clear EditSurfaces.text;
+		textload EditSurfaces.text ${EditSurfaces.Path};
+	);
+);
+
+# 機能:surfaces.txtをsurfaces_backup.txtにバックアップ
+function BackupSurfacesText $(
+	textload @text ${EditSurfaces.Path};
+	textsave $(rsub ${EditSurfaces.Path} "surfaces.txt" "surfaces_backup.txt") @text;
+);
+
+# 機能:surfaces.txtをバックアップとりつつEditSurfaces.textの内容をセーブ
+# 備考:EditSurfaces.multieditエントリが真の場合はファイルを保存しない
+function SaveSurfacesText $(
+	if $[ ! $(isSurfacesMultiedit) ] $(
+		BackupSurfacesText;
+		textsave ${EditSurfaces.Path} EditSurfaces.text;
+	);
+);
+
+# 機能:EditDescript.textエントリにdescript.txtを格納
+# 備考:EditSurfaces.multieditエントリが真の場合はファイルを読み込まない
+function LoadDescriptText $(
+	if $[ ! $(isSurfacesMultiedit) ] $(
+		clear EditDescript.text;
+		textload EditDescript.text ${EditDescript.Path};
+	);
+);
+
+# 機能:descript.txtをdescript_backup.txtにバックアップ
+function BackupDescriptText $(
+	textload @text ${EditDescript.Path};
+	textsave $(rsub ${EditDescript.Path} "descript.txt" "descript_backup.txt") @text;
+);
+
+# 機能:descript.txtをバックアップとりつつEditdescript.textの内容をセーブ
+# 備考:EditSurfaces.multieditエントリが真の場合はファイルを保存しない
+function SaveDescriptText $(
+	if $[ ! $(isSurfacesMultiedit) ] $(
+		BackupDescriptText;
+		textsave ${EditDescript.Path} EditDescript.text;
+	);
+);
+
+# 機能:複数の追加作業を一括して行うことを宣言
+function SetSurfacesMultiedit $(
+	setstr EditSurfaces.multieditmode 1;
+);
+
+# 機能:複数の追加の一括作業を終了したことを宣言
+function ResetSurfacesMultiedit $(
+	setstr EditSurfaces.multieditmode 0;
+);
+
+# 機能:複数の追加の一括作業中か否かを返す(作業中=真)
+function isSurfacesMultiedit $(
+	return ${EditSurfaces.multieditmode};
+);
+
+# 機能:surfaces.txtを一個前に戻す
+# 戻り値:一個前に戻した時は真、バックアップファイルがないときは偽
+function UndoSurfacesText $(
+	setstr @backup $(rsub ${EditSurfaces.Path} "surfaces.txt" "surfaces_backup.txt");
+	if $(isexist ${@backup}) $(
+		textload @text ${@backup};
+		textsave ${EditSurfaces.Path} @text;
+	);
+	return $(isexist ${@backup});
+);
+
+# 機能:descript.txtを一個前に戻す
+# 戻り値:一個前に戻した時は真、バックアップファイルがないときは偽
+function UndoDescriptText $(
+	setstr @backup $(rsub ${EditDescript.Path} "descript.txt" "descript_backup.txt");
+	if $(isexist ${@backup}) $(
+		textload @text ${@backup};
+		textsave ${EditDescript.Path} @text;
+	);
+	return $(isexist ${@backup});
+);
+
+#-------------------------------------------------------------------------------
+# *ログ系関数群
+
+# 機能:パーツ追加ログをシェル別に残す
+# 第1引数: 塗り替え種別
+# 第2引数: カテゴリ名
+# 第3引数: パーツ名
+# 第4引数: サーフィスID
+# 第5引数以降: ファイル名
+# ログ書式：一括追加(0/1)|日付|塗り替え種別|カテゴリ名|パーツ名|SurfaceID|ファイル名(|ファイル名…)
+# 備考:塗り替え種別が「end」だった場合、一括追加部を2にする
+function EditLog $(
+	if $[ $(size @arg) <= 5 ] $(return);
+	# ログメッセージを生成
+	setstr @arg[0] $(
+		if $[ $@arg[1] == "end" ]
+			"2"
+		else
+			$(isSurfacesMultiedit)
+	);
+	insertstr @arg[1] $(date %y%m%d%H%M%S);
+	setstr @log $(join @arg "|");
+	# シェルフォルダ名を抽出
+	#split @shellpath $(cncpath ${System.ShellPath}) $(cncpath "\\");
+	#setstr @shellpath $@shellpath[-1];
+	#setstr @shellpath ${ColorsCurrentShellPathName};
+
+	# エントリとログファイルの両方にログ出力
+	pushstr EditLog.${ColorsCurrentShellName} ${@log};
+	textappend ${EditLogFile.Path} @log;
+);
+
+# 機能:パーツ追加ログを1件分削除する
+# 戻り値:一個前に戻した時は真、ログがないときは偽
+function UndoEditLog $(
+	# シェルフォルダ名を抽出
+	#split @shellpath $(cncpath ${System.ShellPath}) $(cncpath "\\");
+	#setstr @shellpath $@shellpath[-1];
+	#setstr @shellpath ${ColorsCurrentShellPathName};
+	if $[ $(size EditLog.${ColorsCurrentShellName}) == 0 ] $(return false);
+
+	if $[ $(char_at $EditLog.${ColorsCurrentShellName}[-1] 0) == "2" ] $(
+		# 一括追加時は消去範囲を検索する
+		setstr @pos "-1";
+		until $[ $(char_at $EditLog.${ColorsCurrentShellName}[${@pos}] 0) != "1" ] $(
+			if $[ -${@pos} > $(size EditLog.${ColorsCurrentShellName}) ] $(break);
+			dec @pos;
+		);
+		inc @pos;
+		clear EditLog.${ColorsCurrentShellName}[${@pos}..-1];
+	) else $(
+		# 単一パーツ追加時は末尾を消すだけ
+		clear EditLog.${ColorsCurrentShellName}[-1];
+	);
+	# ログファイルを上書き
+	textsave ${EditLogFile.Path} EditLog.${ColorsCurrentShellName};
+	return true;
+);
+
+# 最後に追加したパーツ名を返す
+# 戻り値「カテゴリ.パーツ.色替え命令語」形式を"|"で繋げたリスト
+function GetLastLog $(
+	# シェルフォルダ名を抽出
+	#split @shellpath $(cncpath ${System.ShellPath}) $(cncpath "\\");
+	#setstr @shellpath $@shellpath[-1];
+	#setstr @shellpath ${ColorsCurrentShellPathName};
+	if $[ $(size EditLog.${ColorsCurrentShellName}) == 0 ] $(return);
+	
+	if $[ $(char_at $EditLog.${ColorsCurrentShellName}[-1] 0) == "2" ] $(
+		# 複数パーツ追加だった
+		setstr @pos "-2";
+		until $[ $(char_at $EditLog.${ColorsCurrentShellName}[${@pos}] 0) != "1" ] $(
+			if $[ -${@pos} > $(size EditLog.${ColorsCurrentShellName}) ] $(break);
+			clear @logentry;
+			split @logentry $EditLog.${ColorsCurrentShellName}[${@pos}] "|";
+			unshift @cplist $@logentry[3]"."$@logentry[4]${GetLastLog.$@logentry[2]}"."$@logentry[2];
+			dec @pos;
+		);
+		setstr @retstr $(join @cplist "|");
+	) else $(
+		split @logentry $EditLog.${ColorsCurrentShellName}[-1] "|";
+		setstr @retstr $@logentry[3]"."$@logentry[4]${GetLastLog.$@logentry[2]}"."$@logentry[2];
+	);
+	return ${@retstr};
+);
+
+# 色替えについての修飾子
+=dict
+GetLastLog.norm  : ""
+GetLastLog.cc    : "_CC"
+GetLastLog.ccc   : "_CCC"
+GetLastLog.ccp   : "_CCP"
+GetLastLog.cct   : "_CCT"
+GetLastLog.skin  : ""
+GetLastLog.skinc : "_skinC"
+GetLastLog.eye   : ""
+GetLastLog.mayu  : ""
+GetLastLog.mayuc : "_CC"
+GetLastLog.mouth : ""
+GetLastLog.end   : ""
+
+=end
+
+#-------------------------------------------------------------------------------
+# *surfaces.txt・descript.txt編集支援関数群
+
+# 機能:カテゴリ名から新規サーフィス番号とパーツ定義位置を返す
+# 第1引数:カテゴリ名
+# 戻り値:新規サーフィス番号"|"挿入するパーツ定義の行番号
+function FindSurfaceIDandPoint $(
+	# テキストの入ってるエントリ名を@textエントリに格納
+	setstr @text EditSurfaces.text;
+	setstr @size $(size ${@text});
+
+	# 検索すべきサーフィス番号範囲を、アイテム区分から割り出す
+	# 検索すべきサーフィス番号の上限を@SurfaceBoundaryに設定
+	# @sid...想定している追加ファイルのサーフィス番号
+	setstr @i $(find EditSurfaces.Item $(getcode @arg[1]));
+	if $[ ${@i} < 0 ] $(return);
+	setstr @sid $EditSurfaces.Num[${@i}];
+	setstr @SurfaceBoundary $EditSurfaces.Num[$[${@i}+1]];
+	# 挿入場所とサーフィス番号探しのループ
+	# @pointer...${@text}のポインタ
+	setstr @pointer 0;
+	# 「//パーツ定義」が来るまで早回し
+	while $[ ! $(match_at $${@text}[${@pointer}] "//パーツ定義")  && ${@pointer} < ${@size} ] $(inc @pointer);
+	setstr @start ${@pointer};
+	while $[ ${@pointer} < ${@size} ] $(
+		# 「//着せ替え定義」が来たら終了
+		if $(match_at $${@text}[${@pointer}] "//着せ替え定義") $(
+			# 前の閉じ括弧の次の行までポインタ戻し
+			while $[ $${@text}[${@pointer}] != "}" && ${@pointer} > ${@start} ] $(dec @pointer);
+			inc @pointer;
+			break;
+		);
+		# 「surface***」の行のみに着目する
+		if $(match_at $${@text}[${@pointer}]  "surface") $(
+			setstr @number $(Integer $(substr $${@text}[${@pointer}] $(length "surface")));
+			if $[ ${@number} >= ${@sid} && ${@number} < ${@SurfaceBoundary} ] $(
+				# 該当カテゴリ区分内だが、まだ末尾には達してない
+				setstr @sid $[ ${@number} + 1 ];
+			) else if $[ ${@number} >= ${@SurfaceBoundary} ] $(
+				# 次のカテゴリ区分に突入した
+				# この時点でサーフィス番号確定
+				# 前の閉じ括弧の次の行までポインタ戻し
+				while $[ $${@text}[${@pointer}] != "}" && ${@pointer} > ${@start} ] $(dec @pointer);
+				inc @pointer;
+				break;
+			);
+		);
+		inc @pointer;
+	);
+	return ${@sid}"|"${@pointer};
+);
+
+# 機能:カテゴリ、パーツ名からサーフィスIDを検索
+# 第1引数: カテゴリ名
+# 第2引数: パーツ名
+# 戻り値:  サーフィスID
+# 備考:    カテゴリ名、パーツ名が見つからない場合、何も返さない
+function FindSurfaceID $(
+	return ${${CSurfaceID}.$(encode_entryname $@arg[1]).$(encode_entryname $@arg[2])};
+);
+
+# 機能: カテゴリ、パーツ名から色替え命令語を取得
+# 第1引数: カテゴリ名
+# 第2引数: パーツ名
+# 戻り値:  色替え命令語(norm/cc/ccc/ccp/cct/skin/skinc/eye/mayu/mayuc/mouth)
+# 備考:    カテゴリ名、パーツ名が見つからない場合、何も返さない
+function GetPartsType $(
+	return ${${CPartsType}.$(encode_entryname $@arg[1]).$(encode_entryname $@arg[2])};
+);
+:rem
+function FindSurfaceID $(
+	# カテゴリが「眉１」「眉２」の時は「眉」として検索
+	if $[ $@arg[1] == "眉１" || $@arg[1] == "眉２" ] $(
+		setstr @arg[1] "眉";
+	);
+	# 検索ワードを生成
+	setstr @word "//"$@arg[1]"_"$@arg[2];
+
+	LoadSurfacesText;
+	# テキストの入ってるエントリ名を@textエントリに格納
+	setstr @text EditSurfaces.text;
+	setstr @size $(size ${@text});
+
+	# @pointer...${@text}のポインタ
+	setstr @pointer 0;
+	# 「//パーツ定義」が来るまで早回し
+	while $[ ! $(match_at $${@text}[${@pointer}] "//パーツ定義")  && ${@pointer} < ${@size} ] $(inc @pointer);
+	while $[ ${@pointer} < ${@size} ] $(
+		# 「//着せ替え定義」が来たら終了
+		if $(match_at $${@text}[${@pointer}] "//着せ替え定義") $(
+			break;
+		);
+		# 内容が検索ワードにマッチする場合、次の行がsurfaceIDがある
+		if $[ $${@text}[${@pointer}] == ${@word} || $(match_at $${@text}[${@pointer}] ${@word}"_") ] $(
+			inc @pointer;
+			set @sid $(sub $${@text}[${@pointer}] "surface" "");
+			break;
+		);
+		inc @pointer;
+	);
+	return ${@sid};
+);
+:endrem
+
+# 機能:カテゴリ、パーツ名から操作対象シェルの全サーフィスIDを検索
+# 備考:SurfaceID.<シェル名>.<カテゴリ>.<パーツ>_<色替え識別子>エントリにID格納
+#      SurfaceID.<シェル名>.<カテゴリ>.<パーツ>エントリにもID格納
+#      PartsTypeツリーも同時に作成
+function FindCurrentSurfaceIDAll $(
+	cleartree ${CSurfaceID};
+	cleartree ${CPartsType};
+	cleartree ${CMaxSurfaceID};
+	cleartree ${CPartsTable};
+
+	LoadSurfacesText;
+	# テキストの入ってるエントリ名を@textエントリに格納
+	setstr @text EditSurfaces.text;
+	setstr @size $(size ${@text});
+
+	# @pointer...${@text}のポインタ
+	setstr @pointer 0;
+	# 「//パーツ定義」が来るまで早回し
+	while $[ ! $(match_at $${@text}[${@pointer}] "//パーツ定義")  && ${@pointer} < ${@size} ] $(inc @pointer);
+	while $[ ${@pointer} < ${@size} ] $(
+		# 「//目の形差分」が来たら終了
+		if $(match_at $${@text}[${@pointer}] "//目の形差分") $(
+			break;
+		);
+		setstr @line $${@text}[${@pointer}];
+		# 無視コメント行を弾く
+		if $[ $(find FindCurrentSurfaceIDAll.ignoreline ${@line}) >= 0 ] $(
+			inc @pointer;
+			continue;
+		);
+		# 内容がコメント行なら、マーカーかもしれない
+		if $[ $(substr ${@line} 0 2) == "//" ] $(
+			clear @markerp;
+			clear @partstypep;
+			split @markerp ${@line} "_";
+			copy @markerp @partstypep;
+			setstr @categoryp $(substr $@markerp[0] 2);
+			setstr @categoryp_modified $(sub ${@categoryp} "眉" "眉１");
+			# 先頭がカテゴリ名で始まる場合、次の行はSurfaceID
+			if $[ ! ( $(find EditSurfaces.Item ${@categoryp_modified}) >= 0 && $(size @markerp) > 1 ) ] $(
+				# カテゴリではなかったのでマーカ行ではない
+				inc @pointer;
+				continue;
+			);
+			inc @pointer;
+			set @sid $(sub $${@text}[${@pointer}] "surface" "");
+			clear @markerp[0];
+			clear @partstypep[0..1];
+			setstr @partstype $(GuessPartsType ${@categoryp} $(join @partstypep "_"));
+			if $[ $(match ${@categoryp} "眉") >= 0 ] $(
+				# 色識別子あり
+				setstr ${CSurfaceID}.眉.$(join @markerp "_") ${@sid};
+				setstr ${CSurfaceID}.眉１.$(join @markerp "_") ${@sid};
+				setstr ${CSurfaceID}.眉２.$(join @markerp "_") ${@sid};
+				setstr ${CPartsType}.眉.$(join @markerp "_") ${@partstype};
+				setstr ${CPartsType}.眉１.$(join @markerp "_") ${@partstype};
+				setstr ${CPartsType}.眉２.$(join @markerp "_") ${@partstype};
+				pushstr ${CPartsTable}.眉 $(join @markerp "_");
+				pushstr ${CPartsTable}.眉１ $(join @markerp "_");
+				pushstr ${CPartsTable}.眉２ $(join @markerp "_");
+				# 色識別子なし
+				clear @markerp[-1];
+				if $(size @markerp) $(
+					setstr ${CSurfaceID}.眉.$(join @markerp "_") ${@sid};
+					setstr ${CSurfaceID}.眉１.$(join @markerp "_") ${@sid};
+					setstr ${CSurfaceID}.眉２.$(join @markerp "_") ${@sid};
+					setstr ${CPartsType}.眉.$(join @markerp "_") ${@partstype};
+					setstr ${CPartsType}.眉１.$(join @markerp "_") ${@partstype};
+					setstr ${CPartsType}.眉２.$(join @markerp "_") ${@partstype};
+				);
+			) else $(
+				# 色識別子なし
+				setstr ${CSurfaceID}.${@categoryp}.$@markerp[0] ${@sid};
+				setstr ${CPartsType}.${@categoryp}.$@markerp[0] ${@partstype};
+				# 色識別子あり
+				setstr ${CSurfaceID}.${@categoryp}.$(join @markerp "_") ${@sid};
+				setstr ${CPartsType}.${@categoryp}.$(join @markerp "_") ${@partstype};
+				pushstr ${CPartsTable}.${@categoryp} $(join @markerp "_");
+			);
+			# 各カテゴリの最大サーフィスID
+			if $[ $(size ${CMaxSurfaceID}.${@categoryp}) == 0 ] $(
+				setstr ${CMaxSurfaceID}.${@categoryp} 0;
+			);
+			if $[ ${${CMaxSurfaceID}.${@categoryp}} < ${@sid} ] $(
+				setstr ${CMaxSurfaceID}.${@categoryp} ${@sid};
+			);
+		);
+		inc @pointer;
+	);
+);
+
+=dict
+# 解釈させないマーカー行
+FindCurrentSurfaceIDAll.ignoreline (
+	"//瞬きアニメ用パーツ",
+	"//閉じ目",
+	"//半目",
+	"//口パクアニメ用パーツ",
+	"//口_開",
+	"//口_閉",
+	"//口_開笑",
+	"//口_笑",
+	"//赤面用パーツ",
+	"//眉"
+)
+=end
+
+# 機能: カテゴリー名と色識別子から、パーツのレシピ命令語を判定
+# 第1引数: カテゴリー名
+# 第2引数: 色識別子（先頭の「_」は省くが、あっても動く）
+function GuessPartsType $(
+	if $[ $(size @arg) != 3 ] $(return);
+	setstr @category $@arg[1];
+	setstr @type $@arg[2];
+	if $[ $(char_at ${@type} 0) == "_" ] $(setstr @type $(substr ${@type} 1));
+	
+	if $[ ${@category} == "口" ] $(
+		# カテゴリーが口
+		return "mouth";
+	) else if $[ ${@category} == "目の形" ] $(
+		# カテゴリーが「目の形」
+		return "eye";
+	) else if $[ $(char_at ${@category} 0) == "眉" ] $(
+		if $[ ${@type} == "CC" ] $(
+			# カテゴリーが眉系でかつ色識別子がある
+			return "mayuc";
+		) else $(
+			# カテゴリーが眉系でかつ色識別子がない
+			return "mayu";
+		);
+	) else if $[ ${@type} == "SKIN" ] $(
+		# 色識別子がSKINだった＝肌色塗り替え
+		return "skin";
+	) else if $[ ${@type} == "skinC" ] $(
+		# 色識別子がskinCだった＝色替え不可部分付き肌色塗り替え
+		return "skinc";
+	) else if $[ ${@type} == "CCT" ] $(
+		# 色識別子がCCTだった
+		return "cct";
+	) else if $[ ${@type} == "CCP" ] $(
+		# 色識別子がCCPだった
+		return "ccp";
+	) else if $[ ${@type} == "CCC" ] $(
+		# 色識別子がCCCだった
+		return "ccc";
+	) else if $[ ${@type} == "CC" ] $(
+		# 色識別子がCCだった
+		return "cc";
+	) else $(
+		# それ以外＝たぶんnorm
+		return "norm";
+	);
+);
+
+# 機能: 全シェルのカテゴリ、パーツ名から全サーフィスIDを検索
+function FindSurfaceIDAll $(
+	# 全SurfaceIDツリー削除
+	cleartree SurfaceID;
+	# 各シェルについてFindCurrentSurfaceIDAll実行
+	foreach @shellname ColorsShellList $(
+		PushCurrentShellName ${@shellname};
+		FindCurrentSurfaceIDAll;
+		PopCurrentShellName;
+	);
+);
+
+
+# 機能: シェルフォルダから全シェル名・フォルダ名対応表を作る
+#       各シェルについての情報も作る
+# ColorsShellList.<シェル名>エントリにフォルダ名が入っている
+# （相対パスで区切り文字なし）
+# ColorsShellListエントリには、存在するすべてのシェル名が入っている
+function MakeShellNameList $(
+	cleartree ColorsShellList;
+	readdir @shellentry $(cncpath "../../shell");
+	# フォルダのみ抽出
+	foreach @entry @shellentry $(
+		if $(isdir $(cncpath "../../shell/"${@entry})) $(
+			pushstr @shellfolders ${@entry};
+		);
+	);
+	# 各フォルダ内のdescript.txtを読む
+	# "name,"で始まる行を探す
+	# 万が一見つからない場合、「__NULL__」というシェル名だとみなす
+	foreach @shellfolder @shellfolders $(
+		clear @descript;
+		textload @descript  $(cncpath "../../shell/"${@shellfolder} "descript.txt");
+		setstr @shellname "__NULL__";
+		# シェル名検索
+		foreach @line @descript $(
+			if $(match_at ${@line} "name,") $(
+				setstr @shellname $(encode_entryname $(substr ${@line} 5));
+				break;
+			);
+		);
+		# リストに挿入
+		setstr ColorsShellList.${@shellname} ${@shellfolder};
+		pushstr ColorsShellList ${@shellname};
+	);
+);
+
+# 機能: 現在のパーツ追加対象シェル名をスタックにプッシュし、新しく指定する
+# 第1引数: シェル名
+# 備考: 存在しないシェル名の場合何もしない
+function PushCurrentShellName $(
+	if ${ColorsShellList.$@arg[1]} $(
+		pushstr ColorsShellNameStack ${ColorsCurrentShellName};
+		setstr ColorsCurrentShellName $@arg[1];
+	);
+);
+
+# 機能: 一つ前のパーツ追加対象シェル名をスタックから取り出す
+# 備考: スタックが空の場合、"colors"にする
+function PopCurrentShellName $(
+	setstr ColorsCurrentShellName $[ 
+		   $(pop ColorsShellNameStack)
+		|| ${ColorsDefaultShellName}
+		|| "COLORS"
+	];
+);
+
+# 機能: 今操作中のシェルが現在着ているシェルか否か返す
+# 備考: 現在着ているシェルなら真、そうでないなら偽を返す
+function isUsingShell $(
+	if $[ ${ColorsCurrentShellName} == ${ColorsDefaultShellName} ] "true" else "false";
+);
+
+# 機能: パーツ名に重複、無効な記号がないか調べ、適切なパーツ名を返す
+# 第1引数:カテゴリ名
+# 第2引数:パーツ名候補
+# 戻り値: 適切なパーツ名
+# 備考: シェル別SurfaceIDテーブルを使って重複を調べる
+function EncodePartsName $(
+	if $[ $(find EditSurfaces.Item $@arg[1]) < 0 ] $(return);
+	setstr @PartsName $(encode_entryname $@arg[2]);
+	
+	listsub @namelist ${CSurfaceID}.$@arg[1];
+	# 色替え識別子のない名前を生成し、同時に重複検索
+	foreach @name @namelist $(
+		setstr @tname $(rsub ${@name} "_CCC" "");
+		setstr @tname $(rsub ${@tname} "_CCP" "");
+		setstr @tname $(rsub ${@tname} "_CCT" "");
+		setstr @tname $(rsub ${@tname} "_CC" "");
+		setstr @tname $(rsub ${@tname} "_SkinC" "");
+		setstr @tname $(rsub ${@tname} "_SKIN" "");
+		pushstr @tnamelist ${@tname};
+		# パーツ名が重複していたらフラグ設定
+		if $[ ${@tname} == ${CSurfaceID}"."$@arg[1]"."${@PartsName} ] $(
+			setstr @matched 1;
+		);
+	);
+	if ${@matched} $(
+		# パーツ名が重複していたら、「＃[n]」を付加する
+		setstr @PartsName ${@PartsName}"＃";
+		setstr @i 2;
+		while 1 $(
+			if $[ $(find @tnamelist ${CSurfaceID}.$@arg[1].${@PartsName}${@i}) < 0 ] $(
+				setstr @PartsName ${@PartsName}${@i};
+				break;
+			);
+			inc @i;
+		);
+	);
+	return ${@PartsName};
+);
+
+# 機能: シェル初期設定データのエントリをクリアする
+function ClearColorsShellInitialConfig $(
+	clear rgb.skin;
+	clear rgb.hair;
+	clear maxsize;
+	clear face.xy;
+	clear face.wh;
+	clear eyes.xy;
+	clear eyes.wh;
+);
+
+#-------------------------------------------------------------------------------
+# *surfaces.txt・descript.txt編集関数群
+#
+# **汎用surfaces.txt/descript.txt編集
+
+# 機能:Surfaces.txtに画像の定義を挿入
+# 第1引数:カテゴリ名
+# 第2引数:色替え指定（$(NULL)/CC/CCC/CCP）
+# 第3引数:パーツ名
+# 戻り値:挿入するサーフィス・アニメーション番号 or なし(エラー時)
+function EditSurfaces $(
+	LoadSurfacesText;
+	# テキストの入ってるエントリ名を@textエントリに格納
+	setstr @text EditSurfaces.text;
+	setstr @size $(size ${@text});
+
+	# 挿入するサーフィス番号と挿入行数を求める
+	split @tuple $(FindSurfaceIDandPoint $@arg[1]) "|";
+	setstr @sid $@tuple[0];
+	setstr @pointer $@tuple[1];
+
+	# パーツ定義を挿入する
+	insertstr ${@text}[${@pointer}] "}";
+	if $[ $@arg[2] == "CCC" ] $(
+		insertstr ${@text}[${@pointer}] "	element1,overlay,parts\\"${@sid}"_CCC.png,0,0";
+	) else if $[ $@arg[2] == "CCP" ] $(
+		insertstr ${@text}[${@pointer}] "	element1,overlay,parts\\"${@sid}"_CCP.png,0,0";
+	) else if $[ $@arg[2] == "CCT" ] $(
+		insertstr ${@text}[${@pointer}] "	element1,overlay,parts\\"${@sid}"_CCT_4.png,0,0";
+	) else if $[ $@arg[2] == "skinC" ] $(
+		insertstr ${@text}[${@pointer}] "	element1,overlay,parts\\"${@sid}".png,0,0";
+	);
+	insertstr ${@text}[${@pointer}] "	element0,overlay,parts\\"${@sid}$(
+		if $[ $@arg[2] == "CC" ]
+			"_CC_2"
+		else if $[ $@arg[2] == "CCC" ]
+			"_CCC_2"
+		else if $[ $@arg[2] == "CCP" ]
+			"_CCP_3"
+		else if $[ $@arg[2] == "CCT" ]
+			"_CCT_2"
+		else if $[ $@arg[2] == "SKIN" || $@arg[2] == "skinC" ]
+			"_skin_2"
+	)".png,0,0";
+	insertstr ${@text}[${@pointer}] "{";
+	insertstr ${@text}[${@pointer}] "surface"${@sid};
+	insertstr ${@text}[${@pointer}] "//"$@arg[1]"_"$@arg[3]$(if $[ $@arg[2] != "" ] "_"$@arg[2]);
+	insertstr ${@text}[${@pointer}] "";
+
+	# 着せ替え定義を挿入する
+	# 「//着せ替え定義」が来るまで早回し
+	# カテゴリが「瞳ハイライト」の場合、「//瞳ハイライト着せ替え」まで早回し
+	setstr @searchword $(
+		if $[ $@arg[1] == "瞳ハイライト" ]
+			"//瞳ハイライト着せ替え"
+		else
+			"//着せ替え定義"
+	);
+	setstr @pointer 0;
+	while $[ ! $(match_at $${@text}[${@pointer}] ${@searchword})  && ${@pointer} < ${@size} ] $(inc @pointer);
+	# 昇順に並ぶ位置に定義を挿入
+	while $[ ! $(match_at $${@text}[${@pointer}] "}")  && ${@pointer} < ${@size} ] $(
+		if $[ $(match_at $${@text}[${@pointer}] "	animation") && $(match $${@text}[${@pointer}] ".pattern0,add,") >= 0 ] $(
+			setstr @aid $(substr $${@text}[${@pointer}] $(length "	animation") $[ $(match $${@text}[${@pointer}] ".pattern0,add,") - $(length "	animation") ]);
+			if $[ ${@aid} > ${@sid} ] $(
+				while $[ $${@text}[${@pointer}] != ""  && ${@pointer} < ${@size} ] $(dec @pointer);
+				break;
+			);
+		);
+		inc @pointer;
+	);
+	# 着せ替え定義文本体を挿入する
+	insertstr ${@text}[${@pointer}] "	animation"${@sid}".pattern0,add,"${@sid}",0,0,0";
+	insertstr ${@text}[${@pointer}] "	animation"${@sid}".interval,bind";
+	insertstr ${@text}[${@pointer}] "//"$@arg[1]"_"$@arg[3]$(if $[ $@arg[2] =! "" ] "_"$@arg[2]);
+	insertstr ${@text}[${@pointer}] "";
+
+	# SurfaceIDテーブルに追記
+	setstr ${CSurfaceID}.$@arg[1].$@arg[3] ${@sid};
+	setstr ${CSurfaceID}.$@arg[1].$@arg[3]$(if $[ $@arg[2] != "" ] "_"$@arg[2]) ${@sid};
+
+	# ファイルに書き戻して終了
+	SaveSurfacesText;
+	return ${@sid};
+);
+
+# 機能: descript.txtに定義文を挿入
+# 第1引数: サーフィス・アニメーション番号
+# 第2引数: カテゴリ名
+# 第3引数: パーツ名
+function EditDescript $(
+	LoadDescriptText;
+	# ファイルの内容のエントリ名を@textエントリに格納
+	setstr @text EditDescript.text;
+	setstr @size $(size ${@text});
+
+	# 着せ替えて意義を挿入する
+	# @pointer...${@text}のポインタ
+	setstr @pointer 0;
+	# 「//着せ替え設定」が来るまで早回し
+	while $[ ! $(match_at $${@text}[${@pointer}] "//着せ替え設定")  && ${@pointer} < ${@size} ] $(inc @pointer);
+	inc @pointer;
+	# 空白行を早回し
+	while $[ $${@text}[${@pointer}] == "" && ${@pointer} < ${@size} ] $(inc @pointer);
+	# 次の空白行までの間から、定義分を挿入する箇所を探す
+	while $[ $${@text}[${@pointer}] != "" && ${@pointer} < ${@size} ] $(
+		if $(match_at $${@text}[${@pointer}] "sakura.bindgroup") $(
+			setstr @aid $(substr $${@text}[${@pointer}] $(length "sakura.bindgroup") $[ $(match $${@text}[${@pointer}] ".name,") - $(length "sakura.bindgroup") ]);
+			# アニメーション番号が挿入する文より大きければ、そこが挿入する場所
+			if $[ ${@aid} > $@arg[1] ] $(break);
+		);
+		inc @pointer;
+	);
+	# テキストを挿入
+	insertstr ${@text}[${@pointer}] "sakura.bindgroup"$@arg[1]".name,"$@arg[2]","$@arg[3];
+
+	# ファイルに書き戻して終了
+	SaveDescriptText;
+	return;
+);
+
+#-------------------------------------------------------------------------------
+# **目自動追加特化
+
+# 機能:Surfaces.txtに目の画像群の定義を挿入
+# 第1引数:パーツ名
+# 戻り値:挿入する基底サーフィス・アニメーション番号 or なし(エラー時)
+function EditSurfacesEyes $(
+	LoadSurfacesText;
+	# テキストの入ってるエントリ名を@textエントリに格納
+	setstr @text EditSurfaces.text;
+	setstr @size $(size ${@text});
+
+	# 挿入するサーフィス番号と挿入行数を求める
+	split @tuple $(FindSurfaceIDandPoint "目の形") "|";
+	setstr @sid $@tuple[0];
+	setstr @pointer $@tuple[1];
+
+	# 基本となるパーツ定義を挿入する
+	insertstr ${@text}[${@pointer}] "}";
+	insertstr ${@text}[${@pointer}] "	element1,overlay,parts\\"${@sid}".png,0,0";
+	insertstr ${@text}[${@pointer}] "	element0,overlay,parts\\"${@sid}"_skin_2.png,0,0";
+	insertstr ${@text}[${@pointer}] "{";
+	insertstr ${@text}[${@pointer}] "surface"${@sid};
+	insertstr ${@text}[${@pointer}] "//目の形_"$@arg[1];
+	insertstr ${@text}[${@pointer}] "";
+	
+	# 半目、閉じ目、笑い目のパーツ定義を挿入する
+	EditSurfacesEyePartsDefine $[ ${@sid} + 100000 ] $@arg[1] half EyesH_skin_2;
+	EditSurfacesEyePartsDefine $[ ${@sid} + 200000 ] $@arg[1] close EyesC_skin_2;
+	EditSurfacesEyePartsDefine $[ ${@sid} + 300000 ] $@arg[1] smile EyesC_skin_2;
+	
+	# 着せ替え定義を挿入する
+	EditSurfacesEyeKisekaeDefine ${@sid} $@arg[1];
+
+	# SurfaceIDテーブルに追記
+	setstr ${CSurfaceID}.目の形.$@arg[3] ${@sid};
+
+	# ファイルに書き戻して終了
+	SaveSurfacesText;
+	return ${@sid};
+);
+
+# 半目、閉じ目、笑い目のパーツ定義を挿入する
+# 第1引数:パーツID
+# 第2引数:パーツ名
+# 第3引数:half/close/smile
+# 第4引数:element0のpngファイル名(.pngは不要)
+# 動作:「//パーツ定義」～「着せ替え定義」の間で指定パーツIDの位置を昇順で探し、
+#      パーツ定義を挿入する
+function EditSurfacesEyePartsDefine $(
+	setstr @text EditSurfaces.text;
+	setstr @size $(size ${@text});
+
+	# @sid...想定している追加ファイルのサーフィス番号
+	setstr @sid $@arg[1];
+	# 挿入場所とサーフィス番号探しのループ
+	# @pointer...${@text}のポインタ
+	setstr @pointer 0;
+	# 「//目の形差分」が来るまで早回し
+	while $[ ! $(match_at $${@text}[${@pointer}] "//目の形差分")  && ${@pointer} < ${@size} ] $(inc @pointer);
+	setstr @start ${@pointer};
+	while $[ ${@pointer} < ${@size} ] $(
+		# 「//眉差分」が来たら終了
+		if $(match_at $${@text}[${@pointer}] "//眉差分") $(
+			# 前の閉じ括弧の次の行までポインタ戻し
+			while $[ $${@text}[${@pointer}] != "}" && ${@pointer} > ${@start} ] $(dec @pointer);
+			inc @pointer;
+			break;
+		);
+		# 「surface***」の行のみに着目する
+		if $(match_at $${@text}[${@pointer}]  "surface") $(
+			setstr @number $(Integer $(substr $${@text}[${@pointer}] $(length "surface")));
+			if $[ ${@number} > ${@sid} ] $(
+				# サーフィス番号が挿入予定の番号より大きくなった→挿入箇所
+				# 前の閉じ括弧の次の行までポインタ戻し
+				while $[ $${@text}[${@pointer}] != "}" && ${@pointer} > ${@start} ] $(dec @pointer);
+				inc @pointer;
+				break;
+			);
+		);
+		inc @pointer;
+	);
+	
+	# 基本となるパーツ定義を挿入する
+	insertstr ${@text}[${@pointer}] "}";
+	insertstr ${@text}[${@pointer}] "	element1,overlay,parts\\"$[ ${@sid} % 100000 ]"_"$@arg[3]".png,0,0";
+	insertstr ${@text}[${@pointer}] "	element0,overlay,parts\\"$@arg[4]".png,0,0";
+	insertstr ${@text}[${@pointer}] "{";
+	insertstr ${@text}[${@pointer}] "surface"${@sid};
+	insertstr ${@text}[${@pointer}] "//目の形_"$@arg[2]"_"$@arg[3];
+	insertstr ${@text}[${@pointer}] "";
+
+	# SurfaceIDテーブルに追記
+	#setstr SurfaceID.目の形.$@arg[2]_$@arg[3] ${@sid};
+
+);
+
+# 目パーツの着せ替え定義を挿入する
+# 第1引数:パーツID(通常目)
+# 第2引数:パーツ名
+# 動作:通常目、半目、目閉じ、笑い目の着せ替え定義をそれぞれ挿入する
+function EditSurfacesEyeKisekaeDefine $(
+	# テキストの入ってるエントリ名を@textエントリに格納
+	setstr @text EditSurfaces.text;
+	setstr @size $(size ${@text});
+
+	#対象サーフィスIDをリスト化
+	split @sid $@arg[1]"|"$[ $@arg[1] + 100000 ]"|"$[ $@arg[1] + 200000 ]"|"$[ $@arg[1] + 300000 ] "|";
+
+	#挿入箇所前のマーカーをリスト化
+	split @marker "//通常目|//半目|//目閉じ|//笑い目" "|";
+
+	# 「//目着せ替え定義」が来るまで早回し
+	setstr @pointer 0;
+	while $[ ! $(match_at $${@text}[${@pointer}] "//目着せ替え設定")  && ${@pointer} < ${@size} ] $(inc @pointer);
+	
+	loop $(size @sid) $(
+		setstr @i ${-1};
+		# マーカー位置まで早回し
+		while $[ ! $(match_at $${@text}[${@pointer}] $@marker[${@i}])  && ${@pointer} < ${@size} ] $(inc @pointer);
+		
+		# 半目は定義を挿入しなくてもいい
+		if $[ $@marker[${@i}] == "//半目" ] $(continue);
+		
+		# 昇順に並ぶ位置に定義を挿入
+		while $[ ! $(match_at $${@text}[${@pointer}] "}")  && ${@pointer} < ${@size} ] $(
+			if $[ $(match_at $${@text}[${@pointer}] "	animation") && $(match $${@text}[${@pointer}] ".pattern") >= 0 ] $(
+				setstr @aid $(substr $${@text}[${@pointer}] $(length "	animation") $[ $(match $${@text}[${@pointer}] ".pattern") - $(length "	animation") ]);
+				if $[ ${@aid} > $@sid[0] ] $(
+					while $[ $${@text}[${@pointer}] != ""  && ${@pointer} < ${@size} ] $(dec @pointer);
+					break;
+				);
+			);
+			inc @pointer;
+		);
+		# 着せ替え定義文本体を挿入する
+		if $[ ${@i} != 0 ] $(
+			# 通常の場合はpattern1が無い
+			insertstr ${@text}[${@pointer}] "	animation"$@sid[0]".pattern1,add,"$@sid[${@i}]",0,0,0";
+		);
+		insertstr ${@text}[${@pointer}] "	animation"$@sid[0]".pattern0,add,"$@sid[0]",0,0,0";
+		insertstr ${@text}[${@pointer}] "	animation"$@sid[0]".interval,bind";
+		insertstr ${@text}[${@pointer}] "//目の形_"$@arg[2];
+		insertstr ${@text}[${@pointer}] "";
+	);
+);
+
+#-------------------------------------------------------------------------------
+# **眉自動追加特化
+
+# 機能:Surfaces.txtに眉の画像群の定義を挿入
+# 第1引数:パーツ名
+# 第2引数:単色色替えの場合「CC」（色替えが無い場合は省略可能）
+# 戻り値:挿入する基底サーフィス・アニメーション番号 or なし(エラー時)
+function EditSurfacesMayu $(
+	LoadSurfacesText;
+	# テキストの入ってるエントリ名を@textエントリに格納
+	setstr @text EditSurfaces.text;
+	setstr @size $(size ${@text});
+
+	# 挿入するサーフィス番号と挿入行数を求める
+	split @tuple $(FindSurfaceIDandPoint "眉１") "|";
+	setstr @sid $@tuple[0];
+	setstr @pointer $@tuple[1];
+
+	# 基本となるパーツ定義を挿入する
+	insertstr ${@text}[${@pointer}] "}";
+	insertstr ${@text}[${@pointer}] "	element0,overlay,parts\\"${@sid}$(if $[ $@arg[2] == "CC" ] "_CC_2")".png,0,0";
+	insertstr ${@text}[${@pointer}] "{";
+	insertstr ${@text}[${@pointer}] "surface"${@sid};
+	insertstr ${@text}[${@pointer}] "//眉_"$@arg[1]$(if $[ $@arg[2] != "" ] "_"$@arg[2]);
+	insertstr ${@text}[${@pointer}] "";
+
+	# 眉パーツ群定義を挿入する
+	EditSurfacesMayuPartsDefine $[ ${@sid} + 100000 ] $@arg[1]"_驚" "surprise" $@arg[2];
+	EditSurfacesMayuPartsDefine $[ ${@sid} + 200000 ] $@arg[1]"_困" "sad" $@arg[2];
+	EditSurfacesMayuPartsDefine $[ ${@sid} + 300000 ] $@arg[1]"_怒" "angry" $@arg[2];
+
+	# 着せ替え定義を挿入する
+	EditSurfacesMayuKisekaeDefine ${@sid} $@arg[1] $@arg[2];
+
+	# SurfaceIDテーブルに追記
+	setstr ${CSurfaceID}.眉.$@arg[1] ${@sid};
+	setstr ${CSurfaceID}.眉.$@arg[1]$(if $[ $@arg[2] != "" ] "_"$@arg[2]) ${@sid};
+	setstr ${CSurfaceID}.眉１.$@arg[1] ${@sid};
+	setstr ${CSurfaceID}.眉１.$@arg[1]$(if $[ $@arg[2] != "" ] "_"$@arg[2]) ${@sid};
+	setstr ${CSurfaceID}.眉２.$@arg[1] ${@sid};
+	setstr ${CSurfaceID}.眉２.$@arg[1]$(if $[ $@arg[2] != "" ] "_"$@arg[2]) ${@sid};
+
+	# ファイルに書き戻して終了
+	SaveSurfacesText;
+	return ${@sid};
+);
+
+# 驚き眉、困り眉、怒り眉のパーツ定義を挿入する
+# 第1引数:パーツID
+# 第2引数:パーツ名
+# 第3引数:ファイル名に付ける装飾(「surprise」「sad」「angry」)
+# 第4引数:単色色変えの場合は「CC」
+# 動作:「//パーツ定義」～「着せ替え定義」の間で指定パーツIDの位置を昇順で探し、
+#      パーツ定義を挿入する
+function EditSurfacesMayuPartsDefine $(
+	# テキストの入ってるエントリ名を@textエントリに格納
+	setstr @text EditSurfaces.text;
+	setstr @size $(size ${@text});
+
+	# @sid...想定している追加ファイルのサーフィス番号
+	setstr @sid $@arg[1];
+	# 挿入場所とサーフィス番号探しのループ
+	# @pointer...${@text}のポインタ
+	setstr @pointer 0;
+	# 「//眉差分」が来るまで早回し
+	while $[ ! $(match_at $${@text}[${@pointer}] "//眉差分")  && ${@pointer} < ${@size} ] $(inc @pointer);
+	setstr @start ${@pointer};
+	while $[ ${@pointer} < ${@size} ] $(
+		# 「//口差分」が来たら終了
+		if $(match_at $${@text}[${@pointer}] "//口差分") $(
+			# 前の閉じ括弧の次の行までポインタ戻し
+			while $[ $${@text}[${@pointer}] != "}" && ${@pointer} > ${@start} ] $(dec @pointer);
+			inc @pointer;
+			break;
+		);
+		# 「surface***」の行のみに着目する
+		if $(match_at $${@text}[${@pointer}]  "surface") $(
+			setstr @number $(Integer $(substr $${@text}[${@pointer}] $(length "surface")));
+			if $[ ${@number} > ${@sid} ] $(
+				# サーフィス番号が挿入予定の番号より大きくなった→挿入箇所
+				# 前の閉じ括弧の次の行までポインタ戻し
+				while $[ $${@text}[${@pointer}] != "}" && ${@pointer} > ${@start} ] $(dec @pointer);
+				inc @pointer;
+				break;
+			);
+		);
+		inc @pointer;
+	);
+	
+	# 基本となるパーツ定義を挿入する
+	insertstr ${@text}[${@pointer}] "}";
+	insertstr ${@text}[${@pointer}] "	element0,overlay,parts\\"$[ ${@sid} % 100000 ]"_"$@arg[3]$(if $[ $@arg[4] == "CC" ] "_CC_2")".png,0,0";
+	insertstr ${@text}[${@pointer}] "{";
+	insertstr ${@text}[${@pointer}] "surface"${@sid};
+	insertstr ${@text}[${@pointer}] "//眉_"$@arg[2]$(if $[ $@arg[4] != "" ] "_"$@arg[4]);
+	insertstr ${@text}[${@pointer}] "";
+
+	# SurfaceIDテーブルに追記
+	#setstr SurfaceID.眉.$@arg[2]$(if $[ $@arg[4] != "" ] "_"$@arg[4]) ${@sid};
+	#setstr SurfaceID.眉１.$@arg[2]$(if $[ $@arg[4] != "" ] "_"$@arg[4]) ${@sid};
+	#setstr SurfaceID.眉２.$@arg[2]$(if $[ $@arg[4] != "" ] "_"$@arg[4]) ${@sid};
+);
+
+# 眉パーツの着せ替え定義を挿入する
+# 第1引数:パーツID(通常眉)
+# 第2引数:パーツ名
+# 動作:通常眉、驚き眉、困り眉、怒り眉の着せ替え定義をそれぞれ挿入する
+function EditSurfacesMayuKisekaeDefine $(
+	# テキストの入ってるエントリ名を@textエントリに格納
+	setstr @text EditSurfaces.text;
+	setstr @size $(size ${@text});
+
+	#対象サーフィスIDをリスト化
+	split @sid (
+		$@arg[1]"|"
+		$@arg[1]"|"
+		$[ $@arg[1] + 100000 ]"|"
+		$[ $@arg[1] + 100000 ]"|"
+		$[ $@arg[1] + 200000 ]"|"
+		$[ $@arg[1] + 200000 ]"|"
+		$[ $@arg[1] + 300000 ]"|"
+		$[ $@arg[1] + 300000 ]
+	) "|";
+
+	#アニメーションIDをリスト化
+	split @ani_id (
+		$@arg[1]"|"
+		$[ $@arg[1] + 5000 ]"|"
+		$@arg[1]"|"
+		$[ $@arg[1] + 5000 ]"|"
+		$@arg[1]"|"
+		$[ $@arg[1] + 5000 ]"|"
+		$@arg[1]"|"
+		$[ $@arg[1] + 5000 ]
+	) "|";
+
+	#挿入箇所前のマーカーをリスト化
+	split @marker (
+		"//眉着せ替え・素|"
+		"//眉着せ替え・素|"
+		"//眉着せ替え・驚|"
+		"//眉着せ替え・驚|"
+		"//眉着せ替え・困|"
+		"//眉着せ替え・困|"
+		"//眉着せ替え・怒|"
+		"//眉着せ替え・怒"
+	) "|";
+
+	# カテゴリをリスト化
+	split @category (
+		"眉１|"
+		"眉２|"
+		"眉１|"
+		"眉２|"
+		"眉１|"
+		"眉２|"
+		"眉１|"
+		"眉２"
+	) "|";
+
+	# 「//眉着せ替え定義」が来るまで早回し
+	setstr @pointer 0;
+	while $[ ! $(match_at $${@text}[${@pointer}] "//眉着せ替え設定")  && ${@pointer} < ${@size} ] $(inc @pointer);
+	# @startに初期位置を記録
+	setstr @start ${@pointer};
+
+	loop $(size @sid) $(
+		setstr @i ${-1};
+		setstr @pointer ${@start};
+		# マーカー位置まで早回し
+		while $[ ! $(match_at $${@text}[${@pointer}] $@marker[${@i}])  && ${@pointer} < ${@size} ] $(inc @pointer);
+		
+		# 昇順に並ぶ位置に定義を挿入
+		while $[ ! $(match_at $${@text}[${@pointer}] "}")  && ${@pointer} < ${@size} ] $(
+			if $[ $(match_at $${@text}[${@pointer}] "	animation") && $(match $${@text}[${@pointer}] ".pattern") >= 0 ] $(
+				setstr @aid $(substr $${@text}[${@pointer}] $(length "	animation") $[ $(match $${@text}[${@pointer}] ".pattern") - $(length "	animation") ]);
+				if $[ ${@aid} > $@ani_id[${@i}] ] $(
+					while $[ $${@text}[${@pointer}] != ""  && ${@pointer} < ${@size} ] $(dec @pointer);
+					break;
+				);
+			);
+			inc @pointer;
+		);
+		# 着せ替え定義文本体を挿入する
+		insertstr ${@text}[${@pointer}] "	animation"$@ani_id[${@i}]".pattern0,add,"$@sid[${@i}]",0,0,0";
+		insertstr ${@text}[${@pointer}] "	animation"$@ani_id[${@i}]".interval,bind";
+		insertstr ${@text}[${@pointer}] "//"$@category[${@i}]"_"$@arg[2]$(if $[ $@arg[3] != "" ] "_"$@arg[3]);
+		insertstr ${@text}[${@pointer}] "";
+	);
+
+);
+
+#-------------------------------------------------------------------------------
+# **口自動追加特化
+
+# 機能:Surfaces.txtに口の画像群の定義を挿入
+# 第1引数:パーツ名
+# 戻り値:挿入する基底サーフィス・アニメーション番号 or なし(エラー時)
+function EditSurfacesMouth $(
+	LoadSurfacesText;
+	# テキストの入ってるエントリ名を@textエントリに格納
+	setstr @text EditSurfaces.text;
+	setstr @size $(size ${@text});
+
+	# 挿入するサーフィス番号と挿入行数を求める
+	split @tuple $(FindSurfaceIDandPoint "口") "|";
+	setstr @sid $@tuple[0];
+	setstr @pointer $@tuple[1];
+
+	# 基本となるパーツ定義を挿入する
+	insertstr ${@text}[${@pointer}] "}";
+	insertstr ${@text}[${@pointer}] "	element1,overlay,parts\\"${@sid}"_s.png,0,0";
+	insertstr ${@text}[${@pointer}] "	element0,overlay,parts\\"${@sid}"_skin_2.png,0,0";
+	insertstr ${@text}[${@pointer}] "{";
+	insertstr ${@text}[${@pointer}] "surface"${@sid};
+	insertstr ${@text}[${@pointer}] "//口_"$@arg[1];
+	insertstr ${@text}[${@pointer}] "";
+
+	# 口パーツ群定義を挿入する
+	EditSurfacesMouthPartsDefine $[ ${@sid} + 200000 ] $@arg[1]"_開" "o";
+	EditSurfacesMouthPartsDefine $[ ${@sid} + 300000 ] $@arg[1]"_閉" "c";
+	EditSurfacesMouthPartsDefine $[ ${@sid} + 500000 ] $@arg[1]"_開笑" "os";
+	EditSurfacesMouthPartsDefine $[ ${@sid} + 600000 ] $@arg[1]"_笑" "s";
+
+	# 着せ替え定義を挿入する
+	EditSurfacesMouthKisekaeDefine ${@sid} $@arg[1];
+
+	# SurfaceIDテーブルに追記
+	setstr ${CSurfaceID}.口.$@arg[1] ${@sid};
+
+	# ファイルに書き戻して終了
+	SaveSurfacesText;
+	return ${@sid};
+);
+
+# 開き口、閉じ口、開き笑い口、笑い口のパーツ定義を挿入する
+# 第1引数:パーツID
+# 第2引数:パーツ名
+# 第3引数:ファイル名に付ける装飾(「o」「c」「os」「s」)
+# 動作:「//パーツ定義」～「着せ替え定義」の間で指定パーツIDの位置を昇順で探し、
+#      パーツ定義を挿入する
+function EditSurfacesMouthPartsDefine $(
+	# テキストの入ってるエントリ名を@textエントリに格納
+	setstr @text EditSurfaces.text;
+	setstr @size $(size ${@text});
+
+	# @sid...想定している追加ファイルのサーフィス番号
+	setstr @sid $@arg[1];
+	# 挿入場所とサーフィス番号探しのループ
+	# @pointer...${@text}のポインタ
+	setstr @pointer 0;
+	# 「//口差分」が来るまで早回し
+	while $[ ! $(match_at $${@text}[${@pointer}] "//口差分")  && ${@pointer} < ${@size} ] $(inc @pointer);
+	setstr @start ${@pointer};
+	while $[ ${@pointer} < ${@size} ] $(
+		# 「//着せ替え定義（この行は消さない事）」が来たら終了
+		if $(match_at $${@text}[${@pointer}] "//着せ替え定義（この行は消さない事）") $(
+			# 前の閉じ括弧の次の行までポインタ戻し
+			while $[ $${@text}[${@pointer}] != "}" && ${@pointer} > ${@start} ] $(dec @pointer);
+			inc @pointer;
+			break;
+		);
+		# 「surface***」の行のみに着目する
+		if $(match_at $${@text}[${@pointer}]  "surface") $(
+			setstr @number $(Integer $(substr $${@text}[${@pointer}] $(length "surface")));
+			if $[ ${@number} > ${@sid} ] $(
+				# サーフィス番号が挿入予定の番号より大きくなった→挿入箇所
+				# 前の閉じ括弧の次の行までポインタ戻し
+				while $[ $${@text}[${@pointer}] != "}" && ${@pointer} > ${@start} ] $(dec @pointer);
+				inc @pointer;
+				break;
+			);
+		);
+		inc @pointer;
+	);
+	
+	# 基本となるパーツ定義を挿入する
+	insertstr ${@text}[${@pointer}] "}";
+	insertstr ${@text}[${@pointer}] "	element0,overlay,parts\\"$[ ${@sid} % 100000 ]"_"$@arg[3]".png,0,0";
+	insertstr ${@text}[${@pointer}] "{";
+	insertstr ${@text}[${@pointer}] "surface"${@sid};
+	insertstr ${@text}[${@pointer}] "//口_"$@arg[2];
+	insertstr ${@text}[${@pointer}] "";
+);
+
+# 口パーツの着せ替え定義を挿入する
+# 第1引数:パーツID(通常口)
+# 第2引数:パーツ名
+# 動作:閉じ口,開き口,開き笑い口,笑い口眉の着せ替え定義をそれぞれ挿入する
+function EditSurfacesMouthKisekaeDefine $(
+	# テキストの入ってるエントリ名を@textエントリに格納
+	setstr @text EditSurfaces.text;
+	setstr @size $(size ${@text});
+
+	#対象サーフィスIDをリスト化
+	split @sid (
+		$[ $@arg[1] + 200000 ]"|"
+		$[ $@arg[1] + 300000 ]"|"
+		$[ $@arg[1] + 500000 ]"|"
+		$[ $@arg[1] + 600000 ]
+	) "|";
+
+	#アニメーションIDをリスト化
+	setstr @ani_id $@arg[1];
+
+	#挿入箇所前のマーカーをリスト化
+	split @marker (
+		"//口着せ替え・開|"
+		"//口着せ替え・閉|"
+		"//口着せ替え・開笑|"
+		"//口着せ替え・笑"
+	) "|";
+
+	# カテゴリをリスト化
+	setstr @category "口";
+
+	# 「//眉着せ替え定義」が来るまで早回し
+	setstr @pointer 0;
+	while $[ ! $(match_at $${@text}[${@pointer}] "//口着せ替え設定")  && ${@pointer} < ${@size} ] $(inc @pointer);
+	# @startに初期位置を記録
+	setstr @start ${@pointer};
+
+	loop $(size @sid) $(
+		setstr @i ${-1};
+		setstr @pointer ${@start};
+		# マーカー位置まで早回し
+		while $[ ! $(match_at $${@text}[${@pointer}] $@marker[${@i}])  && ${@pointer} < ${@size} ] $(inc @pointer);
+		
+		# 昇順に並ぶ位置に定義を挿入
+		while $[ ! $(match_at $${@text}[${@pointer}] "}")  && ${@pointer} < ${@size} ] $(
+			if $[ $(match_at $${@text}[${@pointer}] "	animation") && $(match $${@text}[${@pointer}] ".pattern") >= 0 ] $(
+				setstr @aid $(substr $${@text}[${@pointer}] $(length "	animation") $[ $(match $${@text}[${@pointer}] ".pattern") - $(length "	animation") ]);
+				if $[ ${@aid} > ${@ani_id} ] $(
+					while $[ $${@text}[${@pointer}] != ""  && ${@pointer} < ${@size} ] $(dec @pointer);
+					break;
+				);
+			);
+			inc @pointer;
+		);
+		# 着せ替え定義文本体を挿入する
+		insertstr ${@text}[${@pointer}] "	animation"${@ani_id}".pattern0,add,"$@sid[${@i}]",0,0,0";
+		insertstr ${@text}[${@pointer}] "	animation"${@ani_id}".interval,bind";
+		insertstr ${@text}[${@pointer}] "//"${@category}"_"$@arg[2];
+		insertstr ${@text}[${@pointer}] "";
+	);
+
+);
+
+#-------------------------------------------------------------------------------
+# *パーツ名変更用関数群
+
+# 機能: パーツ名を変更する
+# 第1引数: カテゴリー
+# 第2引数: 旧パーツ名
+# 第3引数: 新パーツ名
+# 戻り値:  0...何らかの理由で失敗した
+#          1...成功、出力タグなし
+#          2...成功、タグ出力あり
+# 備考：パーツ名重複回避は済んでいる前提
+#       実行後、必ずShellReloadコマンドを実行
+#       リロード後にPartsRenameエントリを出力すること
+function PartsRename $(
+	if $[ $(size @arg) != 4 ] $(return 0);
+	# 内部エントリ生成
+	setstr @Category  $@arg[1];
+	setstr @OldParts  $(DeleteColorID $@arg[2]);
+	setstr @NewParts  $(DeleteColorID $@arg[3]);
+	setstr @ptype     $(GetPartsType ${@Category} ${@OldParts});
+	setstr @sid       $(FindSurfaceID ${@Category} ${@OldParts});
+	setstr @ColorID   ${RecipeCmdConvTbl.${@ptype}};
+	setstr @OldPartsC ${@OldParts}${@ColorID};
+	setstr @NewPartsC ${@NewParts}${@ColorID};
+	# パーツ名変更禁止パーツだったら何もせず帰る
+	if $[ $(find PartsRename.NGParts ${@Category}.${@OldParts}) >= 0 ] $(
+		return 0;
+	);
+	clear PartsRename.log;
+	# surfaces.txtを書き換え
+	PartsRenameSurfaces ${@Category} ${@OldParts} ${@NewParts};
+	# descript.txtを書き換え
+	PartsRenameDescript ${@Category} ${@NewPartsC} ${@sid};
+	# CSurfaceIDツリーについて、旧パーツツリーを新パーツツリーに移し変え
+	# CPartsTypeツリーについて、旧パーツツリーを新パーツツリーに移し変え
+	if $[ $(match ${@Category} "眉") >= 0 ] $(
+		setstr @CategoryM ${EyebrowStates};
+		# 色識別子あり
+		move ${CSurfaceID}.眉.${@OldPartsC} ${CSurfaceID}.眉.${@NewPartsC};
+		move ${CSurfaceID}.眉１.${@OldPartsC} ${CSurfaceID}.眉１.${@NewPartsC};
+		move ${CSurfaceID}.眉２.${@OldPartsC} ${CSurfaceID}.眉２.${@NewPartsC};
+		move ${CPartsType}.眉.${@OldPartsC} ${CPartsType}.眉.${@NewPartsC};
+		move ${CPartsType}.眉１.${@OldPartsC} ${CPartsType}.眉１.${@NewPartsC};
+		move ${CPartsType}.眉２.${@OldPartsC} ${CPartsType}.眉２.${@NewPartsC};
+		setstr ${CPartsTable}.眉[$(find ${CPartsTable}.眉 ${@OldPartsC})] ${@NewPartsC};
+		setstr ${CPartsTable}.眉１[$(find ${CPartsTable}.眉１ ${@OldPartsC})] ${@NewPartsC};
+		setstr ${CPartsTable}.眉２[$(find ${CPartsTable}.眉２ ${@OldPartsC})] ${@NewPartsC};
+		# 色識別子なし
+		move ${CSurfaceID}.眉.${@OldParts} ${CSurfaceID}.眉.${@NewParts};
+		move ${CSurfaceID}.眉１.${@OldParts} ${CSurfaceID}.眉１.${@NewParts};
+		move ${CSurfaceID}.眉２.${@OldParts} ${CSurfaceID}.眉２.${@NewParts};
+		move ${CPartsType}.眉.${@OldParts} ${CPartsType}.眉.${@NewParts};
+		move ${CPartsType}.眉１.${@OldParts} ${CPartsType}.眉１.${@NewParts};
+		move ${CPartsType}.眉２.${@OldParts} ${CPartsType}.眉２.${@NewParts};
+	) else $(
+		setstr @CategoryM ${@Category};
+		setstr @CSIC ${CSurfaceID}.${@Category};
+		setstr @CPTC ${CPartsType}.${@Category};
+		setstr @CPTBLC ${CPartsTable}.${@Category};
+		# 色識別子あり
+		move ${@CSIC}.${@OldPartsC} ${@CSIC}.${@NewPartsC};
+		move ${@CPTC}.${@OldPartsC} ${@CPTC}.${@NewPartsC};
+		setstr ${@CPTBLC}[$(find ${@CPTBLC} ${@OldPartsC})] ${@NewPartsC};
+		# 色識別子なし
+		move ${@CSIC}.${@OldParts} ${@CSIC}.${@NewParts};
+		move ${@CPTC}.${@OldParts} ${@CPTC}.${@NewParts};
+	);
+
+	# もし旧パーツを着ていたら、パーツを脱ぐタグを作成
+	if $[ $(find CurrentKisekaeSet ${@CategoryM}.${OldPartsC}) >= 0 ] $(
+		setstr PartsRename.log $(PartsRemove ${@CategoryM} ${@OldPartsC});
+	);
+	# ＜カテゴリ＞ツリー内の旧パーツエントリを削除し、新パーツエントリ作成
+	move ${@CategoryM}.${OldPartsC} ${@CateogoryM}.${@NewPartsC};
+	# ログに記録を残す
+	# 出力すべきタグの有無で戻り値を替える
+	return $(if $(size PartsRename.log) 2 else 1);
+);
+
+=dict
+# パーツ名変更禁止パーツリスト
+# 「カテゴリ.パーツ名」形式で記載
+PartsRename.NGParts (
+	素体.肌,
+	瞳色.左右,
+	瞳色.右
+)
+=end
+
+# 機能: パーツ名を変更するためのsurfaces.txt書き換え
+# 第1引数: カテゴリー
+# 第2引数: 旧パーツ名
+# 第3引数: 新パーツ名
+# 戻り値:  0...何らかの理由で失敗した
+#          1...成功
+function PartsRenameSurfaces $(
+	if $[ $(size @arg) != 4 ] $(return 0);
+	setstr @Category  $@arg[1];
+	setstr @OldParts  $@arg[2];
+	setstr @NewParts  $@arg[3];
+	setstr @retcount  0;
+	# surfaces.txt読み込み
+	LoadSurfacesText;
+	# テキストの入ってるエントリ名を@textエントリに格納
+	setstr @text EditSurfaces.text;
+	setstr @size $(size ${@text});
+
+	# @pointer...${@text}のポインタ
+	setstr @pointer 0;
+	# 「//パーツ定義」が来るまで早回し
+	while $[ ! $(match_at $${@text}[${@pointer}] "//パーツ定義")  && ${@pointer} < ${@size} ] $(inc @pointer);
+	
+	# 置換対象行の検索パターン・置換パターン
+	if $[ $(match ${@Category} "眉") >= 0 ] $(
+		setstr @pattern "//眉";
+		setstr @m0 "//眉_"${@OldParts};
+		setstr @m1 "//眉１_"${@OldParts};
+		setstr @m2 "//眉２_"${@OldParts};
+		setstr @r0 "//眉_"${@NewParts};
+		setstr @r1 "//眉１_"${@NewParts};
+		setstr @r2 "//眉２_"${@NewParts};
+		setstr @mayu_sw 1;
+	) else $(
+		setstr @pattern "//"${@Category}"_";
+		setstr @m0 "//"${@Category}"_"${@OldParts};
+		setstr @r0 "//"${@Category}"_"${@NewParts};
+	);
+	setstr @plength $(length ${@pattern});
+	# 置換ループ
+	while $[ ${@pointer} < ${@size} ] $(
+		# パターン行で始まる内容のみ相手にする
+		if $[ $(substr $${@text}[${@pointer}] 0 ${@plength}) != ${@pattern} ] $(
+			inc @pointer;
+			continue;
+		);
+		setstr @line $${@text}[${@pointer}];
+		#   眉は特別マッチパターンを作成する
+		#   マッチパターンは「//＜カテゴリ＞_＜旧パーツ名＞」とする
+		#   行が「マッチパターン」または「マッチパターン_」ならばヒット
+		#   マッチパターンを「//＜カテゴリ＞_＜新パターン名＞にsubで置換
+		if ${@mayu_sw} $(
+			# 眉パーツの検索・置換
+			if $[ ${@line} == ${@m0} || $(match_at ${@line} ${@m0}_) ] $(
+				setstr ${@text}[${@pointer}] $(sub ${@line} ${@m0} ${@r0});
+				inc @retcount;
+			) else if $[ ${@line} == ${@m1} || $(match_at ${@line} ${@m1}_) ] $(
+				setstr ${@text}[${@pointer}] $(sub ${@line} ${@m1} ${@r1});
+				inc @retcount;
+			) else if $[ ${@line} == ${@m2} || $(match_at ${@line} ${@m2}_) ] $(
+				setstr ${@text}[${@pointer}] $(sub ${@line} ${@m2} ${@r2});
+				inc @retcount;
+			);
+		) else $(
+			# 一般パーツの検索・置換
+			if $[ ${@line} == ${@m0} || $(match_at ${@line} ${@m0}_) ] $(
+				setstr ${@text}[${@pointer}] $(sub ${@line} ${@m0} ${@r0});
+				inc @retcount;
+			);
+		);
+		inc @pointer;
+	);
+	# 終了
+	if ${@retcount} $(
+		SaveSurfacesText;
+	);
+	return $(if $[ ${@retcount} > 0 ] 1 else 0);
+);
+
+# 機能: パーツ名を変更するためのdescript.txt書き換え
+# 第1引数: カテゴリー
+# 第2引数: 新パーツ名(色識別子付)
+# 第3引数: SurfaceID
+# 戻り値:  0...何らかの理由で失敗した
+#          1...成功
+function PartsRenameDescript $(
+	if $[ $(size @arg) != 4 ] $(return 0);
+	setstr @Category  $@arg[1];
+	setstr @NewPartsC $@arg[2];
+	setstr @sid       $@arg[3];
+	setstr @retcount  0;
+	# descript.txt読み込み
+	LoadDescriptText;
+	# ファイルの内容のエントリ名を@textエントリに格納
+	setstr @text EditDescript.text;
+	setstr @size $(size ${@text});
+	
+	# @pointer...${@text}のポインタ
+	setstr @pointer 0;
+	# 「//着せ替え設定」が来るまで早回し
+	while $[ ! $(match_at $${@text}[${@pointer}] "//着せ替え設定")  && ${@pointer} < ${@size} ] $(inc @pointer);
+	inc @pointer;
+	# 空白行を早回し
+	while $[ $${@text}[${@pointer}] == "" && ${@pointer} < ${@size} ] $(inc @pointer);
+	# 検索パターン
+	setstr @pattern "sakura.bindgroup"${@sid}".name,";
+	setstr @plength $(length ${@pattern});
+	# 次の空白行までの間から、定義分を挿入する箇所を探す
+	while $[ $${@text}[${@pointer}] != "" && ${@pointer} < ${@size} ] $(
+		#「sakura.bindgroup＜SurfaceID＞.name,」を探す
+		if $[ $(substr $${@text}[${@pointer}] 0 ${@plength}) == ${@pattern} ] $(
+			# 該当行を書き換え
+			setstr ${@text}[${@pointer}] ${@pattern}${@Category}","${@NewPartsC};
+			inc @retcount;
+			break;
+		);
+		inc @pointer;
+	);
+	# ファイルに書き戻して終了
+	if ${@retcount} $(
+		SaveDescriptText;
+	);
+	return ${@retcount};
+);
+
+
+#-------------------------------------------------------------------------------
+# *マウス反応領域操作関数群
+
+# 動作: ColorsMouseAreaツリー、ColorsActiveMouseAreaツリーを使いsurfaces.txtに
+#       マウス反応領域を生成する。
+# 備考: surfaces_backup.txtにも同処理を実施する
+#       同関数だけはLoadSurfaceText/SaveSurfaceTextを使用してはいけない
+function EditMouseArea $(
+	# 処理対象を列挙
+	setstr  @files ${EditSurfaces.Path};
+	pushstr @files $(rsub ${EditSurfaces.Path} "surfaces.txt" "surfaces_backup.txt");
+	# 処理位置のマーカー
+	setstr  @marker "//マウス反応";
+	
+	# 各処理対象についてマウス反応を追加
+	foreach @file @files $(
+		if $[ ! $(isexist ${@file}) ] $(continue);
+		clear @text;
+		textload @text ${@file};
+		setstr @size $(size @text);
+		setstr @pointer $[ ${@size} - 1 ];
+		# マーカー位置まで早回し(末尾のはずなので後ろから)
+		while $[ ! $(match_at $@text[${@pointer}] ${@marker}) && ${@pointer} >= 0 ] $(dec @pointer);
+		# もしマーカーが見つからなければ帰る
+		if $[ $@text[${@pointer}] != ${@marker} ] $(return);
+		# スタート位置は開き中括弧
+		while $[ ! $(match_at $@text[${@pointer}] "{") && ${@pointer} < ${@size} ] $(inc @pointer);
+		inc @pointer;
+		setstr @start ${@pointer};
+		# 終了位置は閉じ中括弧
+		while $[ ! $(match_at $@text[${@pointer}] "}") && ${@pointer} < ${@size} ] $(inc @pointer);
+		dec @pointer;
+		setstr @end ${@pointer};
+		# 開始位置と終了位置が等しいまたは開始位置＜終了位置なら範囲内を消す
+		# この関係が守られないケースは、中括弧内が空の場合。
+		if $[ ${@start} <= ${@end} ] $(
+			clear @text[${@start}..${@end}];
+		);
+		# マウス反応領域を追加
+		setstr @lsize $(size ColorsActiveMouseArea.${ColorsCurrentShellName});
+		loop ${@lsize} $(
+			setstr @i ${-1};
+			setstr @pos $[ ${@lsize} - ${@i} - 1 ];
+			setstr @name $ColorsActiveMouseArea.${ColorsCurrentShellName}[${@pos}];
+			setstr @num $(join ColorsMouseArea.${ColorsCurrentShellName}.${@name} ",");
+			insertstr @text[${@start}] "	collision"${@pos}","${@num}","${@name};
+		);
+		# 処理終了
+		textsave ${@file} @text;
+	);
+);
+
+# 動作: 現在のマウス反応エリア記述をsurfaces.txtから読み、COLORS内データを同期
+function ReadMouseArea $(
+	# 処理対象
+	setstr  @file ${EditSurfaces.Path};
+	# 処理位置のマーカー
+	setstr  @marker "//マウス反応";
+	
+	# 記述位置を探す
+	textload @text ${@file};
+	setstr @size $(size @text);
+	setstr @pointer $[ ${@size} - 1 ];
+	# マーカー位置まで早回し(末尾のはずなので後ろから)
+	while $[ ! $(match_at $@text[${@pointer}] ${@marker}) && ${@pointer} >= 0 ] $(dec @pointer);
+	# もしマーカーが見つからなければ帰る
+	if $[ $@text[${@pointer}] != ${@marker} ] $(return);
+	# スタート位置は開き中括弧
+	while $[ ! $(match_at $@text[${@pointer}] "{") && ${@pointer} < ${@size} ] $(inc @pointer);
+	inc @pointer;
+	setstr @start ${@pointer};
+	# 終了位置は閉じ中括弧
+	while $[ ! $(match_at $@text[${@pointer}] "}") && ${@pointer} < ${@size} ] $(inc @pointer);
+	dec @pointer;
+	setstr @end ${@pointer};
+	# 開始位置と終了位置が等しいまたは開始位置＜終了位置なら記述があるかも
+	# この関係が守られないケースは、中括弧内が空の場合なので何もしない。
+	if $[ ${@start} > ${@end} ] $(return);
+	
+	# 記述を読む
+	setstr @pointer ${@start};
+	while $[ ${@pointer} <= ${@end} ] $(
+		if $(match_at $@text[${@pointer}] "	collision") $(
+			setstr @isexist "true";
+			clear @element;
+			split @element $(substr $@text[${@pointer}] $(length "	collision")) ",";
+			clear @element[0];
+			pushstr @tree $(pop @element);
+			move @element @tree.$@tree[-1];
+		);
+		inc @pointer;
+	);
+	# 記述が存在していたらCOLORS内データに反映
+	if ${@isexist} $(
+		# アクティブなマウス反応エリアを更新
+		clear ColorsActiveMouseArea.${ColorsCurrentShellName};
+		copy @tree ColorsActiveMouseArea.${ColorsCurrentShellName};
+		foreach @area @tree $(
+			# 管理済みエリアでなければ追加
+			if $[ $(find ColorsMouseArea.${ColorsCurrentShellName} ${@area}) < 0 ] $(
+				pushstr ColorsMouseArea.${ColorsCurrentShellName} ${@area};
+			);
+			# 座標値を更新
+			clear ColorsMouseArea.${ColorsCurrentShellName}.${@area};
+			copy @tree.${@area} ColorsMouseArea.${ColorsCurrentShellName}.${@area};
+		);
+	);
+	
+	return;
+);
+=end
+
+
+#===============================================================================
+# パーツ着脱・着色機能
+#===============================================================================
+
+#-------------------------------------------------------------------------------
+# 共通エントリ定義
+
+ColorsShellPath : $(cncpath ${ColorsCurrentShellPath} "parts\\")
+
+SaveRecipeDir : "recipe\\"
+LoadRecipeDir : $(cncpath ${System.DataPath} ${SaveRecipeDir})
+
+#-------------------------------------------------------------------------------
+# 関数群
+
+=kis
+# 機能:パーツ名から色替え識別子を除く
+# 第1引数: 色替え識別子のついたパーツ名
+# 戻り値:  色替え識別子を除いたパーツ名
+function DeleteColorID $(
+	setstr @PartsName $(rsub $@arg[1]      "_CCC" "");
+	setstr @PartsName $(rsub ${@PartsName} "_CCP" "");
+	setstr @PartsName $(rsub ${@PartsName} "_CCT" "");
+	setstr @PartsName $(rsub ${@PartsName} "_CC" "");
+	setstr @PartsName $(rsub ${@PartsName} "_skinC" "");
+	return            $(rsub ${@PartsName} "_SKIN" "");
+);
+
+# 機能:パーツ名から色替え識別子のみを抽出
+# 第1引数: 色替え識別子のついたパーツ名
+# 戻り値:  色替え識別子
+function ExtractColorID $(
+	setstr @PartsName $(DeleteColorID $@arg[1]);
+	setstr @colorid $(sub $@arg[1] ${@PartsName} "");
+	if $[ $(char_at ${@colorid} 0) == "_" ] $(
+		setstr @colorid $(substr ${@colorid} 1);
+	);
+	return ${@colorid};
+);
+
+# 機能:colors.dllを使い、画像ファイルをシェルフォルダに指定名でコピー
+# 第1引数:元のファイル名
+# 第2引数:コピー先ファイル名（拡張子なし）
+function PNGCopy $(
+	setstr @id $(colors load $(cncpath $@arg[1]));
+	colors save ${@id} $(cncpath ${ColorsCurrentShellPath}"parts\\"$@arg[2]".png");
+	colors clear;
+);
+
+# 機能:複数の画像ファイルを一括して別名コピーする
+# 第1引数以降: コピー元とコピー先ファイル名
+#              第Nがコピー元、第N+1がコピー先(パスと.png省略)
+# 備考: 引数が偶数でなければ何もしない
+function PNGCopyAll $(
+	if $[ $(size @arg) % 2 != 1 || $(size @arg) < 3 ] $(return);
+	clear @arg[0];
+	setstr @half $[ $(size @arg) / 2 ];
+	# コピー
+	loop ${@half} $(
+		setstr @i $[ ${-1} * 2 ];
+		setstr @j $[ ${@i} + 1 ];
+		pushstr @BeforeIMG $(cncpath $@arg[${@i}]);
+		pushstr @AfterIMG  $(cncpath ${ColorsCurrentShellPath}"parts\\"$@arg[${@j}]".png");
+	);
+:rem
+	loop ${@half} $(
+		setstr @i ${-1};
+		setstr @DIB $(colors load $@BeforeIMG[${@i}]);
+		colors save ${@DIB} $@AfterIMG[${@i}];
+	);
+:endrem
+	setstr @DIB $(xargs @BeforeIMG colors load);
+	xargs @AfterIMG colors save ${@DIB};
+	colors clear;
+);
+
+# 機能:colors.dllを使い、肌色画像ファイルを色替えしシェルフォルダに指定名でコピー
+# 第1引数:コピー元のファイル名
+# 第2引数:コピー先ファイル名（拡張子なし）
+function SkinColorCopy $(
+	copy RGB.${ColorsCurrentShellName}.Skin @RGB;
+	setstr @id $(colors load $(cncpath $@arg[1]));
+	colors tone ${@id} $[$@RGB[0]-255] $[$@RGB[1]-255] $[$@RGB[2]-255];
+	colors save ${@id} $(cncpath ${ColorsCurrentShellPath}"parts\\"$@arg[2]".png");
+	colors clear ;
+);
+
+# 機能:colors.dllを使い、髪画像ファイルを色替えしシェルフォルダに指定名でコピー
+# 第1引数:コピー元のファイル名
+# 第2引数:コピー先ファイル名（拡張子なし）
+function HairColorCopy $(
+	copy RGB.${ColorsCurrentShellName}.Hair @RGB;
+	setstr @id $(colors load $(cncpath $@arg[1]));
+	colors tone ${@id} $[$@RGB[0]-255] $[$@RGB[1]-255] $[$@RGB[2]-255];
+	colors save ${@id} $(cncpath ${ColorsCurrentShellPath}"parts\\"$@arg[2]".png");
+	colors clear ;
+);
+
+# 機能:画像ファイルの色をRGBエントリの内容に従い変更し、別名にコピーする
+# 第1引数:コピー元のファイル名
+# 第2引数:コピー先のファイル名
+# 第3引数:RGBのR(省略可)
+# 第4引数:RGBのG(省略可)
+# 第5引数:RGBのB(省略可)
+function ColorConvertCopy $(
+	if $[ $(size @arg) == 6 ] $(
+		copy @arg @RGB;
+		clear @RGB[0..2];
+	) else $(
+		copy RGB @RGB;
+	);
+	setstr @DIB $(colors load $(cncpath $@arg[1]));
+	colors tone ${@DIB} $[$@RGB[0]-255] $[$@RGB[1]-255] $[$@RGB[2]-255];
+	colors save ${@DIB} $(cncpath $@arg[2]);
+	colors clear;
+);
+
+# 機能:複数の画像ファイルの色を一括して変更・別名コピーする
+# 第1引数: R,G,B（カンマ接続）
+# 第2引数以降: コピー元とコピー先ファイル名
+#              第Nがコピー元、第N+1がコピー先
+# 備考: 引数が奇数でなければ何もしない
+function ColorConvertCopyAll $(
+	if $[ $(size @arg) % 2 != 0 || $(size @arg) < 4 ] $(return);
+	# RGB値抽出
+	clear @arg[0];
+	split @RGB $(shift @arg) ",";
+	# RGB値が異常な場合は帰る
+	if $[ $(size @RGB) != 3 ] $(return);
+	
+	setstr  @cRGB $[ $(Integer $@RGB[0]) - 255 ];
+	pushstr @cRGB $[ $(Integer $@RGB[1]) - 255 ];
+	pushstr @cRGB $[ $(Integer $@RGB[2]) - 255 ];
+	setstr @half $[ $(size @arg) / 2 ];
+	
+	# コピー
+	loop ${@half} $(
+		setstr @i $[ ${-1} * 2 ];
+		setstr @j $[ ${@i} + 1 ];
+		pushstr @BeforeIMG $(cncpath $@arg[${@i}]);
+		pushstr @AfterIMG  $(cncpath $@arg[${@j}]);
+	);
+:rem
+	loop ${@half} $(
+		setstr @i ${-1};
+		setstr @DIB $(colors load $@BeforeIMG[${@i}]);
+		colors tone ${@DIB} $@cRGB[0] $@cRGB[1] $@cRGB[2];
+		colors save ${@DIB} $@AfterIMG[${@i}];
+	);
+:endrem
+	setstr @DIB $(xargs @BeforeIMG colors load);
+	colors tone ${@DIB} $@cRGB[0] $@cRGB[1] $@cRGB[2];
+	xargs @AfterIMG colors save ${@DIB};
+	colors clear;
+);
+
+# 機能: 肌色を含むパーツを、RGB.<対象シェル名>.SkinエントリのRGB値で一括色替え
+# 備考: RGBエントリを破壊する
+function SkinColorConvert $(
+	#シェルフォルダの中身を読み込んで@ShellIMGListに格納
+	readdir @ShellIMGList ${ColorsShellPath};
+	#@ShellIMGListから「_skin.png」が付くものを@SkinListに格納
+	foreach @ShellIMG @ShellIMGList $(
+		if $[$(rmatch ${@ShellIMG} "_skin.png") > "-1"] $(
+			pushstr @SkinList ${@ShellIMG};
+		);
+	);
+	# RGB.<対象シェル名>.Skinで色替え
+	setstr @C RGB.${ColorsCurrentShellName}.Skin;
+	setstr @conv_arg $${@C}[0]","$${@C}[1]","$${@C}[2];
+	# 「_skin」のパーツの色替え
+	foreach @SkinImg @SkinList $(
+		pushstr @conv_arg ${ColorsShellPath}${@SkinImg};
+		pushstr @conv_arg $(rsub $@conv_arg[-1] "_skin.png" "_skin_2.png");
+		#ColorConvertCopy ${@BeforeIMG} ${@AfterIMG} $${@C}[0] $${@C}[1] $${@C}[2];
+	);
+	# 素体の色替え
+	# 素体がCC、CCC両方の場合がある
+	listsub @Base "素体";
+	foreach @Candidate @Base $(
+		if $(match_at ${@Candidate} "素体.肌_") $(
+			split @element ${@Candidate} ".";
+			break;
+		);
+	);
+	setstr @CM "_CC"$(if $[ $(match $@element[1] "_CCC") >= 0 ] "C")"_";
+	setstr @IMG $(PartsPath $@element[0] $@element[1])${@CM};
+	pushstr @conv_arg ${@IMG}"1.png";
+	pushstr @conv_arg ${@IMG}"2.png";
+	#ColorConvertCopy ${@IMG}"1.png" ${@IMG}"2.png" $${@C}[0] $${@C}[1] $${@C}[2];
+	# 一括色替え
+	xargs @conv_arg ColorConvertCopyAll;
+);
+
+# 機能: 眉パーツをRGB.<対象シェル名>.EyebrowエントリのRGB値で一括色替え
+# 備考: RGBエントリを破壊する
+function EyebrowColorConvert $(
+	setstr @C RGB.${ColorsCurrentShellName}.Eyebrow;
+	setstr @conv_arg $${@C}[0]","$${@C}[1]","$${@C}[2];
+	listsub @List "眉１";
+	foreach @Img @List $(
+		if $[ $(match ${@Img} "_CC") >= 0 ] $(
+			clear @cp ;
+			split @cp ${@Img} "." ;
+			setstr @pathbase $(PartsPath $@cp[0] $@cp[1]);
+			#ColorConvertCopy ${@pathbase}_CC_1.png          ${@pathbase}_CC_2.png          $${@C}[0] $${@C}[1] $${@C}[2];
+			#ColorConvertCopy ${@pathbase}_surprise_CC_1.png ${@pathbase}_surprise_CC_2.png $${@C}[0] $${@C}[1] $${@C}[2];
+			#ColorConvertCopy ${@pathbase}_sad_CC_1.png      ${@pathbase}_sad_CC_2.png      $${@C}[0] $${@C}[1] $${@C}[2];
+			#ColorConvertCopy ${@pathbase}_angry_CC_1.png    ${@pathbase}_angry_CC_2.png    $${@C}[0] $${@C}[1] $${@C}[2];
+			pushstr @conv_arg ${@pathbase}_CC_1.png;
+			pushstr @conv_arg ${@pathbase}_CC_2.png;
+			pushstr @conv_arg ${@pathbase}_surprise_CC_1.png;
+			pushstr @conv_arg ${@pathbase}_surprise_CC_2.png;
+			pushstr @conv_arg ${@pathbase}_sad_CC_1.png;
+			pushstr @conv_arg ${@pathbase}_sad_CC_2.png;
+			pushstr @conv_arg ${@pathbase}_angry_CC_1.png;
+			pushstr @conv_arg ${@pathbase}_angry_CC_2.png;
+		);
+	);
+	# 一括色替え
+	xargs @conv_arg ColorConvertCopyAll;
+);
+
+# 機能: カテゴリを指定し、RGBエントリのRGB値で一括色替え
+# 第1引数以降: カテゴリ
+function CategoryColorConvert $(
+	clear @arg[0];
+	foreach @category @arg $(
+		if $[ ${@category} =~ "眉" ] $(
+			# 眉は下請けに出す
+			EyebrowColorConvert;
+			continue;
+		);
+		clear @List;
+		listsub @List ${@category};
+		# 色データ保存先をカテゴリ名によって判定
+		if $[ ${@category} =~ "髪" ] $(
+			setstr @C RGB.${ColorsCurrentShellName}.Hair;
+		#) else if $[ ${@category} =~ "眉" ] $(
+		#	setstr @C RGB.${ColorsCurrentShellName}.Eyebrow;
+		) else $(
+			setstr @C RGB;
+		);
+		setstr @conv_arg $${@C}[0]","$${@C}[1]","$${@C}[2];
+		foreach @Img @List $(
+			if $[ $(match ${@Img} "_CCC") >= 0 ] $(
+				#List中から_CCCの付くものだけをピックアップして色替え
+				clear @cp ;
+				split @cp ${@Img} "." ;
+				setstr @pathbase $(PartsPath $@cp[0] $@cp[1])_CCC;
+				#ColorConvertCopy ${@pathbase}_1.png ${@pathbase}_2.png $${@C}[0] $${@C}[1] $${@C}[2];
+				pushstr @conv_arg ${@pathbase}_1.png;
+				pushstr @conv_arg ${@pathbase}_2.png;
+			) else if $[ $(match ${@Img} "_CC") >= 0 ] $(
+				#List中から_CCの付くものだけをピックアップして色替え
+				clear @cp ;
+				split @cp ${@Img} "." ;
+				setstr @pathbase $(PartsPath $@cp[0] $@cp[1])_CC;
+				#ColorConvertCopy ${@pathbase}_1.png ${@pathbase}_2.png $${@C}[0] $${@C}[1] $${@C}[2];
+				pushstr @conv_arg ${@pathbase}_1.png;
+				pushstr @conv_arg ${@pathbase}_2.png;
+			);
+		);
+		# 一括色替え
+		xargs @conv_arg ColorConvertCopyAll;
+	);
+);
+
+# 機能:パーツ選択に伴うフラグセット、パーツの色替えを実行する
+# 第1引数: 選択カテゴリ
+# 第2引数: 選択パーツ
+# 戻り値: 着せ替えタグ
+function PartsSelect $(
+	if $[ $(size @arg) != 3 ] $(return);
+
+	#（選択カテゴリ）.が頭に付くパーツリスト作成
+	listsub @Partslist $@arg[1];
+	
+	#DressupOptionにmultipleが含まれなければ
+	if $[ $(match ${DressupOption.$@arg[1]} "multiple") == "-1" ] $(
+		#@Partにパーツを一時保存して全てに0（着せ替えオフ）をセット
+		foreach @Part @Partslist $(set ${@Part} 0);
+	);
+		
+	#「現在カテゴリ.選択パーツ」に1(着せ替えオン)をセット
+	setstr $@arg[1].$@arg[2] 1 ;
+	if $[ $(find CurrentKisekaeSet $@arg[1].$@arg[2]) < 0 ] $(
+		pushstr CurrentKisekaeSet $@arg[1].$@arg[2];
+	);
+	if $[ $(find CategoryOn $@arg[1]) < 0 ] $(
+		pushstr CategoryOn $@arg[1];
+	);
+	
+	#選択カテゴリが「目の形」の場合の特殊処理。
+	if $[ $@arg[1] == "目の形" ] $(
+		#選択パーツ名の付く目パーツを表示用目パーツにコピー。（瞬き用）
+		setstr @eyespath $(PartsPath $@arg[1] $@arg[2])_ ;
+		#PNGCopy ${@eyespath}close.png   EyesC;
+		#PNGCopy ${@eyespath}close_1.png EyesC_skin;
+		#PNGCopy ${@eyespath}half.png    EyesH;
+		#PNGCopy ${@eyespath}half_1.png  EyesH_skin;
+		#PNGCopy ${@eyespath}smile.png   EyesS;
+		PNGCopyAll
+			${@eyespath}close.png
+			EyesC
+			${@eyespath}close_1.png
+			EyesC_skin
+			${@eyespath}half.png
+			EyesH
+			${@eyespath}half_1.png
+			EyesH_skin
+			${@eyespath}smile.png
+			EyesS
+		;
+		# 肌色パーツを一括色替え
+		SkinColorConvert;
+	#選択カテゴリが「口」の場合の特殊処理。
+	) else if $[ $@arg[1] == "口" ] $(
+		#選択パーツ名の付く口パーツを表示用口パーツにコピー。（口パク用）
+		setstr @mouthpath $(PartsPath $@arg[1] $@arg[2])_ ;
+		#PNGCopy ${@mouthpath}o.png     mouth_o;
+		#PNGCopy ${@mouthpath}c.png     mouth_c;
+		#PNGCopy ${@mouthpath}os.png    mouth_os;
+		#PNGCopy ${@mouthpath}s.png     mouth_s;
+		#PNGCopy ${@mouthpath}skin.png  mouth_skin;
+		PNGCopyAll 
+			${@mouthpath}o.png
+			mouth_o
+			${@mouthpath}c.png
+			mouth_c
+			${@mouthpath}os.png
+			mouth_os
+			${@mouthpath}s.png
+			mouth_s
+			${@mouthpath}skin.png
+			mouth_skin
+		;
+		# 肌色パーツを一括色替え
+		SkinColorConvert;
+	);
+	# タグを返す
+	return "\![bind,"$@arg[1]","$@arg[2]",1]";
+);
+
+# 機能: 眉と髪の上下関係を設定する
+# 第1引数: 1(髪が下) or 2(髪が下)
+# 戻り値: 設定タグ列
+function EyebrowSelect $(
+	setstr @layer $(tr $@arg[1] 12 １２);
+
+	#１が髪の下、２が髪の上
+	setstr @OldStates ${EyebrowStates};
+	setstr EyebrowLayer ${@layer} ;
+	setstr EyebrowStates 眉${@layer} ;
+	# @no:選択されてない側のレイヤ
+	setstr @nostates 眉$(if $[ ${@layer} == "１" ] "２" else "１");
+	
+	pushstr @str "\0\![bind,眉１,,0]\![bind,眉２,,0]";
+	listsub @mayuparts ${@OldStates};
+	foreach @checkmayu @mayuparts $(
+		setstr @parts $(substr ${@checkmayu} 3);
+		if ${${@checkmayu}} $(
+			pushstr @str "\![bind,"${EyebrowStates}","${@parts}",1]";
+		);
+		setstr ${EyebrowStates}.${@parts} ${${@checkmayu}};
+		setstr ${@nostates}.${@parts} 0;
+	);
+	return $(join @str);
+);
+
+
+# 機能: パーツ解除に伴うフラグセット、パーツの色替えを実行する
+# 第1引数: 選択カテゴリ
+# 第2引数: 選択パーツ
+# 戻り値: 解除タグ
+function PartsRemove $(
+	if $[ $(size @arg) != 3 ] $(return);
+
+	# 選択カテゴリが頭に付くパーツリスト作成
+	listsub @Partslist $@arg[1];
+	# mustselect指定で他に選択していない場合を探す
+	if $[ $(match ${DressupOption.$@arg[1]} "mustselect") >= "0" ] $(
+		# 他に一つも選択していない時は外せないので、何もせず帰る
+		setstr @i 0;
+		foreach @Part @Partslist $(
+			inc @i ${${@Part}};
+		);
+		if $[ ${@i} == 1 ] $(return);
+	);
+	# @Partにパーツを一時保存して全てに0（着せ替えオフ）をセット
+	if $[ $(match ${DressupOption.$@arg[1]} "multiple") == "-1" ] $(
+		foreach @Part @Partslist $(setstr ${@Part} 0);
+	);
+	if $[ $@arg[1]","$@arg[2] == "瞳色,左右_CC" ] $(
+		#選択パーツが「瞳色","左右_CC」なら解除しない
+		setstr $@arg[1].$@arg[2] 1 ;
+	) else $(
+		#通常は「現在カテゴリ.選択パーツ」に0(着せ替えオフ)をセット
+		setstr $@arg[1].$@arg[2] 0 ;
+		setstr @pos $(find CurrentKisekaeSet $@arg[1].$@arg[2]);
+		if $[ ${@pos} != "-1" ] $(clear CurrentKisekaeSet[${@pos}]);
+		foreach @Part CurrentKisekaeSet $(
+			if $(match_at ${@Part} $@arg[1].) $(
+				# このカテゴリのパーツは他に使っていない
+				setstr @pos $(find CategoryOn $@arg[1]);
+				if $[ ${@pos} != "-1" ] $(clear CategoryOn[${@pos}]);
+				break;
+			);
+		);
+	);
+	
+	return "\![bind,"$@arg[1]","$@arg[2]","${$@arg[1].$@arg[2]}"]";
+);
+
+# 機能:全パーツのフラグを解除し、解除タグ列生成
+# 戻り値:全パーツ解除タグ列
+function PartsRemoveAll $(
+	setstr @stack \0;
+	# @Partにパーツを一時保存して全てに0（着せ替えオフ）をセット
+	foreach @Part CurrentKisekaeSet $(setstr ${@Part} 0);
+	# 解除タグ生成
+	foreach @C CategoryOn $(pushstr @stack "\![bind,"${@C}",,0]");
+	clear CurrentKisekaeSet;
+	clear CategoryOn;
+	# @stackを結合してタグを返す
+	return $(join @stack);
+);
+
+# 機能:色替えを実行する
+# 第1引数: 選択カテゴリ
+# 第2引数: 選択パーツ
+# 第3引数: 2色塗り情報(2枚目レイヤーの場合、"2toneCC2")
+# 第4引数: RGBのR
+# 第5引数: RGBのG
+# 第6引数: RGBのB
+# 第7引数: 2レイヤー目のRGBのR(省略可能)
+# 第8引数: 2レイヤー目のRGBのG(省略可能)
+# 第9引数: 2レイヤー目のRGBのB(省略可能)
+function PartsColorPaint $(
+	if $[ $(size @arg) != 7 && $(size @arg) != 10 ] $(return);
+
+	setstr  @PresentCategory  $@arg[1];
+	setstr  @PresentParts     $@arg[2];
+	setstr  @Save2toneInfo    $@arg[3];
+	clear   @arg[0..3];
+	copy    @arg              @RGB;
+	# パーツ名情報はSave2toneInfoより信用出来る
+	if $[ $(match ${PresentParts} "_CCT") < 0 ] $(setstr Save2toneInfo "");
+	#「ColorChangeParts」に「現在のシェル名」.「カテゴリ」.「パーツ」を保存
+	setstr  @ColorChangeParts ${ColorsCurrentShellName}.${@PresentCategory}.${@PresentParts}.${@Save2toneInfo};
+
+	logprint "＠＠＠ paint(api): Parameters     =/"${@PresentCategory}"/"${@PresentParts}"/"${@Save2toneInfo}"/"$(join @RGB "/")"/";
+
+	# 色替え対象が髪・眉・肌色パーツなら、一括色替えで終了
+	if $[ $(match ${@PresentCategory} "髪") >= 0 || $(match ${@PresentCategory} "眉") >= 0 || $(match ${@ColorChangeParts} "素体.肌") >= 0 ] $(
+		logprint "＠＠＠ paint(api): Call Moderate";
+		PartsColorModerate ${@PresentCategory} ${@PresentParts} $@RGB[0] $@RGB[1] $@RGB[2];
+		return;
+	);
+	
+	# 画像ファイル名基底生成
+	setstr @ColorChangeMode $(ExtractColorID ${@PresentParts});
+	setstr @IMG $(PartsPath ${@PresentCategory} ${@PresentParts})"_"${@ColorChangeMode}"_" ;
+	
+	logprint "＠＠＠ paint(api): ColorChangeMode=/"${@ColorChangeMode}"/";
+	logprint "＠＠＠ paint(api): IMG            =/"${@IMG}"/";
+	
+	#ColorChangePartsの内容のエントリにRGB値を保存
+	if $[ ${@Save2toneInfo} != "" && $(size @RGB) == 6 ] $(
+		# 2色色替えで2レイヤー分の色データがある場合
+		setstr @ColorChangeParts1 ${ColorsCurrentShellName}.${@PresentCategory}.${@PresentParts}.2toneCC1;
+		setstr @ColorChangeParts2 ${ColorsCurrentShellName}.${@PresentCategory}.${@PresentParts}.2toneCC2;
+		clear RGB.${@ColorChangeParts1};
+		clear RGB.${@ColorChangeParts2};
+		# 誤ってあるかもしれないので消去
+		clear RGB.${@ColorChangeParts};
+		copy @RGB @RGB1;
+		copy @RGB @RGB2;
+		clear @RGB1[-3..-1];
+		clear @RGB2[0..2];
+		copy @RGB1 RGB.${@ColorChangeParts1};
+		copy @RGB2 RGB.${@ColorChangeParts2};
+	) else $(
+		# それ以外の場合
+		clear RGB.${@ColorChangeParts};
+		copy @RGB RGB.${@ColorChangeParts};
+	);
+	clear RGB;
+	copy @RGB RGB;
+	SaveData;
+
+	logprint "＠＠＠ paint(api): RGB            =/"$(join @RGB "/")"/";
+
+	#色塗り替え実行
+	#Save2toneInfoが"2toneCC2"ならレイヤー2を塗る
+	#ファイル名末尾:レイヤー2なら3・4、それ以外なら1・2
+	if $[ ${@Save2toneInfo} != "2toneCC2" || $(size @RGB) == 6 ] $(
+		ColorConvertCopy ${@IMG}"1.png" ${@IMG}"2.png" $@RGB[0] $@RGB[1] $@RGB[2];
+		logprint "＠＠＠ paint(api): Paint 1st layer/RGB="$@RGB[0]"/"$@RGB[1]"/"$@RGB[2];
+	);
+	if $[ ${@Save2toneInfo} == "2toneCC2" ] $(
+		ColorConvertCopy ${@IMG}"3.png" ${@IMG}"4.png" $@RGB[-3] $@RGB[-2] $@RGB[-1];
+		logprint "＠＠＠ paint(api): Paint 2nd layer/RGB="$@RGB[-3]"/"$@RGB[-2]"/"$@RGB[-1];
+
+	);
+	
+);
+
+# 機能:髪・眉・肌を一括して色替え
+# 第1引数: 選択カテゴリ
+# 第2引数: 選択パーツ
+# 第3引数: RGBのR
+# 第4引数: RGBのG
+# 第5引数: RGBのB
+function PartsColorModerate $(
+	if $[ $(size @arg) != 6 ] $(return);
+
+	setstr  @PresentCategory  $@arg[1];
+	setstr  @PresentParts     $@arg[2];
+	clear   @arg[0..2];
+	copy    @arg              @RGB;
+
+	#PresentCategoryに「髪」が含まれていたらカテゴリ名に「髪」を含む全てのパーツを色あわせ
+	if $[ $(match ${@PresentCategory} "髪") >= 0 ] $(
+		# 髪の色はRGB.（シェル名）.Hairエントリに保存
+		clear RGB.${ColorsCurrentShellName}.Hair ;
+		copy @RGB RGB.${ColorsCurrentShellName}.Hair ;
+		# 全髪パーツの色データエントリを変更
+		foreach @category PartsColorModerate.HairCategory $(
+			listsub @hairparts ${@category};
+		);
+		foreach @parts @hairparts $(
+			clear RGB.${ColorsCurrentShellName}.${@parts};
+			copy @RGB RGB.${ColorsCurrentShellName}.${@parts};
+		);
+		SaveData;
+		# 画像データの色替え
+		xargs PartsColorModerate.HairCategory CategoryColorConvert;
+		return;
+	);
+	
+	#PresentCategoryに「眉」が含まれていたらカテゴリ名に「眉」を含む全てのパーツを色あわせ
+	if $[ $(match ${@PresentCategory} "眉") >= 0 ] $(
+		# 髪の色はRGB.（シェル名）.Eyebrowエントリに保存
+		clear RGB.${ColorsCurrentShellName}.Eyebrow ;
+		copy @RGB RGB.${ColorsCurrentShellName}.Eyebrow ;
+		# 全眉パーツの色データエントリを変更
+		listsub @eyebrowparts "眉１";
+		foreach @parts @eyebrowparts $(
+			setstr @parts2 $(gsub ${@parts} "眉１" "眉２");
+			clear RGB.${ColorsCurrentShellName}.${@parts};	
+			clear RGB.${ColorsCurrentShellName}.${@parts2};	
+			if $[ $(match ${@parts} "_CC") >= 0 ] $(
+				# 色替えパーツだけ色データを保持すればよい
+				copy @RGB RGB.${ColorsCurrentShellName}.${@parts};
+				copy @RGB RGB.${ColorsCurrentShellName}.${@parts2};
+			);
+		);
+		SaveData;
+		# 画像データの色替え
+		CategoryColorConvert 眉１;
+		return;
+	);
+	
+	#ColorChangePartsに「素体.肌」が含まれていたら全肌色パーツ色あわせ
+	if $[ $(match ${@PresentCategory}.${@PresentParts} "素体.肌") >= 0 ] $(
+		# RGB.<対象シェル名>.SkinにRGB値を格納（後で目の形等を変更した時用）
+		clear RGB.${ColorsCurrentShellName}.Skin;
+		copy @RGB RGB.${ColorsCurrentShellName}.Skin;
+		SaveData;
+		# 肌色パーツを一括色替え
+		SkinColorConvert;
+		return;
+	);
+);
+
+# 機能: 指定したパーツの色情報エントリを返す
+# 第1引数: カテゴリ名
+# 第2引数: パーツ名（色識別子付）
+# 戻り値:  エントリ名、2色色替えの場合は"|"で区切って複数を返す
+function RGBEntryName $(
+	setstr @Category $@arg[1];
+	setstr @Parts    $@arg[2];
+	setstr @ptype $(GetPartsType ${@Category} ${@Parts});
+	# 色情報のないパーツ、色替えさせたくないパーツなので何も返さない
+	if $[
+		   ${@ptype} == "norm"
+		|| ${@ptype} == "mayu"
+		|| ${@ptype} == "mouth"
+		# 肌パーツは「素体.肌」以外で色替えさせてはならない
+		|| ${@ptype} == "skin"
+		|| ${@ptype} == "skinc"
+	] $(
+		return;
+	);
+	# 以降、色情報は返すパーツ
+	setstr @RGBbase RGB.${ColorsCurrentShellName}.${@Category}.${@Parts};
+	if $[ $(match ${@Category} "髪") >= 0 ] $(
+		setstr @RGBbase RGB.${ColorsCurrentShellName}.Hair;
+	) else if $[ $(match ${@Category} "眉") >= 0 ] $(
+		setstr @RGBbase RGB.${ColorsCurrentShellName}.Eyebrow;
+	) else if $[ $(match ${@Category}.${@Parts} "素体.肌") >= 0 ] $(
+		setstr @RGBbase RGB.${ColorsCurrentShellName}.Skin;
+	);
+	setstr @RGBbase1 ${@RGBbase}.2toneCC1;
+	setstr @RGBbase2 ${@RGBbase}.2toneCC2;
+	
+	# 2色色替え情報の存在ステート:@state
+	#   @state=10 ... レイヤー1だけ色情報あり
+	#   @state=01 ... レイヤー2だけ色情報あり
+	#   @state=11 ..  レイヤー1，2とも色情報あり
+	setstr @state $(
+		if $(size ${@RGBbase1}) 1 else 0;
+		if $(size ${@RGBbase2}) 1 else 0;
+	);
+	# 2色色替え情報が誤って記録された場合対策
+	if $[ $(match ${@Parts} "_CCT") < 0 && ${@state} != "00" ] $(
+		clear ${@RGBbase};
+		if $[ ${@state} = "10" || ${@state} == "11" ] $(
+			move ${@RGBbase1} ${@RGBbase};
+		) else $(
+			move ${@RGBbase2} ${@RGBbase};
+		);
+		setstr @state "00";
+	);
+	# レイヤー2に誤ってレイヤー1の情報もあった場合対策
+	if $[ ${@state} == "01" && $(size ${@RGBbase2}) == 6 ] $(
+		copy ${@RGBbase2} ${@RGBbase1};
+		clear ${@RGBbase1}[-3..-1];
+		clear ${@RGBbase2}[0..2];
+		setstr @state "11";
+	);
+	# 色替え可能パーツで色が設定されてない場合、白扱いする
+	if $[ ${@ptype} == "cct" ] $(
+		# cctは２層見なくてはならないので例外処理
+		if $[ $(size ${@RGBbase1}) == 0 ] $(
+			setstr @RGBbase1 "RGBEntryName.white";
+		);
+		if $[ $(size ${@RGBbase2}) == 0 ] $(
+			setstr @RGBbase2 "RGBEntryName.white";
+		);
+	) else $(
+		# cct以外
+		if $[ $(size ${@RGBbase}) == 0 ] $(
+			setstr @RGBbase "RGBEntryName.white";
+		);
+	);
+	return $(
+		if $[ ${@ptype} == "cct" ] (
+			${@RGBbase1}"|"${@RGBbase2}
+		) else if $(size @RGBbase) (
+			${@RGBbase}
+		)
+	);
+);
+
+=dict
+# 色情報が見当たらない場合、「白」として扱うためのエントリ
+RGBEntryName.white : 255, 255, 255
+=end
+
+# 機能:現在の着せ替え設定をエントリにセーブする
+# 第1引数: セーブするエントリ名
+function PartsEntrySave $(
+	# @script1: ヘッダ設定
+	# @script2: 一般セーブ情報
+	# @script3: 髪など一括色替え情報
+
+	# 素体の種類判別
+	# @BaseType=CC/色替え素体、CCC/色替え不可部分付き色替え素体
+	setstr @BaseType "CC";
+	listsub @Base "素体";
+	foreach @Candidate @Base $(
+		if $(match_at ${@Candidate} "素体.肌_CCC") $(
+			setstr @BaseType "CCC";
+			break;
+		);
+	);
+
+	# ヘッダ設定
+	pushstr @script1 "declare	RECIPE/1.0	"${ColorsCurrentShellName};
+	pushstr @script1 "select	素体	肌_"${@BaseType};
+	pushstr @script1 "mayuselect	"$(tr ${EyebrowLayer} １２ 12);
+	# 一般セーブ情報
+	foreach @CategoryParts CurrentKisekaeSet $(
+		clear @cp;
+		split @cp ${@CategoryParts} ".";
+		setstr @Category $(shift @cp);
+		setstr @Parts $(join @cp ".");
+		setstr @ColorChangeMode $(ExtractColorID ${@Parts});
+		# 着せ替えコマンド生成
+		if $[ $(match ${@Category}.${@Parts} "素体.肌") < 0 ] $(
+			pushstr @script2 "select	"${@Category}"	"${@Parts};
+		);
+
+		# 色情報エントリの確定
+		setstr @RGBbase RGB.${ColorsCurrentShellName}.${@Category}.${@Parts};
+		if $[ $(match ${@Category} "髪") >= 0 ] $(
+			setstr @RGBbase RGB.${ColorsCurrentShellName}.Hair;
+		) else if $[ $(match ${@Category} "眉") >= 0 ] $(
+			setstr @RGBbase RGB.${ColorsCurrentShellName}.Eyebrow;
+		) else if $[ $(match ${@Category}.${@Parts} "素体.肌") >= 0 ] $(
+			setstr @RGBbase RGB.${ColorsCurrentShellName}.Skin;
+		);
+		setstr @RGBbase1 ${@RGBbase}.2toneCC1;
+		setstr @RGBbase2 ${@RGBbase}.2toneCC2;
+
+		# 2色色替え情報の存在ステート:@state
+		#   @state=10 ... レイヤー1だけ色情報あり
+		#   @state=01 ... レイヤー2だけ色情報あり
+		#   @state=11 ..  レイヤー1，2とも色情報あり
+		setstr @state $(if $(size ${@RGBbase1}) 1 else 0 ; if $(size ${@RGBbase2}) 1 else 0);
+		# 2色色替え情報が誤って記録された場合対策
+		if $[ $(match ${@Parts} "_CCT") < 0 && ${@state} != "00" ] $(
+			clear ${@RGBbase};
+			if $[ ${@state} = "10" || ${@state} == "11" ] $(
+				move ${@RGBbase1} ${@RGBbase};
+			) else $(
+				move ${@RGBbase2} ${@RGBbase};
+			);
+			setstr @state "00";
+		);
+		# レイヤー2に誤ってレイヤー1の情報もあった場合対策
+		if $[ ${@state} == "01" && $(size ${@RGBbase2}) == 6 ] $(
+			copy ${@RGBbase2} ${@RGBbase}.2toneCC1;
+			clear ${@RGBbase1}[-3..-1];
+			clear ${@RGBbase2}[0..2];
+			setstr @state "11";
+		);
+
+		# 色替えコマンド生成
+		if $(size ${@RGBbase}) $(
+			# 2色色替えではない
+			if $[ $(match ${@Category} "髪") >= 0 ] $(
+				# 髪パーツの場合
+				if $[ ${@hairflag} == "" ] $(
+					pushstr @script3 "paint	"${@Category}"	"${@Parts}"		"$(join ${@RGBbase} "	");
+					setstr @hairflag 1;
+				);
+			) else if $[ $(match ${@Category} "眉") >= 0 ] $(
+				# 眉パーツの場合
+				if $[ ${@eyebrowflag} == "" ] $(
+					pushstr @script3 "paint	眉	"${@Parts}"		"$(join ${@RGBbase} "	");
+					setstr @eyebrowflag 1;
+				);
+			) else if $[ $(match ${@Category}.${@Parts} "素体.肌") >= 0 ] $(
+				# 肌色パーツの場合
+				pushstr @script1 "paint	"${@Category}"	"${@Parts}"		"$(join ${@RGBbase} "	");
+			) else $(
+				# 通常のCCまたはCCCの場合
+				pushstr @script2 "paint	"${@Category}"	"${@Parts}"		"$(join ${@RGBbase} "	");
+			);
+		) else if $[ ${@state} == "10" ] $(
+			# レイヤー1だけ色情報あり
+			pushstr @script2 "paint	"${@Category}"	"${@Parts}"	2toneCC1	"$(join ${@RGBbase1} "	");
+		) else if $[ ${@state} == "01" ] $(
+			# レイヤー2だけ色情報あり
+			pushstr @script2 "paint	"${@Category}"	"${@Parts}"	2toneCC2	"$(join ${@RGBbase2} "	");
+		) else if $[ ${@state} == "11" ] $(
+			# レイヤー1，2とも色情報あり
+			setstr @RGB $(join ${@RGBbase1} "	")"	"$(join ${@RGBbase2} "	");
+			pushstr @script2 "paint	"${@Category}"	"${@Parts}"	2toneCC2	"${@RGB};
+		);
+	);
+	
+	# レシピを保存
+	copy @script1 @script;
+	copy @script2 @script;
+	copy @script3 @script;
+	if $(size @script) $(
+		copy @script $@arg[1];
+	);
+);
+
+# 機能:現在の着せ替え設定をセーブする
+# 第1引数: セーブするファイル名
+# 備考: セーブ位置をレシピフォルダに固定する機能は廃止
+function PartsSave $(
+	# PartsSave.temporaryエントリを受渡しに使用
+	move PartsSave.temporary @temp;
+	# レシピをセーブ
+	PartsEntrySave PartsSave.temporary;
+	## 念のためパス部分を排除し、recipeフォルダを相対パス指定する
+	#textsave $(cncpath ${SaveRecipeDir} $(filename $@arg[1])) PartsSave.temporary;
+	# 一旦テンポラリにセーブし、あとで移動させる(textsaveの制約回避)
+	textsave $(cncpath "temp\\temprecipe" $(filename $@arg[1])) PartsSave.temporary;
+	# 上書き時には既にあるファイルを消す
+	if $(isexist $@arg[1]) $(
+		remove_file $(cncpath $@arg[1]);
+	);
+	move_file $(cncpath ${System.DataPath}"temp\\temprecipe" $(filename $@arg[1])) $(dirname $@arg[1]);
+	silent;
+	# 後始末
+	clear PartsSave.temporary;
+	move @temp PartsSave.temporary;
+);
+
+=end
+
+#===============================================================================
+# イベント処理
+#===============================================================================
+
+#本体からの着せ替え通知「OnNotifyDressupInfo」の処理
+
+:rem
+【OnNotifyDressupInfo】
+「キャラクターID・カテゴリー名・パーツ名・オプション・有効1/無効0・サムネイルパス」
+OnNotifyDressupInfo通知が来たらReference内容を分割して、
+カテゴリー一覧エントリと全てのパーツのオンオフを保存。
+:endrem
+
+=kis
+# パーツ着せ替えエントリを初期化
+function ClearPartsManagementInfo $(
+	foreach @Category Category $(cleartree ${@Category});
+	cleartree DressupOption;
+	clear PresentItems;
+	clear Category;
+	clear CategoryOn ;
+	clear CurrentKisekaeSet;
+	clear PartsColorModerate.HairCategory;
+	clear EyebrowStates;
+);
+=end
+
+## シェル名リスト取得関連
+
+# シェル名通知時にはシェル名リストを必ず更新する
+Execute.Installedshellname : $(MakeShellNameList)
+
+# 起動時にもシェル名リストを必ず更新＋同時にログファイル読み込み
+System.Callback.OnLoad : $(
+	MakeShellNameList;
+	foreach @shell ColorsShellList $(
+		setstr @shellpath $(cncpath "../../shell" ${ColorsShellList.${@shell}});
+		textload EditLog.${@shell} $(cncpath ${@shellpath} "editlog.log");
+	);
+)
+
+# シェル切り替え時に現在のシェル名更新
+event.OnShellChanged : $(
+	clear ColorsShellNameStack;
+	MakeShellNameList;
+	setstr @shell $(EntNamReference 0);
+	# 感知しているシェルであれば対処
+	if ${ColorsShellList.${@shell}} $(
+		setstr System.Shell ${@shell};
+		setstr System.ShellPath ${ColorsShellPathRoot}"/"${ColorsShellList.${@shell}}"/";
+		setstr @null $(get Execute.SelfInfo);
+		
+	);
+	LogMsg "Shell:/"${System.Shell}"/ Path:/"${System.ShellPath}"/";
+)
+
+# インストール完了時、シェルを含むようならシェル名リストを取得
+event.OnInstallComplete : $(
+	setstr @InstallName $(SReference 1);
+	if $(size System.Request.Reference2) $(
+		pushstr @InstallName $(SReference 2);
+	);
+	if $[ $(find @InstallName "shell") >= 0 ] $(
+		MakeShellNameList;
+	);
+)
+
+
+# 着せ替え通知
+notify.OnNotifyDressupInfo, event.OnNotifyDressupInfo : $(
+	# シェルの状態が変わったら、間違いなくここを通るのでマウス反応エリア情報を
+	# ここで読む
+	ReadMouseArea;
+	# シェルが切り替わっている可能性を考慮し、ツリーごと消す
+	ClearPartsManagementInfo;
+	# System.Request.Reference[0-9]+の中身をバイト値1で区切り、カテゴリ・パーツのリストを作成する
+	setstr @var $(GetReferenceList);
+	split @ref_entry ${@var} "|";
+	foreach @entry @ref_entry $(
+		clear @R;
+		split @R ${${@entry}} $(chr 1) ; 
+		#重複させずにCategoryエントリにカテゴリ名セット
+		if $[ $(find Category $@R[1]) < 0 ] $(
+			pushstr Category $@R[1];
+			setstr DressupOption.$@R[1] $@R[3];
+			# 「髪」が含まれるカテゴリリストを作成
+			if $[ $@R[1] =~ "髪" ] $(
+				pushstr PartsColorModerate.HairCategory $@R[1];
+			);
+		);
+		#「カテゴリ.パーツ」エントリに0か1か（着せ替えオンオフ）をセット
+		setstr $@R[1].$@R[2] $@R[4];
+		#オン（1）の「カテゴリ.パーツ」のみをCurrentKisekaeSetに追加
+		#CategoryOnにカテゴリ追加。
+		if $[ $@R[4] == 1 ] $(
+			#pushstr CurrentKisekaeSet $@R[1].$@R[2];
+			pushstr CategoryOn $@R[1];
+		);
+	);
+	# CurrentKisekaeSetをSurfaceID昇順で作成
+	loop $(size EditSurfaces.Item) $(
+		setstr @i ${-1};
+		setstr @item $EditSurfaces.Item[${@i}];
+		if $[ $(char_at ${@item} 0) == "（" ] $(continue);
+		if $[ ${@item} == "眉" ] $(continue);
+		if $[ $(size ${CPartsTable}.${@item}) == 0 ] $(continue);
+		loop $(size ${CPartsTable}.${@item}) $(
+			setstr @j ${-1};
+			setstr @c_and_p ${@item}.$${CPartsTable}.${@item}[${@j}];
+			if $[ ${${@c_and_p}} == 1 ] $(
+				pushstr CurrentKisekaeSet ${@c_and_p};
+			);
+		);
+	);
+	#眉レイヤーチェック
+	if $[ $( find CategoryOn "眉１" ) > -1 ] $(
+		setstr EyebrowStates "眉１";
+		setstr EyebrowLayer "１";
+	) else if $[ $( find CategoryOn "眉２" ) > -1 ] $(
+		setstr EyebrowStates "眉２";
+		setstr EyebrowLayer "２";
+	) else $(
+		# ひとまず眉１扱いに…
+		setstr EyebrowStates "眉１";
+		setstr EyebrowLayer "１";
+	);
+	
+	#現在シェルの肌色情報がない場合、シェル同梱テキストから初期値を読み込む。
+	if $[ ${RGB.${ColorsCurrentShellName}.Skin} == "" || ${RGB.${ColorsCurrentShellName}.Hair} == "" ] $(
+		ClearColorsShellInitialConfig;
+		load $(cncpath ${ColorsCurrentShellPath} "colorsshell.txt");
+		if $[ ${RGB.${ColorsCurrentShellName}.Skin} == "" ] $(
+			clear RGB.${ColorsCurrentShellName}.Skin;
+			move rgb.skin RGB.${ColorsCurrentShellName}.Skin;
+		);
+		if $[ ${RGB.${ColorsCurrentShellName}.Hair} == "" ] $(
+			clear RGB.${ColorsCurrentShellName}.Hair;
+			move rgb.hair RGB.${ColorsCurrentShellName}.Hair;
+		);
+	);
+)
+
+# ColorsUpdate遅延表示実行イベント"OnDelayDisplayExecute"
+# raiseタグで呼び出し、Reference0に呼び出すエントリ名を記載のこと
+# OnSecondChangeでアイドル時にReference0のエントリを呼び出すタスクを起動
+event.OnDelayDisplayExecute : $(
+	# 最低限のセキュリティだけ実施
+	KTM.PostMail DelayDisplay $(SReference 0);
+	KTM.RunTask ${DelayDisplayTaskNo};
+	#Talk $(SReference 0);
+)
+
+# 遅延表示実行タスク
+task.DelayDisplay.init : $(setstr $(KTM.Local counter) 2)
+
+task.DelayDisplay.cond : $[ ${System.Request.Status} != "talking" ]
+
+task.DelayDisplay.proc : $(
+	# トークフラグが解除になってから2秒待つ
+	SecureDec $(KTM.Local counter) 1 0;
+	if ${$(KTM.Local counter)} $(return);
+	
+	# 処理投入可能
+	if $(KTM.LockMutex AITalk) $(
+		# 処理するエントリ名は最後のものだけが有効なので、それ以外を読み飛ばす
+		while $(KTM.GetMailNo DelayDisplay) $(
+			setstr @talk $(KTM.GetMailMessage DelayDisplay);
+			KTM.DeleteMail DelayDisplay;
+		);
+		# 2秒待機カウンタを復活
+		setstr $(KTM.Local counter) 2;
+		# トークキューに投入後スリープ
+		KTM.PostMail AITalk ${@talk};
+		KTM.PostMail SYSTEM M_RLS_MTX AITalk;
+		KTM.PostMail SYSTEM M_STOP ${DelayDisplayTaskNo};
+	);
+)
+
+
+# タスクの生成とヘッダスタック生成
+=kis
+setstr DelayDisplayTaskNo $(
+	KTM.CreateTask
+	"DelayDisplayExecute"
+	task.DelayDisplay.cond
+	task.DelayDisplay.proc
+	task.DelayDisplay.init
+	KTM.RANK0
+);
+=end
+
+#===============================================================================
+# 公開API
+#===============================================================================
+
+=kis
+# 通常のファイルを追加
+# 第1引数:カテゴリ名
+# 第2引数:パーツ名
+# 第3引数:ファイル名
+function AddNormalSurface $(
+	setstr @arg[2] $(EncodePartsName $@arg[1] $@arg[2]);
+	setstr @sid $(EditSurfaces $@arg[1] "" $@arg[2]);
+	if $[ ${@sid} != "" ] $(
+		EditDescript ${@sid} $@arg[1] $@arg[2];
+		PNGCopy $@arg[3] ${@sid};
+		if $(isUsingShell) $(setstr $@arg[1].$@arg[2] "0");
+		# ログに出力
+		EditLog "norm" $@arg[1] $@arg[2] ${@sid} $@arg[3];
+	);
+);
+
+# 色替えファイルを追加
+# 第1引数:カテゴリ名
+# 第2引数:パーツ名
+# 第3引数:ファイル名
+function AddCCSurface $(
+	setstr @arg[2] $(EncodePartsName $@arg[1] $@arg[2]);
+	setstr @sid $(EditSurfaces $@arg[1] CC $@arg[2]);
+	if $[ ${@sid} != "" ] $(
+		EditDescript ${@sid} $@arg[1] $@arg[2]"_CC";
+		if $[ $(match $@arg[1] "髪") >= 0 ] $(
+			PNGCopy $@arg[3] ${@sid}"_CC_1";
+			HairColorCopy $@arg[3] ${@sid}"_CC_2";
+		) else $(
+			PNGCopyAll
+				$@arg[3]
+				${@sid}"_CC_1"
+				$@arg[3]
+				${@sid}"_CC_2"
+			;
+		);
+		if $(isUsingShell) $(setstr $@arg[1].$@arg[2]"_CC" "0");
+		# ログに出力
+		EditLog "cc" $@arg[1] $@arg[2] ${@sid} $@arg[3];
+	);
+);
+
+# 色替え不可部分付き色替えファイルを追加
+# 第1引数:カテゴリ名
+# 第2引数:パーツ名
+# 第3引数:ファイル名1(塗り替え可)
+# 第4引数:ファイル名2(塗り替え不可)
+function AddCCCSurface $(
+	setstr @arg[2] $(EncodePartsName $@arg[1] $@arg[2]);
+	setstr @sid $(EditSurfaces $@arg[1] CCC $@arg[2]);
+	if $[ ${@sid} != "" ] $(
+		EditDescript ${@sid} $@arg[1] $@arg[2]"_CCC";
+		if $[ $(match $@arg[1] "髪") >= 0 ] $(
+			PNGCopy $@arg[3] ${@sid}"_CCC_1";
+			HairColorCopy $@arg[3] ${@sid}"_CCC_2";
+			PNGCopy $@arg[4] ${@sid}"_CCC";
+		) else $(
+			PNGCopyAll
+				$@arg[3]
+				${@sid}"_CCC_1"
+				$@arg[3]
+				${@sid}"_CCC_2"
+				$@arg[4]
+				${@sid}"_CCC"
+			;
+		);
+		if $(isUsingShell) $(setstr $@arg[1].$@arg[2]"_CCC" "0");
+		# ログに出力
+		EditLog "ccc" $@arg[1] $@arg[2] ${@sid} $@arg[3] $@arg[4];
+	);
+);
+
+# 多色色替えファイルを追加
+# 第1引数:カテゴリ名
+# 第2引数:パーツ名
+# 第3引数:ファイル名1(塗り替え、表示用)
+# 第4引数:ファイル名2(陰影用最前列画像)
+function AddCCPSurface $(
+	setstr @arg[2] $(EncodePartsName $@arg[1] $@arg[2]);
+	setstr @sid $(EditSurfaces $@arg[1] CCP $@arg[2]);
+	if $[ ${@sid} != "" ] $(
+		EditDescript ${@sid} $@arg[1] $@arg[2]"_CCP";
+		PNGCopyAll
+			$@arg[3]
+			${@sid}"_CCP_1"
+			$@arg[3]
+			${@sid}"_CCP_2"
+			$@arg[3]
+			${@sid}"_CCP_3"
+			$@arg[4]
+			${@sid}"_CCP"
+		;
+		if $(isUsingShell) $(setstr $@arg[1].$@arg[2]"_CCP" "0");
+		# ログに出力
+		EditLog "ccp" $@arg[1] $@arg[2] ${@sid} $@arg[3] $@arg[4];
+	);
+);
+
+# 2色色替えファイルを追加
+# 第1引数:カテゴリ名
+# 第2引数:パーツ名
+# 第3引数:ファイル名1(塗り替え前・後元画像１)
+# 第4引数:ファイル名2(塗り替え前・後元画像２)
+function AddCCTSurface $(
+	setstr @arg[2] $(EncodePartsName $@arg[1] $@arg[2]);
+	setstr @sid $(EditSurfaces $@arg[1] CCT $@arg[2]);
+	if $[ ${@sid} != "" ] $(
+		EditDescript ${@sid} $@arg[1] $@arg[2]"_CCT";
+		PNGCopyAll
+			$@arg[3]
+			${@sid}"_CCT_1"
+			$@arg[3]
+			${@sid}"_CCT_2"
+			$@arg[4]
+			${@sid}"_CCT_3"
+			$@arg[4]
+			${@sid}"_CCT_4"
+		;
+		if $(isUsingShell) $(setstr $@arg[1].$@arg[2]"_CCT" "0");
+		# ログに出力
+		EditLog "cct" $@arg[1] $@arg[2] ${@sid} $@arg[3] $@arg[4];
+	);
+);
+
+# 肌色塗り替えファイルを追加
+# 第1引数:カテゴリ名
+# 第2引数:パーツ名
+# 第3引数:ファイル名
+function AddSkinSurface $(
+	setstr @arg[2] $(EncodePartsName $@arg[1] $@arg[2]);
+	setstr @sid $(EditSurfaces $@arg[1] SKIN $@arg[2]);
+	if $[ ${@sid} != "" ] $(
+		EditDescript ${@sid} $@arg[1] $@arg[2]"_SKIN";
+		PNGCopy       $@arg[3] ${@sid}"_skin";
+		SkinColorCopy $@arg[3] ${@sid}"_skin_2";
+		if $(isUsingShell) $(setstr $@arg[1].$@arg[2]"_SKIN" "0");
+		# ログに出力
+		EditLog "skin" $@arg[1] $@arg[2] ${@sid} $@arg[3];
+	);
+);
+
+# 色替え不可部分付き肌色塗り替えファイルを追加
+# 第1引数:カテゴリ名
+# 第2引数:パーツ名
+# 第3引数:ファイル名1(塗り替え可)
+# 第4引数:ファイル名2(塗り替え不可)
+function AddSkinCSurface $(
+	setstr @arg[2] $(EncodePartsName $@arg[1] $@arg[2]);
+	setstr @sid $(EditSurfaces $@arg[1] skinC $@arg[2]);
+	if $[ ${@sid} != "" ] $(
+		EditDescript ${@sid} $@arg[1] $@arg[2]"_skinC";
+		PNGCopyAll
+			$@arg[3]
+			${@sid}"_skin"
+			$@arg[4]
+			${@sid}
+		;
+		SkinColorCopy $@arg[3] ${@sid}"_skin_2";
+		if $(isUsingShell) $(setstr $@arg[1].$@arg[2]"_skinC" "0");
+		# ログに出力
+		EditLog "skinc" $@arg[1] $@arg[2] ${@sid} $@arg[3] $@arg[4];
+	);
+);
+
+# 目パーツファイルを追加
+# 第1引数:パーツ名
+# 第2引数:ファイル名1(通常目)
+# 第3引数:ファイル名1(通常目_skin)
+# 第4引数:ファイル名2(半目)
+# 第5引数:ファイル名2(半目_1)
+# 第6引数:ファイル名3(目閉じ)
+# 第7引数:ファイル名3(目閉じ_1)
+# 第8引数:ファイル名4(笑い目)
+function AddEyesSurface $(
+	setstr @arg[1] $(EncodePartsName "目の形" $@arg[1]);
+	setstr @sid $(EditSurfacesEyes $@arg[1]);
+	if $[ ${@sid} != "" ] $(
+		EditDescript ${@sid} "目の形" $@arg[1];
+		PNGCopyAll
+			$@arg[2]
+			${@sid}
+			$@arg[3]
+			${@sid}"_skin"
+			$@arg[4]
+			${@sid}"_half"
+			$@arg[5]
+			${@sid}"_half_1"
+			$@arg[6]
+			${@sid}"_close"
+			$@arg[7]
+			${@sid}"_close_1"
+			$@arg[8]
+			${@sid}"_smile"
+		;
+		SkinColorCopy $@arg[3] ${@sid}"_skin_2";
+		if $(isUsingShell) $(setstr "目の形".$@arg[1] "0");
+		# ログに出力
+		EditLog "eye" "目の形" $@arg[1] ${@sid} $@arg[2] $@arg[3] $@arg[4] $@arg[5] $@arg[6] $@arg[7] $@arg[8];
+	);
+);
+
+# 眉パーツファイルを追加（通常版）
+# 第1引数:パーツ名
+# 第2引数:ファイル名1(通常)
+# 第3引数:ファイル名2(驚き)
+# 第4引数:ファイル名3(困り)
+# 第5引数:ファイル名4(怒り)
+
+function AddNormalMayuSurface $(
+	setstr @arg[1] $(EncodePartsName "眉１" $@arg[1]);
+	setstr @sid $(EditSurfacesMayu $@arg[1]);
+	if $[ ${@sid} != "" ] $(
+		LoadDescriptText;
+		setstr @multibackup $(isSurfacesMultiedit);
+		SetSurfacesMultiedit;
+		EditDescript ${@sid}             "眉１" $@arg[1];
+		EditDescript $[ ${@sid} + 5000 ] "眉２" $@arg[1];
+		if $[ ! ${@multibackup} ] $(ResetSurfacesMultiedit);
+		SaveDescriptText;
+		PNGCopyAll
+			$@arg[2]
+			${@sid}
+			$@arg[3]
+			${@sid}"_surprise"
+			$@arg[4]
+			${@sid}"_sad"
+			$@arg[5]
+			${@sid}"_angry"
+		;
+		if $(isUsingShell) $(setstr "眉１".$@arg[1] "0");
+		# ログに出力
+		EditLog "mayu" "眉１" $@arg[1] ${@sid} $@arg[2] $@arg[3] $@arg[4] $@arg[5];
+	);
+);
+
+# 単色塗り替え眉パーツファイルを追加
+# 第1引数:パーツ名
+# 第2引数:ファイル名1(通常)
+# 第3引数:ファイル名2(驚き)
+# 第4引数:ファイル名3(困り)
+# 第5引数:ファイル名4(怒り)
+
+function AddCCMayuSurface $(
+	setstr @arg[1] $(EncodePartsName "眉１" $@arg[1]);
+	setstr @sid $(EditSurfacesMayu $@arg[1] CC);
+	if $[ ${@sid} != "" ] $(
+		LoadDescriptText;
+		setstr @multibackup $(isSurfacesMultiedit);
+		SetSurfacesMultiedit;
+		EditDescript ${@sid}             "眉１" $@arg[1]"_CC";
+		EditDescript $[ ${@sid} + 5000 ] "眉２" $@arg[1]"_CC";
+		if $[ ! ${@multibackup} ] $(ResetSurfacesMultiedit);
+		SaveDescriptText;
+		PNGCopyAll
+			$@arg[2]
+			${@sid}"_CC_1"
+			$@arg[2]
+			${@sid}"_CC_2"
+			$@arg[3]
+			${@sid}"_surprise_CC_1"
+			$@arg[3]
+			${@sid}"_surprise_CC_2"
+			$@arg[4]
+			${@sid}"_sad_CC_1"
+			$@arg[4]
+			${@sid}"_sad_CC_2"
+			$@arg[5]
+			${@sid}"_angry_CC_1"
+			$@arg[5]
+			${@sid}"_angry_CC_2"
+		;
+		if $(isUsingShell) $(setstr "眉１".$@arg[1]"_CC" "0");
+		# ログに出力
+		EditLog "mayuc" "眉１" $@arg[1] ${@sid} $@arg[2] $@arg[3] $@arg[4] $@arg[5];
+	);
+);
+
+# 口パーツファイルを追加
+# 第1引数:パーツ名
+# 第2引数:ファイル名1(開き口)
+# 第3引数:ファイル名2(閉じ口)
+# 第4引数:ファイル名3(開き笑い口)
+# 第5引数:ファイル名4(笑い口)
+# 第6引数:ファイル名5(口マスク)
+
+function AddNormalMouthSurface $(
+	setstr @arg[1] $(EncodePartsName "口" $@arg[1]);
+	setstr @sid $(EditSurfacesMouth $@arg[1]);
+	if $[ ${@sid} != "" ] $(
+		LoadDescriptText;
+		setstr @multibackup $(isSurfacesMultiedit);
+		SetSurfacesMultiedit;
+		EditDescript ${@sid}             "口" $@arg[1];
+		if $[ ! ${@multibackup} ] $(ResetSurfacesMultiedit);
+		SaveDescriptText;
+		PNGCopyAll
+			$@arg[2]
+			${@sid}"_o"
+			$@arg[3]
+			${@sid}"_c"
+			$@arg[4]
+			${@sid}"_os"
+			$@arg[5]
+			${@sid}"_s"
+			$@arg[6]
+			${@sid}"_skin"
+		;
+		if $(isUsingShell) $(setstr "口".$@arg[1] "0");
+		# ログに出力
+		EditLog "mouth" "口" $@arg[1] ${@sid} $@arg[2] $@arg[3] $@arg[4] $@arg[5] $@arg[6];
+	);
+);
+
+#-------------------------------------------------------------------------------
+# エントリ内のパーツ一括追加、着せ替えロード等のレシピの解釈・実行
+# 第1引数: レシピの入ったエントリ名
+# 第2引数: 関係ファイルの存在するパス(省略可能、省略時はファイルはフルパス想定)
+# 備考: 命令ファイル中、行頭が「#」の行、空行は無視する。
+function ExecRecipeEntry $(
+	setstr ExecRecipe.OtherShell 0;
+	setstr @text $@arg[1];
+	clear @arg[0..1];
+	if $[ $(size ${@text}) == 0 ] $(return);
+	LoadDescriptText;
+	LoadSurfacesText;
+	SetSurfacesMultiedit;
+	setstr ExecRecipe.editflag 0;
+	clear  ExecRecipe.log;
+	foreach @line ${@text} $(
+		if $[ ! $(match_at ${@line} "#") && $(tr ${@line} " 	" "") != "" ] $(
+			setstr @ret $(xargs @arg ParseRecipeCmd ${@line});
+			if $[ ${@ret} != "" ] $(
+				# エラーが発生したのでスクリプト実行中止
+				break;
+			);
+		);
+	);
+	ResetSurfacesMultiedit;
+	if ${ExecRecipe.editflag} $(
+		EditLog "end" "-" "-" "-" "-";
+		SaveDescriptText;
+		SaveSurfacesText;
+	);
+	# 操作対象シェルを切り替えていた
+	if ${ExecRecipe.OtherShell} $(
+		if $(size ExecRecipe.log) $(
+			# 操作対象シェルが切り替わっていてかつタグがある場合
+			# このシェルに切り替える要請と見なす
+			# ToDo: 切り替える直前のレシピ保護は必要？
+			unshiftstr ExecRecipe.log "\![change,shell,"${ColorsCurrentShellName}"]";
+		);
+		PopCurrentShellName;
+	);
+);
+
+# パーツ一括追加、着せ替えロード等のレシピファイルの解釈・実行
+# 第1引数: 一括追加命令ファイル
+# 第2引数: 対象ファイルの存在するパス(省略可能、省略時はファイルはフルパス想定)
+# 備考: 命令ファイル中、行頭が「#」の行、空行は無視する。
+function ExecRecipe $(
+	# ExecRecipe.temporaryエントリを受け渡しに使用
+	move ExecRecipe.temporary @temp;
+	# レシピファイルを読み込む
+	textload ExecRecipe.temporary $@arg[1];
+	# レシピ実行
+	if $[ $@arg[2] != "" ] $(
+		ExecRecipeEntry ExecRecipe.temporary $@arg[2];
+	) else $(
+		ExecRecipeEntry ExecRecipe.temporary;
+	);
+	#後始末
+	clear ExecRecipe.temporary;
+	move @temp ExecRecipe.temporary;
+);
+
+# レシピコマンドを解析し実行する
+# 第1引数: tab区切りのコマンド
+# 第2引数: 対象ファイルの存在するパス(省略可能、省略時はファイルはフルパス想定)
+# コマンド構文
+# -命令(norm/cc/ccc/ccp/cct/skin/skinc/eye/mayu/mayuc/mouth)
+#      (declare/select/mayuselect/remove/removeall/paint/)
+# -カテゴリ名(eye/mayu/mayuc/mouthの場合は空欄も可)
+# -パーツ名
+# -ファイル名(最大７つまで)
+function ParseRecipeCmd $(
+	# タブで分割し、ダブルクォートを除去したものを@cmdlineとする
+#	split @cmdline $@arg[1] "	";
+	split @cmdbase $@arg[1] "	";
+	foreach @element @cmdbase $(pushstr @cmdline $(DeleteQuote ${@element}));
+	setstr @cmd $(shift @cmdline);
+	setstr @category $(shift @cmdline);
+	setstr @part $(shift @cmdline);
+	# パス指定がある場合、ファイルをパス指定に基づきフルパス化
+	# 生のまま引数を渡すコマンドの場合はフルパス化しない
+	if $[ $@arg[2] != "" && $(find ParseRecipeCmd.Raw ${@cmd}) < 0  ] $(
+		loop $(size @cmdline) $(
+			setstr @i ${-1};
+			setstr @cmdline[${@i}] $(
+				# ファイルが既にフルパスっぽい場合はフォルダ指定を無視する
+				if $[ $(match $@cmdline[${@i}] ":") >= 0 || $(match_at $@cmdline[${@i}] $(cncpath "/")) ] $(
+					cncpath $@cmdline[${@i}];
+				) else $(
+					cncpath $@arg[2] $@cmdline[${@i}];
+				);
+			);
+		);
+	);
+	# コマンド実行
+	xargs @cmdline ParseRecipeCmd.${@cmd} ${@category} ${@part};
+);
+
+=dict
+# 引数を生のまま渡すコマンド
+ParseRecipeCmd.Raw : declare, select, mayuselect, remove, removeall, paint
+=end
+
+# norm:通常のファイルを追加
+function ParseRecipeCmd.norm $(
+	AddNormalSurface $@arg[1] $@arg[2] $@arg[3];
+	setstr ExecRecipe.editflag 1;
+);
+
+# cc:色替えファイルを追加
+function ParseRecipeCmd.cc $(
+	AddCCSurface $@arg[1] $@arg[2] $@arg[3];
+	setstr ExecRecipe.editflag 1;
+);
+
+# ccc:色替え不可部分付き色替えファイルを追加
+function ParseRecipeCmd.ccc $(
+	AddCCCSurface $@arg[1] $@arg[2] $@arg[3] $@arg[4];
+	setstr ExecRecipe.editflag 1;
+);
+
+# ccp:多色色替えファイルを追加
+function ParseRecipeCmd.ccp $(
+	AddCCPSurface $@arg[1] $@arg[2] $@arg[3] $@arg[4];
+	setstr ExecRecipe.editflag 1;
+);
+
+# cct:2色色替えファイルを追加
+function ParseRecipeCmd.cct $(
+	AddCCTSurface $@arg[1] $@arg[2] $@arg[3] $@arg[4];
+	setstr ExecRecipe.editflag 1;
+);
+
+# skin:肌色塗り替えファイルを追加
+function ParseRecipeCmd.skin $(
+	AddSkinSurface $@arg[1] $@arg[2] $@arg[3];
+	setstr ExecRecipe.editflag 1;
+);
+
+# skinc:色替え不可部分付き肌色塗り替えファイルを追加
+function ParseRecipeCmd.skinc $(
+	AddSkinCSurface $@arg[1] $@arg[2] $@arg[3] $@arg[4];
+	setstr ExecRecipe.editflag 1;
+);
+
+# eye:目パーツファイルを追加
+function ParseRecipeCmd.eye $(
+	AddEyesSurface $@arg[2] $@arg[3] $@arg[4] $@arg[5] $@arg[6] $@arg[7] $@arg[8] $@arg[9];
+	setstr ExecRecipe.editflag 1;
+);
+
+# mayu:眉パーツファイルを追加（通常版）
+function ParseRecipeCmd.mayu $(
+	AddNormalMayuSurface $@arg[2] $@arg[3] $@arg[4] $@arg[5] $@arg[6];
+	setstr ExecRecipe.editflag 1;
+);
+
+# mayuc:単色塗り替え眉パーツファイルを追加
+function ParseRecipeCmd.mayuc $(
+	AddCCMayuSurface $@arg[2] $@arg[3] $@arg[4] $@arg[5] $@arg[6];
+	setstr ExecRecipe.editflag 1;
+);
+
+# mouth:口パーツファイルを追加
+function ParseRecipeCmd.mouth $(
+	AddNormalMouthSurface $@arg[2] $@arg[3] $@arg[4] $@arg[5] $@arg[6] $@arg[7];
+	setstr ExecRecipe.editflag 1;
+);
+
+# declare:扱うシェル名を宣言する
+# 現在のシェル名と異なっていた場合、操作対象シェルを切り替える
+function ParseRecipeCmd.declare $(
+	if $[ $@arg[1] != "RECIPE/1.0" ] $(
+		return 0;
+	);
+	if $[ ${ColorsCurrentShellName} != $@arg[2] ] $(
+		if ${ColorsShellList.$@arg[2]} $(
+			# 既に存在しているシェル
+			PushCurrentShellName $@arg[2];
+			setstr ExecRecipe.OtherShell 1;
+		) else $(
+			# 存在しないシェル
+			return 0;
+		);
+	);
+);
+
+# select:パーツを着せる
+function ParseRecipeCmd.select $(
+	setstr @str $(PartsSelect $@arg[1] $@arg[2]);
+	if $[ ${@str} != "" ] $(pushstr ExecRecipe.log ${@str});
+);
+
+# mayuselect:眉と髪の毛の上下関係を決める
+function ParseRecipeCmd.mayuselect $(
+	setstr @str $(EyebrowSelect $@arg[1]);
+	if $[ ${@str} != "" ] $(pushstr ExecRecipe.log ${@str});
+);
+
+# remove:パーツをはずす
+function ParseRecipeCmd.remove $(
+	setstr @str $(PartsRemove $@arg[1] $@arg[2]);
+	if $[ ${@str} != "" ] $(pushstr ExecRecipe.log ${@str});
+);
+
+# removeall:全パーツをはずす
+function ParseRecipeCmd.removeall $(
+	setstr @str $(PartsRemoveAll);
+	if $[ ${@str} != "" ] $(pushstr ExecRecipe.log ${@str});
+);
+
+# paint:パーツに色を塗る
+function ParseRecipeCmd.paint $(
+	clear @arg[0];
+	# 最大で9個の引数
+	loop 9 $(pushstr @xarg $(shift @arg));
+	# 末尾3個が空の場合、破棄する
+	loop 3 $(if $[ $@xarg[-1] == "" ] $(clear @xarg[-1]));
+	logprint "＠＠＠ paint(cmd):/"$(join @xarg "/")"/";
+	setstr @str $(xargs @xarg PartsColorPaint);
+	if $[ ${@str} != "" ] $(pushstr ExecRecipe.log ${@str});
+);
+
+# 着せ替えレシピエントリを検査する
+# レシピが現在登録されていないパーツを使っている場合、
+# 「カテゴリ名.パーツ名」形式を「|」で接続して返す
+# 第1引数: レシピファイル
+function VerifyKisekaeRecipe $(
+	# VerifyKisekaeRecipe.temporaryエントリを受け渡しに使用
+	move VerifyKisekaeRecipe.temporary @temp;
+	# レシピファイルを読み込む
+	textload VerifyKisekaeRecipe.temporary $@arg[1];
+	# レシピ検査実行
+	VerifyKisekaeRecipeEntry VerifyKisekaeRecipe.temporary;
+	#後始末
+	clear VerifyKisekaeRecipe.temporary;
+	move @temp VerifyKisekaeRecipe.temporary;
+);
+
+# 着せ替えレシピエントリを検査する
+# レシピが現在登録されていないパーツを使っている場合、
+# 「カテゴリ名.パーツ名」形式を「|」で接続して返す
+# 第1引数: レシピを格納したエントリ名
+function VerifyKisekaeRecipeEntry $(
+	setstr @OtherShell 0;
+	setstr @text $@arg[1];
+	if $[ $(size ${@text}) == 0 ] $(return);
+	setstr @mayu "眉１";
+	foreach @line ${@text} $(
+		if $[ ! $(match_at ${@line} "#") && $(tr ${@line} " 	" "") != "" ] $(
+			# 処理本体
+			clear @cmd;
+			split @cmd ${@line} "	";
+			if $[ $@cmd[0] == "declare" && $@cmd[1] == "RECIPE/1.0" ] $(
+				# 宣言
+				if $[ ${ColorsShellList.$@cmd[2]} && ${ColorsCurrentShellName} != $@cmd[2] ] $(
+					PushCurrentShellName $@cmd[2];
+					setstr @OtherShell 1;
+				);
+			) else if $[ $@cmd[0] == "mayuselect" ] $(
+				# 眉レイヤー
+				setstr @mayu "眉"$(tr $@cmd[1] 12 １２);
+			) else if $[ $(find VerifyKisekaeRecipe.cmd $@cmd[0]) >= 0 ] $(
+				# 選択・取り外し・色替え
+				setstr @category $(if $[ $@cmd[1] == "眉" ] ${@mayu} else $@cmd[1]);
+				if $[ ! $(FindSurfaceID ${@category} $@cmd[2]) ] $(
+					if $[ $@cmd[0] == "paint" && $(match $@cmd[1] "髪") >= 0 ] $(
+						# 髪の色替えだけは例外
+						continue;
+					);
+					setstr @candidate ${@category}.$@cmd[2];
+					if $[ $(find @invalidlist ${@candidate}) < 0 ] $(
+						pushstr @invalidlist ${@candidate};
+					);
+				);
+			);
+		);
+	);
+	# 操作対象シェルを切り替えていた
+	if ${@OtherShell} $(
+		PopCurrentShellName;
+	);
+	return $(join @invalidlist "|");
+);
+
+=dict
+# 着せ替えレシピでチェックするコマンド
+VerifyKisekaeRecipe.cmd : select,remove,paint
+=end
+
+# パーツ追加レシピを検査する
+# すでに存在するパーツ名を追加しようとしている場合、
+# 「カテゴリ名.パーツ名」形式を「|」で接続して返す
+# 第1引数: レシピファイル
+function VerifyAddRecipe $(
+	# VerifyAddRecipe.temporaryエントリを受け渡しに使用
+	move VerifyAddRecipe.temporary @temp;
+	# レシピファイルを読み込む
+	textload VerifyAddRecipe.temporary $@arg[1];
+	# レシピ検査実行
+	VerifyAddRecipeEntry VerifyAddRecipe.temporary;
+	#後始末
+	clear VerifyAddRecipe.temporary;
+	move @temp VerifyAddRecipe.temporary;
+);
+
+# エントリ内のパーツ追加レシピを検査する
+# すでに存在するパーツ名を追加しようとしている場合、
+# 「カテゴリ名.パーツ名」形式を「|」で接続して返す
+# 第1引数: レシピを格納したエントリ名
+function VerifyAddRecipeEntry $(
+	setstr @OtherShell 0;
+	setstr @text $@arg[1];
+	if $[ $(size ${@text}) == 0 ] $(return);
+	foreach @line ${@text} $(
+		if $[ ! $(match_at ${@line} "#") && $(tr ${@line} " 	" "") != "" ] $(
+			# 処理本体
+			clear @cmd;
+			split @cmd ${@line} "	";
+			if $[ $@cmd[0] == "declare" && $@cmd[1] == "RECIPE/1.0" ] $(
+				# 宣言
+				if $[ ${ColorsShellList.$@cmd[2]} && ${ColorsCurrentShellName} != $@cmd[2] ] $(
+					PushCurrentShellName $@cmd[2];
+					setstr @OtherShell 1;
+				);
+			) else if $[ $(find VerifyAddRecipe.cmd $@cmd[0]) >= 0 ] $(
+				# パーツ追加
+				if $(FindSurfaceID $@cmd[1] $@cmd[2]) $(
+					setstr @candidate $@cmd[1].$@cmd[2];
+					if $[ $(find @invalidlist ${@candidate}) < 0 ] $(
+						pushstr @invalidlist ${@candidate};
+					);
+				);
+			);
+		);
+	);
+	# 操作対象シェルを切り替えていた
+	if ${@OtherShell} $(
+		PopCurrentShellName;
+	);
+	return $(join @invalidlist "|");
+);
+
+=dict
+# パーツ追加レシピでチェックするコマンド
+VerifyAddRecipe.cmd : norm,cc,ccc,ccp,cct,skin,skinc,eye,mayu,mayuc,mouth
+=end
+
+#-------------------------------------------------------------------------------
+# アンドゥ
+# 戻り値:アンドゥしてリロードが必要な時にtrue、そうでない時にfalse
+
+function UndoSurfaceSetting $(
+	setstr @ret $(UndoEditLog);
+	pushstr @ret $(UndoSurfacesText);
+	pushstr @ret $(UndoDescriptText);
+	if $[ $@ret[0] || $@ret[1] || $@ret[2] ] "true" else "false";
+);
+
+# SurfaceIDと色替え命令語から、使われるファイル名一覧を生成する
+# 第1引数: SurfaceID
+# 第2引数: 色替え命令語（一括追加、ログと共通）
+# 戻り値:"|"区切りでファイル名
+function MakePartsFileName $(
+	foreach @extention MakePartsFileName.$@arg[2] $(
+		pushstr @list $@arg[1]${@extention}".png";
+	);
+	return $(join @list "|");
+);
+
+=dict
+# MakePartsFileNameで使用するファイル名情報
+MakePartsFileName.norm  : ""
+MakePartsFileName.cc    : "_CC_1", "_CC_2"
+MakePartsFileName.ccc   : "_CCC_1", "_CCC_2", "_CCC"
+MakePartsFileName.ccp   : "_CCP_1","_CCP_2", "_CCP_3", "_CCP"
+MakePartsFileName.cct   : "_CCT_1","_CCT_2", "_CCT_3", "_CCT_4"
+MakePartsFileName.skin  : "_skin", "_skin_2"
+MakePartsFileName.skinc : "_skin", "_skin_2", ""
+MakePartsFileName.eye   : "", "_skin", "_skin_2", "_half", "_half_1", "_close", "_close_1", "_smile"
+MakePartsFileName.mayu  : "", "_surprise", "_sad", "_angry"
+MakePartsFileName.mayuc : "_CC_1", "_CC_2", "_surprise_CC_1", "_surprise_CC_2", "_sad_CC_1", "_sad_CC_2", "_angry_CC_1", "_angry_CC_2"
+MakePartsFileName.mouth : "_o", "_c", "_os", "_s", "_skin", "_skin_2"
+=end
+
+#-------------------------------------------------------------------------------
+# カテゴリ名、パーツ名からフォルダ名まで含めたファイル名（拡張子なし）を返す
+# 第1引数: カテゴリ名
+# 第2引数: パーツ名
+# 戻り値:  フォルダ名まで含めたファイル名（拡張子なし）
+function PartsPath $(
+	setstr @sid $(FindSurfaceID $@arg[1] $@arg[2]);
+	if $[ ${@sid} == "" ] $(
+		return;
+	);
+	return ${ColorsShellPath}${@sid};
+);
+
+
+# カテゴリ名とパーツ名から配布レシピに必要なファイルをコピーする
+# 第1引数: カテゴリ名
+# 第2引数: パーツ名（色識別子はあっても無くてもよい）
+# 第3引数: ファイルのコピー先フォルダ
+# 戻り値:  "|"区切りでパーツ追加レシピ
+# 備考:    コピー対象のパーツはカレントシェルとする
+function ExportPartsFile $(
+	if $[ $(size @arg) != 4 ] $(return);
+	# カテゴリフィルター
+	if $[ $@arg[1] == "眉２" ] $(
+		setstr @arg[1] "眉１";
+	);
+	
+	# FindSurfaceIDで@sid確定
+	setstr @sid     $(FindSurfaceID $@arg[1] $@arg[2]);
+	# GetPartsTypeで@command確定
+	setstr @command $(GetPartsType  $@arg[1] $@arg[2]);
+	# MakePartsFileNameでコピーするファイル候補取得
+	split @filecandidate $(MakePartsFileName ${@sid} ${@command}) "|";
+	setstr @dir $(cncpath $@arg[3]);
+	foreach @file @filecandidate $(
+		# レシピには不必要なファイル名をファイル候補から外す
+		setstr @last $(substr ${@file} -6 2);
+		if $[ ${@last} == "_2" || ${@last} == "_3" || ${@last} == "_4" ] $(
+			if $[ ! ( ${@command} == "cct" && ${@last} == "_3" ) ] $(
+				continue;
+			);
+		);
+		# コピー先フォルダ名を正規化して保存
+		pushstr @exfiles $(cncpath ${ColorsCurrentShellPath} "parts/"${@file});
+		# 正規化したフォルダ名にファイル一式をコピー
+		setstr @null $(copy_file $@exfiles[-1] ${@dir});
+	);
+	# 追加レシピを生成
+	setstr  @retstr ${@command};
+	pushstr @retstr $@arg[1];
+	pushstr @retstr $(DeleteColorID $@arg[2]);
+	foreach @file @exfiles $(
+		pushstr @retstr $(filename ${@file});
+	);
+	# 追加レシピを"|"で繋いで返す
+	return $(join @retstr "|");
+);
+
+# 機能: SurfaceIDツリーから、カレントシェルのパーツリストを作成する
+# 戻り値: "|"区切りのパーツリスト
+#         「カテゴリ.パーツ名_色替え識別子」形式
+function GetCurrentPartsList $(
+:rem
+	listtree @list ${CSurfaceID};
+	# step1: ツリー幹と実体のないパーツ(眉)を削除
+	foreach @rawitem @list $(
+		if $[ $(match ${@rawitem} ".眉.") >= 0 ] $(continue);
+		setstr @item $(gsub ${@rawitem} ${CSurfaceID}. "");
+		pushstr @list2 ${@item};
+		if $[ $(DeleteColorID ${@item}) != ${@item} ] $(
+			# 色識別子のあるパーツ
+			pushstr @list2.withcolorid ${@item};
+		);
+	);
+	# step2: 色替え識別子のあるパーツは、重複する色替え識別子のないパーツを削除
+	foreach @item @list2.withcolorid $(
+		setstr @index $(find @list2 $(DeleteColorID ${@item}));
+		if $[ ${@index} >= 0 ] $(
+			# 色替え識別子のあるパーツだったので、対応するパーツを削除
+			clear @list2[${@index}];
+		);
+	);
+	return $(join @list2 "|");
+:endrem
+	loop $(size EditSurfaces.Item) $(
+		setstr @i ${-1};
+		setstr @item $EditSurfaces.Item[${@i}];
+		if $[ $(char_at ${@item} 0) == "（" ] $(continue);
+		if $[ ${@item} == "眉" ] $(continue);
+		if $[ $(size ${CPartsTable}.${@item}) == 0 ] $(continue);
+		loop $(size ${CPartsTable}.${@item}) $(
+			setstr @j ${-1};
+			pushstr @list ${@item}.$${CPartsTable}.${@item}[${@j}];
+		);
+	);
+	return $(join @list "|");
+);
+
+# 機能: カレントシェルの非公式パーツリストを作成する
+# 戻り値: "|"区切りのパーツリスト
+#         「カテゴリ.パーツ名_色替え識別子」形式
+function GetCurrentExportablePartsList $(
+	# 現在のパーツリスト取得
+	split @currentlist $(GetCurrentPartsList) "|";
+	# 公式パーツリストを取得
+	setstr @path $(cncpath ${ColorsCurrentShellPath} "defaultparts.txt");
+	if $(isexist ${@path}) $(
+		textload @defaultlist ${@path};
+	);
+	# 現在のパーツから公式パーツを差し引く
+	foreach @parts @defaultlist $(
+		setstr @pos $(find @currentlist $(getcode @parts));
+		if $[ ${@pos} >= 0 ] $(
+			clear @currentlist[${@pos}];
+		);
+	);
+	# 差し引いた残りをリストにして返す
+	return $(join @currentlist "|");
+);
+
+#エクスポート可能パーツリストエントリ・ツリーを更新する
+function UpdateCurrentExportablePartsList $(
+	cleartree ExportablePartsList;
+	split ExportablePartsList $(GetCurrentExportablePartsList) "|";
+#	split ExportablePartsList $(GetCurrentPartsList) "|";
+	foreach @item ExportablePartsList $(
+		setstr ExportablePartsList.${@item} 0;
+	);
+);
+
+=end

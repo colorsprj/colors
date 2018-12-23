@@ -1,0 +1,11 @@
+declare	RECIPE/1.0	COLORS
+cc	後髪	ウエーブロング	wavelong.png
+cc	後髪	ウエーブきつめセミロング	wavesemilong.png
+cc	後髪	ウエーブゆるめセミロング	wavesemilong2.png
+cc	後髪	ウエーブセミロング	wavesemilong3.png
+cc	横髪	ウエーブロング	yokowavelong.png
+cc	横髪	ウエーブセミロング	yokowaveshort.png
+cc	結髪	ゆるウエーブツインテ	wavetwintale.png
+cc	結髪	ダブルシニョン	sinyon.png
+cc	ケープ	ショール大判	shawllong.png
+cc	ケープ	ショール小さめ	shawlshort.png

@@ -1,0 +1,499 @@
+# shellmakeより================================================================
+
+# 作成するシェルID
+SurfaceNumbersAll : 100,101,102,103,110,111,112,113,120,121,122,123,130,131,132,133,200,201,202,203,210,211,212,213,220,221,222,223,230,231,232,233,300,301,302,303,310,311,312,313,320,321,322,323,330,331,332,333,400,401,402,403,410,411,412,413,420,421,422,423,430,431,432,433
+
+SurfaceNumbersTest : 101,202,403
+
+SurfaceNumbers : SurfaceNumbersAll
+
+# シェル幅情報を取得
+# ShellImage.Width:  幅
+# ShellImage.Height: 高さ
+Colors.Callback.OnShellInfoChanged : $(
+	cleartree ShellImage;
+	setstr @DIB $(colors load ${ColorsShellPath}"transparent.png");
+	setstr @null $(excolors size ${@DIB});
+	setstr ShellImage.Width  ${ExColors.Value0};
+	setstr ShellImage.Height ${ExColors.Value1};
+	colors clear;
+)
+
+=kis
+# 機能: シェル画像作成時の初期化を行う
+function MakeSurfaceIMGinit $(
+	cleartree DIB;
+	colors clear;
+	# 透明背景
+	setstr DIB.transparent $(colors load ${ColorsShellPath}"transparent.png");
+	# 口の肌色部分
+	setstr DIB.mouthskin $(colors load ${ColorsShellPath}"mouth_skin_2.png");
+	# 赤面
+	setstr DIB.redface $(colors load ${ColorsShellPath}"31000.png");
+);
+
+# 機能: シェル画像一式を作成する
+function MakeShellSurfaceIMG $(
+	# 初期化
+	MakeSurfaceIMGinit;
+
+	#レイヤーに分けて画像統合
+	MakeLayerIMG;
+	
+	#全表情パーツ画像合成
+	EyesIMGC ;
+	EyesIMGS ;
+	EyesIMGH ;
+	MouthIMGO ;
+	MouthIMGC ;
+	MouthIMGOS ;
+	MouthIMGS ;
+	MouthIMGD ;
+	EyebrowCheck ;
+	EyebrowIMGO ;
+	EyebrowIMGK ;
+	EyebrowIMGI ;
+	EyebrowIMGD ;
+	
+	#SurfaceNumbersから一つづつ取り出して（@i）、${@i}の100の位をSSEyebrow、10の位をSSEyes、1の位をSSMouthに入れて、
+	foreach @i ${SurfaceNumbers} $(
+		setstr SSEyebrow $(char_at ${@i} 0) ;
+		setstr SSEyes $(char_at ${@i} 1) ;
+		setstr SSMouth $(char_at ${@i} 2) ;
+		
+		#使用表情パーツ決定
+		SetSSParts ;
+		
+		set BlushMode 0 ;
+		MakeSurfaceIMG ${System.DataPath}"temp\\shelltemplate\\surface"${@i}".png";
+		#set DIB $(colors load ${System.DataPath}"temp\\tempimg\\SnapShot.png");
+		#colors save ${DIB} ${System.DataPath}"temp\\shelltemplate\\surface"${@i}".png" ;
+		
+		set BlushMode 1 ;
+		MakeSurfaceIMG ${System.DataPath}"temp\\shelltemplate\\surface1"${@i}".png";
+		#set DIB $(colors load ${System.DataPath}"temp\\tempimg\\SnapShot.png");
+		#colors save ${DIB} ${System.DataPath}"temp\\shelltemplate\\surface1"${@i}".png" ;
+	);
+	
+	# 後始末
+	colors clear;
+);
+
+
+# 機能: カテゴリ・レイヤごとにパーツを取り出し、使用しているパーツを合成
+# 第1引数: 処理対象レイヤー(1/2/3/4)
+# 第2引数: 作成する画像DIBオブジェクト名
+# 備考: 合成した画像は「DIB.＜第2引数＞」のDIBに格納
+function UniteImages $(
+	#CartegoryLayerから順にカテゴリ内パーツを取り出し、オンオフチェック。
+	#オンなら「透明.png」に合成していき、最後にセーブ。
+	setstr @DIB DIB.$@arg[2];
+	setstr ${@DIB} $(colors dup ${DIB.transparent});
+	
+	foreach @category UniteImages.CategoryLayer$@arg[1] $(
+		clear @partslist;
+		listsub @partslist ${@category} ;
+		foreach @partsname @partslist $(
+			#パーツがオンだった場合画像合成処理
+			if $[ ${${@partsname}} ==1 ] $(
+			
+				#カテゴリ・パーツ名から画像ファイルパス確定
+				clear @cp ;
+				split @cp ${@partsname} "." ;
+				set @imgfile $(PartsPath $@cp[0] $@cp[1]) ;
+				logprint ここまで${@partsname}##${@imgfile};
+				
+				#目の形パーツの時、先にまぶた画像を貼る。
+				if $[ $(match ${@partsname} "目の形.") >= 0 ] $(
+					set @DIB2 $(colors load ${@imgfile}_skin_2.png);
+					colors draw ${${@DIB}} ${@DIB2} 0 0;
+				);
+				#色替え種別で合成に使う画像異なる。
+				if $[ $(match ${@partsname} "_CCT") >= 0 ] $(
+					set @DIB2 $(colors load ${@imgfile}_CCT_2.png);
+					colors draw ${${@DIB}} ${@DIB2} 0 0;
+					set @DIB2 $(colors load ${@imgfile}_CCT_4.png);
+					colors draw ${${@DIB}} ${@DIB2} 0 0;
+				)
+				else if $[ $(match ${@partsname} "_CCC") >= 0 ] $(
+					set @DIB2 $(colors load ${@imgfile}_CCC_2.png);
+					colors draw ${${@DIB}} ${@DIB2} 0 0;
+					set @DIB2 $(colors load ${@imgfile}_CCC.png);
+					colors draw ${${@DIB}} ${@DIB2} 0 0;
+				)
+				else if $[ $(match ${@partsname} "_CC") >= 0 ] $(
+					set @DIB2 $(colors load ${@imgfile}_CC_2.png);
+					colors draw ${${@DIB}} ${@DIB2} 0 0;
+				)
+				else if $[ $(match ${@partsname} "_skinC") >= 0 ] $(
+					set @DIB2 $(colors load ${@imgfile}_skin_2.png);
+					colors draw ${${@DIB}} ${@DIB2} 0 0;
+					set @DIB2 $(colors load ${@imgfile}.png);
+					colors draw ${${@DIB}} ${@DIB2} 0 0;
+				)
+				else if $[ $(match ${@partsname} "_SKIN") >= 0 ] $(
+					logprint ここまで${@partsname}${@imgfile} ;
+					set @DIB2 $(colors load ${@imgfile}_skin_2.png);
+					colors draw ${${@DIB}} ${@DIB2} 0 0;
+				)
+				else $(
+					set @DIB2 $(colors load ${@imgfile}.png);
+					colors draw ${${@DIB}} ${@DIB2} 0 0;
+				);
+			);
+		);
+	);
+	#colors save ${DIB} ${System.DataPath}"temp\\tempimg\\"${UnitedIMG}".png";
+);
+
+
+# レイヤー分け-----------------------------------------------------------------
+=dict
+
+UniteImages.CategoryLayer1 : 背景 , 背景装飾 , アクセサリー１ , 結髪 , アクセサリー２ , 後髪 , 帽子・ヘッドドレス１ , 帽子・ヘッドドレス１装飾 , アクセサリー３ , 素体オプション背後 , 素体 , 耳 , 素体オプション , 肌オプション , 瞳色 , 目の形 , 瞳ハイライト
+
+#表情に応じたEyesIMGここで入れる
+#赤面パーツはここで入れる
+#表情に応じた口ここで入れる
+
+UniteImages.CategoryLayer2 : 眼鏡 , インナー１ , インナー１装飾 , 靴下 , 靴下装飾 , インナー２ , インナー２装飾 , インナー３ , インナー３装飾 , 靴 , 靴装飾 , ズボン , ズボン装飾 , スカート , スカート装飾 , トップス１ , トップス１装飾 , 服上下 , 服上下装飾 , オーバースカート , オーバースカート装飾 , ネクタイ・帯 , タイピン・帯締め , トップス２ , トップス２装飾 , エプロン , トップス３ , トップス３装飾 , アクセサリー４ , トップス４ , トップス４装飾 , コート , コート装飾 , ケープ , ケープ装飾
+
+#表情に応じた眉１ここで入れる
+
+UniteImages.CategoryLayer3 : 横髪 , 前髪 , 髪オプション
+
+#表情に応じた眉２ここで入れる
+
+UniteImages.CategoryLayer4 : 帽子・ヘッドドレス２ , 帽子・ヘッドドレス２装飾 , アクセサリー５ , 前景
+=end
+
+
+###################
+#目
+
+# 機能: 閉じ目を合成
+# 備考: DIB.EyesIMGCハンドルに保存
+function EyesIMGC $(
+	set DIB.EyesIMGC $(colors load ${ColorsShellPath}"EyesC_skin_2.png" );
+	set @DIB2 $(colors load ${ColorsShellPath}"EyesC.png" );
+	colors draw ${DIB.EyesIMGC} ${@DIB2} 0 0;
+	#colors save ${DIB} ${System.DataPath}"temp\\tempimg\\EyesIMGC.png";
+	#colors clear;
+);
+
+# 機能: 笑い目を合成
+# 備考: DIB.EyesIMGSハンドルに保存
+function EyesIMGS $(
+	set DIB.EyesIMGS $(colors load ${ColorsShellPath}"EyesC_skin_2.png" );
+	set @DIB2 $(colors load ${ColorsShellPath}"EyesS.png" );
+	colors draw ${DIB.EyesIMGS} ${@DIB2} 0 0;
+	#colors save ${DIB} ${System.DataPath}"temp\\tempimg\\EyesIMGS.png" ;
+	#colors clear;
+);
+
+# 機能: 半目を合成
+# 備考: DIB.EyesIMGHハンドルに保存
+function EyesIMGH $(
+	set DIB.EyesIMGH $(colors load ${ColorsShellPath}"EyesH_skin_2.png" );
+	set @DIB2 $(colors load ${ColorsShellPath}"EyesH.png" );
+	colors draw ${DIB.EyesIMGH} ${@DIB2} 0 0;
+	#colors save ${DIB} ${System.DataPath}"temp\\tempimg\\EyesIMGH.png" ;
+	#colors clear;
+);
+
+
+
+###################
+#口
+
+# 機能: 開き口を合成
+# 備考: DIB.MouthIMGOハンドルに保存
+function MouthIMGO $(
+	#logprint ここまで ;
+	set DIB.MouthIMGO $(colors dup ${DIB.mouthskin});
+	set @DIB2 $(colors load ${ColorsShellPath}"mouth_o.png" );
+	colors draw ${DIB.MouthIMGO} ${@DIB2} 0 0;
+	#colors save ${DIB} ${System.DataPath}"temp\\tempimg\\MouthIMGO.png" ;
+	#colors clear;
+);
+
+
+# 機能: 閉じ口を合成
+# 備考 DIB.MouthIMGCハンドルに保存
+function MouthIMGC $(
+	set DIB.MouthIMGC $(colors dup ${DIB.mouthskin});
+	set @DIB2 $(colors load ${ColorsShellPath}"mouth_c.png" );
+	colors draw ${DIB.MouthIMGC} ${@DIB2} 0 0;
+	#colors save ${DIB} ${System.DataPath}"temp\\tempimg\\MouthIMGC.png" ;
+	#colors clear;
+);
+
+# 機能: 閉じ笑い口を合成
+# 備考: DIB.MouthIMGOSハンドルに保存
+function MouthIMGOS $(
+	set DIB.MouthIMGOS $(colors dup ${DIB.mouthskin});
+	set @DIB2 $(colors load ${ColorsShellPath}"mouth_os.png" );
+	colors draw ${DIB.MouthIMGOS} ${@DIB2} 0 0;
+	#colors save ${DIB} ${System.DataPath}"temp\\tempimg\\MouthIMGOS.png" ;
+	#colors clear;
+);
+
+# 機能: 笑い口を合成
+# 備考: DIB.MouthIMGSハンドルに保存
+function MouthIMGS $(
+	set DIB.MouthIMGS $(colors dup ${DIB.mouthskin});
+	set @DIB2 $(colors load ${ColorsShellPath}"mouth_s.png" );
+	colors draw ${DIB.MouthIMGS} ${@DIB2} 0 0;
+	#colors save ${DIB} ${System.DataPath}"temp\\tempimg\\MouthIMGS.png" ;
+	#colors clear;
+);
+
+# 機能: デフォルトの口画像を合成
+# 備考: DIB.MoutIMGDハンドルに保存
+function MouthIMGD $(
+	listsub @partslist 口 ;
+	foreach @partsname @partslist $(
+		if $[ ${${@partsname}} ==1 ] $(
+			clear @cp ;
+			split @cp ${@partsname} "." ;
+			break ;
+		);
+	);
+	
+	set DIB.MouthIMGD $(colors dup ${DIB.mouthskin});
+	set @DIB2 $(colors load $(PartsPath $@cp[0] $@cp[1])."png" );
+	colors draw ${DIB.MouthIMGD} ${@DIB2} 0 0;
+	#colors save ${DIB} ${System.DataPath}"temp\\tempimg\\MouthIMGD.png" ;
+	#colors clear;
+);
+
+
+###################
+#眉
+
+# 機能: 選択中の眉画像名を確定する
+# 備考: EyebrowPartsエントリに
+function EyebrowCheck $(
+	listsub @partslist ${EyebrowStates} ;
+	foreach @partsname @partslist $(
+		if $[ ${${@partsname}} ==1 ] $(
+			clear @cp ;
+			split @cp ${@partsname} "." ;
+			setstr EyebrowParts $(PartsPath $@cp[0] $@cp[1]) ;
+			break ;
+		);
+	);
+	if $[ $(match ${@partsname} "_CC") >= 0 ] $(
+		setstr EyebrowParts ${EyebrowParts}_CC_2;
+	);
+);
+
+# 機能: 驚き眉画像を合成
+# 備考: DIB.EyebrowIMGOハンドルに保存
+function EyebrowIMGO $(
+	set DIB.EyebrowIMGO $(colors dup ${DIB.transparent});
+	if $[ $(substr ${EyebrowParts} -5) == "_CC_2" ] $(
+		setstr @EyebrowParts $(rsub ${EyebrowParts} "_CC_2" "_surprise_CC_2");
+		setstr @DIB2 $(colors load ${@EyebrowParts}".png" )
+	) else $(
+		setstr @DIB2 $(colors load ${EyebrowParts}"_surprise.png" );
+	);
+	colors draw ${DIB.EyebrowIMGO} ${@DIB2} 0 0;
+	#colors save ${DIB} ${System.DataPath}"temp\\tempimg\\EyebrowIMGO.png" ;
+	#colors clear;
+);
+
+# 機能: 悲しい時の眉画像を構成
+# 備考: DIB.EyebrowIMGKハンドルに保存
+function EyebrowIMGK $(
+	set DIB.EyebrowIMGK $(colors dup ${DIB.transparent});
+	if $[ $(substr ${EyebrowParts} -5) == "_CC_2" ] $(
+		setstr @EyebrowParts $(rsub ${EyebrowParts} "_CC_2" "_sad_CC_2");
+		setstr @DIB2 $(colors load ${@EyebrowParts}".png" )
+	) else $(
+		setstr @DIB2 $(colors load ${EyebrowParts}"_sad.png" );
+	);
+	colors draw ${DIB.EyebrowIMGK} ${@DIB2} 0 0;
+	#colors save ${DIB} ${System.DataPath}"temp\\tempimg\\EyebrowIMGk.png" ;
+	#colors clear;
+);
+
+# 機能: 怒り眉画像を合成
+# 備考: DIB.EyebrowIMGIハンドルに保存
+function EyebrowIMGI $(
+	set DIB.EyebrowIMGI $(colors dup ${DIB.transparent});
+	if $[ $(substr ${EyebrowParts} -5) == "_CC_2" ] $(
+		setstr @EyebrowParts $(rsub ${EyebrowParts} "_CC_2" "_angry_CC_2");
+		setstr @DIB2 $(colors load ${@EyebrowParts}".png" )
+	) else $(
+		setstr @DIB2 $(colors load ${EyebrowParts}"_angry.png" );
+	);
+	colors draw ${DIB.EyebrowIMGI} ${@DIB2} 0 0;
+	#colors save ${DIB} ${System.DataPath}"temp\\tempimg\\EyebrowIMGI.png" ;
+	#colors clear;
+);
+
+# 機能: デフォルトの眉画像を合成
+# 備考: DIB.EyebrowIMGDハンドルに保存
+function EyebrowIMGD $(
+	set DIB.EyebrowIMGD $(colors dup ${DIB.transparent});
+	set @DIB2 $(colors load ${EyebrowParts}".png" );
+	colors draw ${DIB.EyebrowIMGD} ${@DIB2} 0 0;
+	#colors save ${DIB} ${System.DataPath}"temp\\tempimg\\EyebrowIMGD.png" ;
+	#colors clear;
+);
+
+
+function EyebrowUnite $(
+	#set DIB $(colors load ${System.DataPath}"temp\\tempimg\\BaseLayer2.png");
+	#set DIB2 $(colors load ${System.DataPath}"temp\\tempimg\\"${Eyebrow}".png");
+	colors draw ${DIB.Surface} ${DIB.${Eyebrow}} 0 0;
+	#colors save ${DIB} ${System.DataPath}"temp\\tempimg\\BaseLayer2.png";
+);
+
+
+##########################
+
+# 機能: レイヤーに分けて画像統合
+function MakeLayerIMG $(
+	#set LayerLevel CategoryLayer1;
+	#set UnitedIMG BaseLayer;
+	UniteImages 1 BaseLayer;
+	#set LayerLevel CategoryLayer2;
+	#set UnitedIMG SecondLayer;
+	UniteImages 2 SecondLayer;
+	#set LayerLevel CategoryLayer3;
+	#set UnitedIMG ThirdLayer;
+	UniteImages 3 ThirdLayer;
+	#set LayerLevel CategoryLayer4;
+	#set UnitedIMG LastLayer;
+	UniteImages 4 LastLayer;
+);
+
+# snapより=====================================================================
+
+#選択された表情パターンから使用する各表情パーツ決定
+function SetSSParts $(
+	if $[ ${SSEyebrow} == 1 ] $(
+		set Eyebrow EyebrowIMGD ;
+	) else if $[ ${SSEyebrow} == 2 ] $(
+		set Eyebrow EyebrowIMGO ;
+	) else if $[ ${SSEyebrow} == 3 ] $(
+		set Eyebrow EyebrowIMGK ;
+	) else if $[ ${SSEyebrow} == 4 ] $(
+		set Eyebrow EyebrowIMGI ;
+	);
+	
+	if $[ ${SSEyes} == 0 ] $(
+		set Eyes 0 ;
+	) else if $[ ${SSEyes} == 1 ] $(
+		set Eyes EyesIMGH ;
+	) else if $[ ${SSEyes} == 2 ] $(
+		set Eyes EyesIMGC ;
+	) else if $[ ${SSEyes} == 3 ] $(
+		set Eyes EyesIMGS ;
+	);
+	
+	if $[ ${SSMouth} == 0 ] $(
+		set Mouth MouthIMGO ;
+	) else if $[ ${SSMouth} == 1 ] $(
+		set Mouth MouthIMGC ;
+	) else if $[ ${SSMouth} == 2 ] $(
+		set Mouth MouthIMGOS ;
+	) else if $[ ${SSMouth} == 3 ] $(
+		set Mouth MouthIMGS ;
+	);
+);
+
+# 機能: 1枚のサーフィス画像を合成
+# 第1引数: 作成する画像ファイル名(.png抜き、フォルダはtempimg下限定)
+function MakeSurfaceIMG $(
+	# 操作対象のSurfaceをBaseLayerからコピーして作成
+	setstr DIB.Surface $(colors dup ${DIB.BaseLayer});
+	# 作成する画像ファイル名(指定がない場合はSnapShot)
+	setstr @IMG $(
+		if $[ $@arg[1] != "" ]
+			$@arg[1]
+		else
+			${System.DataPath}"temp\\tempimg\\SnapShot.png"
+	);
+
+	#目を結合
+	#set DIB $(colors load ${System.DataPath}"temp\\tempimg\\BaseLayer.png");
+	if $[ ${Eyes} != 0 ] $(
+		#set DIB2 $(colors load ${System.DataPath}"temp\\tempimg\\"${Eyes}".png");
+		colors draw ${DIB.Surface} ${DIB.${Eyes}} 0 0;
+		#colors save ${DIB} ${System.DataPath}"temp\\tempimg\\BaseLayer2.png";
+	#) else $(
+	#	colors save ${DIB} ${System.DataPath}"temp\\tempimg\\BaseLayer2.png";
+	);
+	
+	#赤面指定の場合ここで結合
+	if $[ ${BlushMode} == 1 ] $(
+		#set DIB $(colors load ${System.DataPath}"temp\\tempimg\\BaseLayer2.png");
+		#set @DIB2 $(colors load ${ColorsShellPath}"31000.png");
+		colors draw ${DIB.Surface} ${DIB.redface} 0 0;
+		#colors save ${DIB} ${System.DataPath}"temp\\tempimg\\BaseLayer2.png";
+	);
+	
+	#口を結合
+	#set DIB $(colors load ${System.DataPath}"temp\\tempimg\\BaseLayer2.png");
+	#set DIB2 $(colors load ${System.DataPath}"temp\\tempimg\\"${Mouth}".png");
+	colors draw ${DIB.Surface} ${DIB.${Mouth}} 0 0;
+	#colors save ${DIB} ${System.DataPath}"temp\\tempimg\\BaseLayer2.png";
+	
+		
+	#SecondLayerを結合
+	#set DIB $(colors load ${System.DataPath}"temp\\tempimg\\BaseLayer2.png") ;
+	#set DIB2 $(colors load ${System.DataPath}"temp\\tempimg\\SecondLayer.png");
+	colors draw ${DIB.Surface} ${DIB.SecondLayer} 0 0;
+	#colors save ${DIB} ${System.DataPath}"temp\\tempimg\\BaseLayer2.png";
+	
+	#眉１を結合（EyebrowStatesが眉１の時だけ）
+	if $[ ${EyebrowStates} == "眉１" ] $(EyebrowUnite);
+	
+	#ThirdLayerを結合
+	#set DIB $(colors load ${System.DataPath}"temp\\tempimg\\BaseLayer2.png");
+	#set DIB2 $(colors load ${System.DataPath}"temp\\tempimg\\ThirdLayer.png");
+	colors draw ${DIB.Surface} ${DIB.ThirdLayer} 0 0;
+	#colors save ${DIB} ${System.DataPath}"temp\\tempimg\\BaseLayer2.png";
+	
+	#眉２を結合（EyebrowStatesが眉２の時だけ）
+	if $[ ${EyebrowStates} == "眉２" ] $(EyebrowUnite);
+	
+	#LastLayerを結合して指定先にセーブ
+	#set DIB $(colors load ${System.DataPath}"temp\\tempimg\\BaseLayer2.png");
+	#set DIB2 $(colors load ${System.DataPath}"temp\\tempimg\\LastLayer.png");
+	colors draw ${DIB.Surface} ${DIB.LastLayer} 0 0;
+	colors save ${DIB.Surface} ${@IMG};
+);
+
+# 機能: 1枚のサーフィス画像を作成する
+# 第1引数: 作成する画像ファイル名(省略可能)
+function MakeSingleSurfaceIMG $(
+	# 初期化
+	MakeSurfaceIMGinit;
+
+	# 使用表情パーツ決定
+	SetSSParts ;
+
+	# レイヤーに分けて画像統合
+	MakeLayerIMG ;
+
+	# 使用表情パーツ合成
+	if $[ ${Eyes} != 0 ] $(${Eyes});
+	${Mouth} ;
+	EyebrowCheck ;
+	${Eyebrow} ;
+
+	# 表情パーツをレイヤーと統合
+	if $[ $@arg[1] != ""] $(
+		MakeSurfaceIMG $@arg[1];
+	) else $(
+		MakeSurfaceIMG;
+	);
+
+	# 後始末
+	#colors clear;
+);
+=end

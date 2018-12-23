@@ -1,0 +1,277 @@
+#==============================================================================
+#
+# 「華和梨」イベント処理用簡易スクリプト(Kawari Easy Event Programmed Script)
+#  起動・終了・切り替え反応辞書
+#
+# ＫＥＥＰＳ製作   ：こやま☆あきら
+# OpenKEEPS製作    : ＯｐｅｎＫＥＥＰＳプロジェクトチーム
+# OpenKEEPSページ  : http://keeps.sourceforge.jp
+# Version2.0 alpha1 2002.09.25 22:30版
+# Version2.0 alpha2 2002.09.27 22:07版
+# Version2.0 alpha3 2002.09.28 20:07版
+# Version2.0 alpha4 2002.09.28 22:06版
+# Version2.0 alpha5 2002.09.30 21:45版
+# Version2.0 beta1  2002.10.07 00:03版
+# Version2.0 beta2  2002.10.12 00:30版
+# Version2.0 RC1    2002.10.31 23:00版
+# Version2.0 RC2    2002.11.10 22:00版
+# Version2.0 RC3    2002.11.25 00:00版
+# Version2.0        2002.12.01 00:00版
+# Version2.1.0      2003.01.03 12:00版
+# Version2.1.1      2003.01.26 23:00版
+# Version2.1.2      2003.03.03 23:00版
+# Version2.2        2003.04.01 00:00版
+# Version2.2.1      2003.04.14 22:00版
+# Version2.2.2      2003.05.01 18:00版
+# Version2.2.3      2003.05.18 00:00版
+# Version2.2.4      2003.06.16 23:00版
+# Version2.2.5      2003.07.31 00:00版
+# Version2.3.0 snapshot0309211444 2003.09.21 15:00版
+# Version3.0.0      2004.06.06 00:00版
+# Version3.0.4      2004.06.27 18:30版
+# Version3.0.5      2004.07.03 11:30版
+# Version3.0.7      2004.07.18 22:30版
+# Version3.1.0      2004.09.12 14:00版
+# Version3.1.1      2004.09.19 23:00版
+# Version3.1.2      2004.09.26 23:15版
+# Version3.1.3      2004.10.16 16:15版
+# Version3.1.4      2004.10.30 22:45版
+# Version3.1.5      2004.11.13 20:30版
+# Version3.1.6      2004.11.23 22:30版
+# Version3.3.0a6    2005.10.17 00:00版
+#
+#==============================================================================
+# 動作対象：「華和梨」Phase 8.2.2 及び上位互換版
+#           「何か」（現「伺か」）MATERIA period 583 以上
+#           CROW、SSP、ninix、偽林檎での動作を考慮
+#==============================================================================
+
+:crypt
+#共通エントリ==================================================================
+COLORS初期化 : \1\s[10]\p[2]\s[30]
+初期サーフィス : ${COLORS初期化}\0\s[0]
+初期サーフィス.成功 : ${COLORS初期化}\0\s[5]
+初期サーフィス.失敗 : ${COLORS初期化}\0\s[4]
+
+ネットワーク更新確認 : $(
+	if $[ ${ColorsUpdate.UpdateCheck} == 1 ] "\![updatebymyself,checkonly]"
+)
+
+
+#起動：初回起動================================================================
+#TalkFirstboot.＜削除回数＞
+#TalkFirstboot.Vanished
+#TalkFirstboot
+#始めて起動、または消去された後最初に起動した場合。上ほど優先。
+
+TalkFirstboot : (
+	${初期サーフィス}
+	COLORSボタンを押すと、\w8操作メニューが表示されます。\w8\w8
+	${ネットワーク更新確認}
+	\e
+)
+
+#削除後反応の例
+
+#TalkFirstboot.1 : \1\s[10]\0\s[0]１回削除されました。\e
+#TalkFirstboot.Vanished : 
+
+#削除後反応をつける場合は、TalkFirstboot.Vanishedを用意しておかなければ
+#初回起動メッセージ（削除反応でない方）が出てしまうので注意
+
+#==============================================================================
+
+
+#起動：通常起動================================================================
+
+#TalkBootup.＜日付(4桁数字)＞
+#TalkBootup.＜timezone名＞.＜日付(4桁数字)＞
+#TalkBootup.＜timezone名＞
+#TalkBootup
+#起動した時のメッセージ、上の方ほど優先される。
+
+#使用できる変数
+# System.Request.Reference0 : 現在のシェル名
+
+TalkBootup : $(
+	listtree @talksize Boot;
+	if $(size ColorsUpdateScript) 
+		${TalkCOLORSUpdate}
+	else if ${IsBackupExist}
+		${ColorsBackupInstall}
+	else if ${IsPartsPackExist}
+		${ColorsPartsPackInstall}
+	else if $[ ${@talksize} > 0 ]
+		${COLORS初期化}${ネットワーク更新確認}${TalkColorsBoot}
+	else 
+		${初期サーフィス}${ネットワーク更新確認}\e
+)
+
+# エクスポートミドルウェア共通の検索部
+TalkColorsBoot : $(
+	setstr @aistr "Boot";
+	foreach @item OnBootTree $(
+		if $(size ${@item}) $(
+			setstr @aistr ${@item};
+			break;
+		);
+	);
+	entry ${@aistr};
+)
+
+# 検索のためのツリー
+OnBootTree (
+	Boot.$(date %H).$(date %m%d),
+	Boot.date.$(date %m%d),
+	Boot.$(date %H)
+)
+
+#前回起動時に異常終了した
+#TalkCrashed : 
+
+#==============================================================================
+
+
+#終了：終了メッセージ==========================================================
+
+#TalkClose.＜日付(4桁数字)＞
+#TalkClose.＜timezone名＞.＜日付(4桁数字)＞
+#TalkClose.＜timezone名＞
+#TalkClose
+#メニューから終了が指示された時のメッセージ、上の方ほど優先される。
+
+# timezone : EarlyMorning（早朝）/ Morning（朝）/ Day（日中）/ Evening（夕方）
+#/ Night（夜）/ Midnight（深夜）
+
+#注意：スクリプトの最後に「\e」タグをつけない事。
+#　　　(メッセージを表示するだけで終了しなくなる)
+
+
+TalkClose : $(
+	listtree @talksize Close;
+	if $[ ${@talksize} > 0 ]
+		${COLORS初期化}${TalkColorsClose}
+	else 
+		\1\s[10]\0\s[0]
+)
+
+# エクスポートミドルウェア共通の検索部
+TalkColorsClose : $(
+	setstr @aistr "Close";
+	foreach @item OnCloseTree $(
+		if $(size ${@item}) $(
+			setstr @aistr ${@item};
+			break;
+		);
+	);
+	entry ${@aistr};
+)
+
+# 検索のためのツリー
+OnCloseTree (
+	Close.$(date %H).$(date %m%d),
+	Close.date.$(date %m%d),
+	Close.$(date %H)
+)
+
+#==============================================================================
+
+
+#起動＆終了：ゴースト切り替え==================================================
+
+#TalkGhostChangingEx.＜正規化した\0側名＞.＜正規化したゴースト名＞.＜日付(4桁数字)＞
+#TalkGhostChangingEx.＜正規化した\0側名＞.＜正規化したゴースト名＞
+#TalkGhostChanging.＜正規化した\0側名＞.＜日付(4桁数字)＞
+#TalkGhostChanging.__other__.＜日付(4桁数字)＞
+#TalkGhostChanging.＜正規化した\0側名＞
+#TalkGhostChanging.＜起動時間キーワード＞
+#TalkGhostChanging
+#TalkRebooting
+
+#TalkGhostChangedEx.＜正規化した\0側名＞.＜正規化したゴースト名＞.＜日付(4桁数字)＞.＜キーワード＞
+#TalkGhostChangedEx.＜正規化した\0側名＞.＜正規化したゴースト名＞.＜日付(4桁数字)＞
+#TalkGhostChangedEx.＜正規化した\0側名＞.＜正規化したゴースト名＞.＜キーワード＞
+#TalkGhostChangedEx.＜正規化した\0側名＞.＜正規化したゴースト名＞
+#TalkGhostChanged.＜正規化した\0側名＞.＜日付(4桁数字)＞.＜キーワード＞
+#TalkGhostChanged.__other__.＜日付(4桁数字)＞.＜キーワード＞
+#TalkGhostChanged.＜正規化した\0側名＞.＜日付(4桁数字)＞
+#TalkGhostChanged.＜正規化した\0側名＞.＜キーワード＞
+#TalkGhostChanged.__other__.＜日付(4桁数字)＞
+#TalkGhostChanged.__other__.＜キーワード＞
+#TalkGhostChanged.＜正規化した\0側名＞
+#TalkGhostChanged.＜起動時間キーワード＞
+#TalkGhostChanged
+#TalkRebooted
+
+#他のゴーストへ切り替えが指示、または他のゴーストから切り替わった時。
+#名前の後に日付をつける事でその日限定の反応をすることが出来ます。
+#ゴーストの名前、\0側の名前は、全角・半角スペースが削除されたものです。
+#自分の名前を指定した場合再起動扱いとなります。
+#ゴーストの名前をつけない場合は汎用の反応となります。
+
+#自分→他ゴーストに交代する際使用できる変数
+# System.Request.Reference0 : 次に切り代わるゴーストの\0側の名前
+# System.Request.Reference2 : 次に切り代わるゴーストの名前
+
+#他ゴースト→自分に交代する際使用できる変数
+# System.Request.Reference0 : 切り代わる前のゴーストの\0側の名前
+# System.Request.Reference1 : 切り代わる前のゴーストの最後のスクリプト全文
+# System.Request.Reference2 : 切り代わる前のゴーストの名前
+
+#TalkGhostChanging.Auto : 自動ゴースト切り替えによる反応
+
+TalkGhostChanging : \0\s[0]$(SReference 0)に代わります。\e
+TalkGhostChanged : $(
+	if $(size ColorsUpdateScript) 
+		${TalkCOLORSUpdate}
+	else if ${IsBackupExist}
+		${ColorsBackupInstall}
+	else if ${IsPartsPackExist}
+		${ColorsPartsPackInstall}
+	else (
+		${初期サーフィス}
+		$(SReference 0)から代わりました。
+		${ネットワーク更新確認}
+		\e
+	)
+)
+
+TalkRebooted : $(
+	if $(size ColorsUpdateScript) 
+		${TalkCOLORSUpdate}
+	else 
+		${初期サーフィス}再起動しました。${ネットワーク更新確認}\e
+)
+TalkRebooting : \0\s[0]再起動します。\e
+
+#他ゴーストが消去された場合の交代----------------------------------------------
+
+#TalkVanished : 他ゴーストが消去された後、自分に交代された
+#使用できる変数 
+# beforeghost : 消去された\0側名
+
+#TalkVanished : 
+
+#短時間での交代（他ゴーストに交代→自分にすぐ交代された）
+#TalkGhostChanged.short.0to3min : 
+
+#久しぶりの起動（交代による起動）
+#TalkGhostChanged.long.31over : 
+
+#起動してからすぐの交代
+#TalkGhostChanging.short.0to3min : 
+
+
+#COLORS Update-----------------------------------------------------------------
+
+TalkCOLORSUpdate : (
+	${初期サーフィス}
+	COLORS Updateを実行します。
+	\w8\w8
+	"\![raise,OnDelayDisplayExecute,ColorsUpdateScript]"
+	\e
+)
+
+
+#==============================================================================
+:endcrypt

@@ -1,0 +1,4 @@
+charset,Shift_JIS
+type,shell
+name,‚©‚ç[‚¸‚Ä‚·‚Æ
+directory,COLORSTEST

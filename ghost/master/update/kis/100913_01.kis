@@ -1,0 +1,48 @@
+=kis
+# 過去のパッチが正しくあたっているか確認し、あたっていない場合は当てなおす
+if $[ ${ColorsUpdate.vars.comprehensive100913} != "1" ] $(
+	# ファイル名とフラグの対応関係テーブル
+	setstr @kispatch.100708_01.kis "ColorsUpdate.vars.mouthpatch|2";
+	setstr @kispatch.100718_01.kis "ColorsUpdate.vars.rgbskindelete|1";
+	setstr @kispatch.100801_01.kis "ColorsUpdate.vars.rgbatdelete|1";
+	setstr @kispatch.100905_01.kis "ColorsUpdate.vars.maketempdirs|1";
+	setstr @kispatch.100910_01.kis "ColorsUpdate.vars.tops3convert|1";
+	
+	setstr @recipepatch.100708_01 "口.シニカル";
+	setstr @recipepatch.100719_01 "眉.太眉_CC";
+	setstr @recipepatch.100912_01 "素体オプション.鹿角_CCC";
+	
+	# パッチあて状況の確認
+	foreach @kispatch ColorsUpdate.kis $(
+		# 未知のパッチについては、とりあえず保留（誰が作った？）
+		if $[ $(size @kispatch.${@kispatch}) == 0 ] $(continue);
+		
+		clear @kelement;
+		split @kelement ${@kispatch.${@kispatch}} "|";
+		# 実行済みの筈なのにフラグが立っていないものは強制実行
+		if $[ ${$@kelement[0]} != $@kelement[1] ] $(
+			logprint "＠＠＠ Unexecuted patch found! : /"${@kispatch}"/";
+			load $(cncpath "update/kis" ${@kispatch});
+		);
+	);
+	PushCurrentShellName "COLORS";
+	foreach @recipepatch ColorsUpdate.recipe $(
+		# 未知のパッチについては、とりあえず保留（誰が作った？）
+		if $[ $(size @recipepatch.${@recipepatch}) == 0 ] $(continue);
+		
+		clear @relement;
+		split @relement ${@recipepatch.${@recipepatch}} ".";
+		# 実行済みの筈なのにパーツが追加されていないものは強制実行
+		if $[ $(FindSurfaceID $@relement[0] $@relement[1]) == "" ] $(
+			logprint "＠＠＠ Unexecuted recipe found! : /"${@recipepatch}"/";
+			setstr @path $(cncpath ${System.DataPath} $(cncpath "update/recipe/"${@recipepatch} ${@recipepatch}".txt"));
+			setstr @dir $(dirname ${@path});
+			ExecRecipe ${@path} ${@dir};
+		);
+	);
+	PopCurrentShellName;
+	
+	# 後始末
+	setstr ColorsUpdate.vars.comprehensive100913 1;
+);
+=end

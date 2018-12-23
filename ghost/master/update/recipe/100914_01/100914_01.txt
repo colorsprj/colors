@@ -1,0 +1,28 @@
+declare	RECIPE/1.0	COLORS
+ccc	前髪	中寄りナチュラル	maegami1.png	maegami2.png
+cc	横髪	あごラインナチュラル	yokogami.png
+ccc	結髪	ロールツインテール	ro-rutuinte1.png	ro-rutuinte2.png
+eye	目の形	つり目まつ毛付	1.png	2.png	3.png	4.png	5.png	6.png	7.png
+norm	瞳ハイライト	中央	mehikari.png
+mayuc	眉１	つり眉	mayu.png	mayuodoroki.png	mayukomari.png	mayuikari.png
+mouth	口	小さめ	kutihiraki.png	kutitoji.png	kutihirakiwarai.png	kutiwarai.png	kutimask.png
+ccc	耳	ねこ耳シャープ	nekomimi1.png	nekomimi2.png
+cc	帽子・ヘッドドレス２	ホワイトブリム	heddress1.png
+cc	帽子・ヘッドドレス２	細カチューシャ	katyusya.png
+cc	アクセサリー５	細リボン右	ribonmigi.png
+cc	アクセサリー５	細リボン左	ribonhidari.png
+ccc	靴	クロスストラップシューズ	kutu1.png	kutu2.png
+cc	スカート	膝丈すそ広がりスカート	sukato.png
+cc	スカート装飾	膝丈すそ広がりスカートフリル	sukatofril.png
+cct	インナー３	パフスリーブブラウス	burausu.png	burausu2.png
+cc	インナー３装飾	パフスリーブブラウス袖口装飾	sodehimo.png
+cc	エプロン	サロンエプロン	epron.png
+cc	トップス２	女性用前開きベスト	besuto.png
+cct	トップス３	コルセット	korusetto1.png	korusetto2.png
+cc	トップス３装飾	コルセット用ベルト	korusettobelt.png
+cct	アクセサリー４	チョーカー風フリル襟	eri1.png	eri2.png
+cc	アクセサリー５	紐リボンチョーカー	eriribon.png
+cc	アクセサリー５	襟元紐リボン	eriribon2.png
+cct	インナー３装飾	フリルカフス左	kahusuhidari1.png	kahusuhidari2.png
+cct	インナー３装飾	フリルカフス右	kahusumigi1.png	kahusumigi2.png
+skinc	アクセサリー４	口小さめ用猫口	kutimask.png	kutineko.png

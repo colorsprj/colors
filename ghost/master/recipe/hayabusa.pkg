@@ -1,0 +1,106 @@
+#PACKAGE/1.0
+COLORS.Package.talk: "hayabusa.txt"
+COLORS.Package.talksize: 5
+COLORS.Package.mouse: "mouse_default.txt"
+COLORS.Package.mousesize: 14
+COLORS.Package.mousearea: head|82|50|213|117, face|119|121|178|167, bust|129|175|172|199
+COLORS.Package.bootend: "bootend_default.txt"
+COLORS.Package.bootendsize: 25
+COLORS.Package.recipe: "hayabusa.txt"
+COLORS.Package.recipesize: 43
+COLORS.Package.FPP: "わたし"
+COLORS.Package.SPP: "あなた"
+COLORS.Package.username: "マスター"
+######################################################################
+# トークを「sentence :」の後に書いてください。
+# 「sentence :」は何個でも書くことが出来ます。
+# 下記「sentence:」先頭の「#」を消してから使ってください。
+
+sentence : \0\s[103]\n\n\n　　　た だ い ま \e
+######################################################################
+#Mouse.DoubleClick.0.＜マウス反応領域＞ : ある領域をダブルクリックした時の反応
+#Mouse.DoubleClick.0                    : 領域外をダブルクリックした時の反応
+#Mouse.Click.0.＜マウス反応領域＞       : ある領域をクリックした時の反応
+#Mouse.Click.0                          : 領域外をクリックした時の反応
+#Mouse.Stroke.0.＜マウス反応領域＞      : ある領域を撫でた時の反応
+
+Mouse.DoubleClick.0.head : \0\s[4]痛いです。\e
+
+Mouse.Stroke.0.head : \0\s[5]にゃあ。\e
+
+Mouse.Stroke.0.face : \0\s[4]困ります。\e
+
+Mouse.Stroke.0.bust : \0\s[4]やめて下さい。\e
+
+######################################################################
+# 起動・終了トーク
+#
+# Boot.＜時間（2桁）＞.＜日付4桁＞  :  ＜起動トーク＞
+# Boot.date.＜日付（4桁）＞         :  ＜起動トーク＞
+# Boot.＜時間（2桁）＞              :  ＜起動トーク＞
+# Boot                              :  ＜起動トーク＞
+
+# Close.＜時間（2桁）＞.＜日付4桁＞ :  ＜起動トーク＞
+# Close.date.＜日付（4桁）＞        :  ＜起動トーク＞
+# Close.＜時間（2桁）＞             :  ＜起動トーク＞
+# Close                             : ＜終了トーク＞
+
+# 日付・時間指定サンプル
+#Boot.18.1224, Boot.19.1224, Boot.20.1224, Boot.21.1224, Boot.22.1224, Boot.23.1224 : \0\s[5]クリスマスイブの夜です。\e
+
+# 日付サンプル
+Boot.date.1031 : \0\s[5]Happy Halloween!\e
+
+# 時間サンプル
+Boot.18, Boot.19, Boot.20, Boot.21, Boot.22, Boot.23, Boot.00, Boot.01, Boot.02, Boot.03, Boot.04 : \0\s[5]こんばんは。
+Boot.05, Boot.06, Boot.07, Boot.08, Boot.09, Boot.10 : \0\s[5]おはようございます。\e
+Boot.11, Boot.12, Boot.13, Boot.14, Boot.15, Boot.16, Boot.17 : \0\s[5]こんにちは。\e
+
+Close : \0\s[5]さようなら。
+
+######################################################################
+COLORS.Package.recipebody (
+	"declare	RECIPE/1.0	COLORS",
+	"select	素体	肌_CC",
+	"mayuselect	2",
+	"paint	素体	肌_CC		255	226	191",
+	"select	背景	無地_CC",
+	"paint	背景	無地_CC		10	10	10",
+	"select	背景装飾	宇宙",
+	"select	横髪	ぱっつん_CC",
+	"select	前髪	斜めナチュラル_CCC",
+	"select	眉２	デフォルト",
+	"select	アクセサリー５	はやぶさカプセル_CCC",
+	"paint	アクセサリー５	はやぶさカプセル_CCC		251	210	21",
+	"select	アクセサリー２	アンテナパーツ_CCT",
+	"paint	アクセサリー２	アンテナパーツ_CCT	2toneCC2	255	255	255	251	210	21",
+	"select	後髪	結髪用シンプル_CC",
+	"select	帽子・ヘッドドレス１	パラボラアンテナ_CC",
+	"paint	帽子・ヘッドドレス１	パラボラアンテナ_CC		232	239	244",
+	"select	アクセサリー３	はやぶさパネル_CCT",
+	"paint	アクセサリー３	はやぶさパネル_CCT	2toneCC2	141	153	254	172	172	172",
+	"select	素体オプション背後	はやぶさボディ_CC",
+	"paint	素体オプション背後	はやぶさボディ_CC		251	210	21",
+	"select	耳	デフォルト_SKIN",
+	"select	素体オプション	デフォルト",
+	"select	瞳色	左右_CC",
+	"paint	瞳色	左右_CC		114	128	254",
+	"select	目の形	デフォルト",
+	"select	瞳ハイライト	左下",
+	"select	口	デフォルト",
+	"select	眼鏡	角丸_CCT",
+	"paint	眼鏡	角丸_CCT	2toneCC2	90	102	122	255	255	255",
+	"select	靴下	タイツ_CC",
+	"paint	靴下	タイツ_CC		10	10	10",
+	"select	靴下	網タイツ_CC",
+	"paint	靴下	網タイツ_CC		89	55	55",
+	"select	インナー３	ロンググローブ_CC",
+	"paint	インナー３	ロンググローブ_CC		203	216	218",
+	"select	靴	厚底ストラップシューズ_CCC",
+	"paint	靴	厚底ストラップシューズ_CCC		232	242	244",
+	"select	ズボン	短パン_CC",
+	"paint	ズボン	短パン_CC		251	210	21",
+	"select	トップス１	ノースリーブシャツ_CCT",
+	"paint	トップス１	ノースリーブシャツ_CCT	2toneCC2	251	210	21	251	210	21",
+	"paint	横髪	ぱっつん_CC		90	102	122"
+)

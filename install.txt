@@ -1,0 +1,11 @@
+charset, Shift_JIS
+type,ghost
+name,COLORS_Hayabusa
+directory,COLORS_Hayabusa
+refresh,true
+refreshundeletemask,dict-keeps-savedata.txt
+
+balloon.directory,forCOLORS
+balloon.source.directory,forCOLORS
+balloon.refresh,true
+

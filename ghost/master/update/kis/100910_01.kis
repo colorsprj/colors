@@ -1,0 +1,51 @@
+=kis
+# トップス３装飾カテゴリが「トップス3装飾」になっていたバグを修正する
+# 2010/9/10
+if $[ ${ColorsUpdate.vars.tops3convert} != "1" ] $(
+	# 第1引数: 置換するファイル名
+	# 第2引数: 置換元文字列
+	# 第3引数: 置換先文字列
+	# 備考: gsubの条件で置換する
+	function ColorsUpdate.Translate $(
+		if $[ $(size @arg) != 4 ] $(return);
+		setstr @shellpath $(cncpath "../../shell");
+		readdir @shells ${@shellpath};
+		# すべてのシェルについて処理
+		foreach @shell @shells $(
+			setstr @text_path $(cncpath ${@shellpath} $(cncpath ${@shell} $@arg[1]));
+			clear @text;
+			setstr @changed 0;
+			if $[ ! $(isexist ${@text_path}) ] $(continue);
+			# ファイルが存在する
+			textload @text ${@text_path};
+			loop $(size @text) $(
+				setstr @i ${-1};
+				# 各行について置換パターンがないか検索
+				if $[ $(match $@text[${@i}] $@arg[2]) >= 0 ] $(
+					# 該当あり
+					setstr @changed 1;
+					setstr @text[${@i}] $(gsub $@text[${@i}] $@arg[2] $@arg[3]);
+				);
+			);
+			# 変更があるならセーブする
+			if ${@changed} $(
+				textsave ${@text_path} @text;
+			);
+		);
+	);
+	# 実際の置換
+	ColorsUpdate.Translate surfaces.txt "//トップス3装飾_" "//トップス３装飾_";	
+	ColorsUpdate.Translate descript.txt ",トップス3装飾," ",トップス３装飾,";
+	ColorsUpdate.Translate surfaces_backup.txt "//トップス3装飾_" "//トップス３装飾_";
+	ColorsUpdate.Translate descript_backup.txt ",トップス3装飾," ",トップス３装飾,";
+	ColorsUpdate.Translate editlog.log "|トップス3装飾|" "|トップス３装飾|";
+	# アニメーション設定のバグも修正
+	ColorsUpdate.Translate surfaces.txt "animation27900.interval,always" "animation27900.interval,runonce";
+	ColorsUpdate.Translate surfaces_backup.txt "animation27900.interval,always" "animation27900.interval,runonce";
+
+	
+	# 後始末
+	rmfunc ColorsUpdate.Translate;
+	setstr ColorsUpdate.vars.tops3convert 1;
+);
+=end

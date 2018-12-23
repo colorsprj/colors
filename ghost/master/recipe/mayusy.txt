@@ -1,0 +1,32 @@
+declare	RECIPE/1.0	COLORS
+select	素体	肌_CC
+mayuselect	2
+paint	素体	肌_CC		254	235	203
+select	後髪	あごライン裾広がりざくざく_CC
+select	耳	デフォルト_SKIN
+select	瞳色	左右_CC
+paint	瞳色	左右_CC		151	189	206
+select	目の形	たれ目まつ毛付き
+select	瞳ハイライト	中央
+select	口	小さめ
+select	インナー２	フリルキャミ_CC
+paint	インナー２	フリルキャミ_CC		255	191	191
+select	靴	ハーフブーツ_CC
+paint	靴	ハーフブーツ_CC		96	81	70
+select	ズボン	スリムショートパンツ_CCT
+paint	ズボン	スリムショートパンツ_CCT	2toneCC2	69	105	112	221	236	233
+select	服上下	ハイウエストワンピ_CCT
+paint	服上下	ハイウエストワンピ_CCT	2toneCC2	221	236	233	77	83	98
+select	ネクタイ・帯	ハイウエストリボンベルト_CC
+paint	ネクタイ・帯	ハイウエストリボンベルト_CC		77	83	98
+select	横髪	あごラインざくざく_CC
+select	前髪	ざくざく_CCC
+select	眉２	たれ太眉_CC
+select	帽子・ヘッドドレス２	クロッシェ_CC
+paint	帽子・ヘッドドレス２	クロッシェ_CC		221	236	233
+select	帽子・ヘッドドレス２装飾	クロッシェ幅広ベルト_CC
+paint	帽子・ヘッドドレス２装飾	クロッシェ幅広ベルト_CC		230	230	230
+select	アクセサリー５	３連リボン左_CC
+paint	アクセサリー５	３連リボン左_CC		98	145	172
+paint	結髪	あごライン裾広がりざくざく_CC		77	83	98
+paint	眉	たれ太眉_CC		77	83	98

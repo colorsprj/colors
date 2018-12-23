@@ -1,0 +1,33 @@
+# 各種リソース
+
+#resource.sakura.recommendsites : 
+#resource.kero.recommendsites : 
+#resource.sakura.portalsites : 
+#resource.recommendrootbutton.caption : 
+#resource.kero.recommendbuttoncaption : 
+#resource.portalrootbutton.caption : 
+#resource.updatebutton.caption : 
+#resource.vanishbutton.caption : 
+#resource.biffbutton.caption : 
+#resource.headlinesenserootbutton.caption : 
+#resource.sntpbutton.caption : 
+#resource.recommendrootbutton.visible : 
+#resource.portalrootbutton.visible : 
+#resource.updatebutton.visible : 
+#resource.vanishbutton.visible : 
+#resource.biffbutton.visible : 
+#resource.headlinesenserootbutton.visible : 
+#resource.sntpbutton.visible : 
+#resource.username : 
+#resource.sakura.recommendbuttoncaption : 
+#resource.sakura.portalbuttoncaption : 
+#resource.updatebuttoncaption : 
+#resource.vanishbuttoncaption : 
+#resource.sakura.recommendsitesbuttonvisible : 
+#resource.sakura.portalsitesbuttonvisible : 
+#resource.updatebuttonvisible : 
+#resource.vanishbuttonvisible : 
+#resource.biffbuttonvisible : 
+
+# ネットワーク更新URL
+#resource.homeurl : 

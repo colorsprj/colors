@@ -1,0 +1,6128 @@
+charset,Shift_JIS
+
+descript
+{
+	version,1
+}
+
+
+//コメント行は消さない事。
+
+////////////////////////////////////////////////////////////////////////////////
+//パーツ定義（この行は消さない事）
+
+//背景_無地_CC
+surface9000
+{
+	element0,overlay,parts\9000_CC_2.png,0,0
+}
+
+//背景_グラデーション_CC
+surface9001
+{
+	element0,overlay,parts\9001_CC_2.png,0,0
+}
+
+//背景_グラデーション＃2_CC
+surface9002
+{
+	element0,overlay,parts\9002_CC_2.png,0,0
+}
+
+//背景_グラデーション＃3_CC
+surface9003
+{
+	element0,overlay,parts\9003_CC_2.png,0,0
+}
+
+//背景_グラデーション＃4_CC
+surface9004
+{
+	element0,overlay,parts\9004_CC_2.png,0,0
+}
+
+//背景_キャンバス地_CC
+surface9005
+{
+	element0,overlay,parts\9005_CC_2.png,0,0
+}
+
+//背景装飾_チェック_CC
+surface10000
+{
+	element0,overlay,parts\10000_CC_2.png,0,0
+}
+
+//背景装飾_宇宙
+surface10001
+{
+	element0,overlay,parts\10001.png,0,0
+}
+
+//背景装飾_ゴシックホラー_CC
+surface10002
+{
+	element0,overlay,parts\10002_CC_2.png,0,0
+}
+
+//背景装飾_スパイダー_CC
+surface10003
+{
+	element0,overlay,parts\10003_CC_2.png,0,0
+}
+
+//背景装飾_市松模様_CC
+surface10004
+{
+	element0,overlay,parts\10004_CC_2.png,0,0
+}
+
+//背景装飾_水玉_CC
+surface10005
+{
+	element0,overlay,parts\10005_CC_2.png,0,0
+}
+
+//背景装飾_デザイン_CC
+surface10006
+{
+	element0,overlay,parts\10006_CC_2.png,0,0
+}
+
+//背景装飾_足元影_CC
+surface10007
+{
+	element0,overlay,parts\10007_CC_2.png,0,0
+}
+
+//アクセサリー１_蝶羽根左_CCT
+surface11000
+{
+	element0,overlay,parts\11000_CCT_2.png,0,0
+	element1,overlay,parts\11000_CCT_4.png,0,0
+}
+
+//アクセサリー１_蝶羽根右_CCT
+surface11001
+{
+	element0,overlay,parts\11001_CCT_2.png,0,0
+	element1,overlay,parts\11001_CCT_4.png,0,0
+}
+
+//結髪_ポニーテール_CCC
+surface13000
+{
+	element0,overlay,parts\13000_CCC_2.png,0,0
+	element1,overlay,parts\13000_CCC.png,0,0
+}
+
+//結髪_サイドテールロング左_CCC
+surface13001
+{
+	element0,overlay,parts\13001_CCC_2.png,0,0
+	element1,overlay,parts\13001_CCC.png,0,0
+}
+
+//結髪_サイドテールロング右_CCC
+surface13002
+{
+	element0,overlay,parts\13002_CCC_2.png,0,0
+	element1,overlay,parts\13002_CCC.png,0,0
+}
+
+//結髪_ロールツインテール_CCC
+surface13003
+{
+	element0,overlay,parts\13003_CCC_2.png,0,0
+	element1,overlay,parts\13003_CCC.png,0,0
+}
+
+//結髪_ハーフアップロング_CC
+surface13004
+{
+	element0,overlay,parts\13004_CC_2.png,0,0
+}
+
+//結髪_ポニーテール肩ライン超え_CC
+surface13005
+{
+	element0,overlay,parts\13005_CC_2.png,0,0
+}
+
+//結髪_ゆるウエーブツインテ_CC
+surface13006
+{
+	element0,overlay,parts\13006_CC_2.png,0,0
+}
+
+//結髪_ダブルシニョン_CC
+surface13007
+{
+	element0,overlay,parts\13007_CC_2.png,0,0
+}
+
+//結髪_細めツインテール腰丈_CCC
+surface13008
+{
+	element0,overlay,parts\13008_CCC_2.png,0,0
+	element1,overlay,parts\13008_CCC.png,0,0
+}
+
+//結髪_細めツインテール腰下_CCC
+surface13009
+{
+	element0,overlay,parts\13009_CCC_2.png,0,0
+	element1,overlay,parts\13009_CCC.png,0,0
+}
+
+//結髪_ツインドリル_CCC
+surface13010
+{
+	element0,overlay,parts\13010_CCC_2.png,0,0
+	element1,overlay,parts\13010_CCC.png,0,0
+}
+
+//結髪_ツインテール肩丈_CCC
+surface13011
+{
+	element0,overlay,parts\13011_CCC_2.png,0,0
+	element1,overlay,parts\13011_CCC.png,0,0
+}
+
+//アクセサリー２_ポニテ用リボン_CC
+surface14000
+{
+	element0,overlay,parts\14000_CC_2.png,0,0
+}
+
+//アクセサリー２_ツインテール用リボン_CCT
+surface14001
+{
+	element0,overlay,parts\14001_CCT_2.png,0,0
+	element1,overlay,parts\14001_CCT_4.png,0,0
+}
+
+//アクセサリー２_アンテナパーツ_CCT
+surface14002
+{
+	element0,overlay,parts\14002_CCT_2.png,0,0
+	element1,overlay,parts\14002_CCT_4.png,0,0
+}
+
+//アクセサリー２_ポニテ用リボン下垂れあり_CC
+surface14003
+{
+	element0,overlay,parts\14003_CC_2.png,0,0
+}
+
+//アクセサリー２_花弁風リボン左_CC
+surface14004
+{
+	element0,overlay,parts\14004_CC_2.png,0,0
+}
+
+//アクセサリー２_花弁風リボン右_CC
+surface14005
+{
+	element0,overlay,parts\14005_CC_2.png,0,0
+}
+
+//後髪_ロングストレート_CC
+surface15000
+{
+	element0,overlay,parts\15000_CC_2.png,0,0
+}
+
+//後髪_結髪用シンプル_CC
+surface15001
+{
+	element0,overlay,parts\15001_CC_2.png,0,0
+}
+
+//後髪_超ロングツインロール_CC
+surface15002
+{
+	element0,overlay,parts\15002_CC_2.png,0,0
+}
+
+//後髪_超ロングナチュラル_CC
+surface15003
+{
+	element0,overlay,parts\15003_CC_2.png,0,0
+}
+
+//後髪_あごライン裾広がりざくざく_CC
+surface15004
+{
+	element0,overlay,parts\15004_CC_2.png,0,0
+}
+
+//後髪_ショート襟足外はね_CC
+surface15005
+{
+	element0,overlay,parts\15005_CC_2.png,0,0
+}
+
+//後髪_ショート襟足外はねボリューム減_CC
+surface15006
+{
+	element0,overlay,parts\15006_CC_2.png,0,0
+}
+
+//後髪_ショート_CC
+surface15007
+{
+	element0,overlay,parts\15007_CC_2.png,0,0
+}
+
+//後髪_ミディアムボブ_CC
+surface15008
+{
+	element0,overlay,parts\15008_CC_2.png,0,0
+}
+
+//後髪_ミディアムボブストレート_CC
+surface15009
+{
+	element0,overlay,parts\15009_CC_2.png,0,0
+}
+
+//後髪_あごラインボブ丸め_CC
+surface15010
+{
+	element0,overlay,parts\15010_CC_2.png,0,0
+}
+
+//後髪_ウエーブロング_CC
+surface15011
+{
+	element0,overlay,parts\15011_CC_2.png,0,0
+}
+
+//後髪_ウエーブきつめセミロング_CC
+surface15012
+{
+	element0,overlay,parts\15012_CC_2.png,0,0
+}
+
+//後髪_ウエーブゆるめセミロング_CC
+surface15013
+{
+	element0,overlay,parts\15013_CC_2.png,0,0
+}
+
+//後髪_ウエーブセミロング_CC
+surface15014
+{
+	element0,overlay,parts\15014_CC_2.png,0,0
+}
+
+//後髪_短髪逆毛_CC
+surface15015
+{
+	element0,overlay,parts\15015_CC_2.png,0,0
+}
+
+//後髪_くせ毛肩ラインボブ_CC
+surface15016
+{
+	element0,overlay,parts\15016_CC_2.png,0,0
+}
+
+//後髪_ショートナチュラル_CC
+surface15017
+{
+	element0,overlay,parts\15017_CC_2.png,0,0
+}
+
+//後髪_ナチュラルロング_CC
+surface15018
+{
+	element0,overlay,parts\15018_CC_2.png,0,0
+}
+
+//後髪_ミディアムボブナチュラル_CC
+surface15019
+{
+	element0,overlay,parts\15019_CC_2.png,0,0
+}
+
+//帽子・ヘッドドレス１_三角巾風ヘッドドレス_CCT
+surface17000
+{
+	element0,overlay,parts\17000_CCT_2.png,0,0
+	element1,overlay,parts\17000_CCT_4.png,0,0
+}
+
+//帽子・ヘッドドレス１_ナース風キャップ_CC
+surface17001
+{
+	element0,overlay,parts\17001_CC_2.png,0,0
+}
+
+//帽子・ヘッドドレス１_パラボラアンテナ_CC
+surface17002
+{
+	element0,overlay,parts\17002_CC_2.png,0,0
+}
+
+//アクセサリー３_はやぶさパネル_CCT
+surface19000
+{
+	element0,overlay,parts\19000_CCT_2.png,0,0
+	element1,overlay,parts\19000_CCT_4.png,0,0
+}
+
+//アクセサリー３_マント後ろ_CC
+surface19001
+{
+	element0,overlay,parts\19001_CC_2.png,0,0
+}
+
+//アクセサリー３_マント後ろコウモリ_CC
+surface19002
+{
+	element0,overlay,parts\19002_CC_2.png,0,0
+}
+
+//アクセサリー３_マント後ろギザギザ_CC
+surface19003
+{
+	element0,overlay,parts\19003_CC_2.png,0,0
+}
+
+//アクセサリー３_ミニマント後ろ_CC
+surface19004
+{
+	element0,overlay,parts\19004_CC_2.png,0,0
+}
+
+//素体オプション背後_ねこしっぽ_CC
+surface20000
+{
+	element0,overlay,parts\20000_CC_2.png,0,0
+}
+
+//素体オプション背後_翼_CC
+surface20001
+{
+	element0,overlay,parts\20001_CC_2.png,0,0
+}
+
+//素体オプション背後_はやぶさボディ_CC
+surface20002
+{
+	element0,overlay,parts\20002_CC_2.png,0,0
+}
+
+//素体オプション背後_コウモリ翼左_CC
+surface20003
+{
+	element0,overlay,parts\20003_CC_2.png,0,0
+}
+
+//素体オプション背後_コウモリ翼右_CC
+surface20004
+{
+	element0,overlay,parts\20004_CC_2.png,0,0
+}
+
+//素体オプション背後_犬しっぽ上_CC
+surface20005
+{
+	element0,overlay,parts\20005_CC_2.png,0,0
+}
+
+//素体オプション背後_犬しっぽ下_CC
+surface20006
+{
+	element0,overlay,parts\20006_CC_2.png,0,0
+}
+
+//素体オプション背後_狐しっぽ_CCT
+surface20007
+{
+	element0,overlay,parts\20007_CCT_2.png,0,0
+	element1,overlay,parts\20007_CCT_4.png,0,0
+}
+
+//素体オプション背後_狐しっぽ左_CCT
+surface20008
+{
+	element0,overlay,parts\20008_CCT_2.png,0,0
+	element1,overlay,parts\20008_CCT_4.png,0,0
+}
+
+//素体_肌_CC
+surface21000
+{
+	element0,overlay,parts\21000_CC_2.png,0,0
+}
+
+//耳_デフォルト_SKIN
+surface22000
+{
+	element0,overlay,parts\22000_skin_2.png,0,0
+}
+
+//耳_ねこ耳_CCC
+surface22001
+{
+	element0,overlay,parts\22001_CCC_2.png,0,0
+	element1,overlay,parts\22001_CCC.png,0,0
+}
+
+//耳_福耳_SKIN
+surface22002
+{
+	element0,overlay,parts\22002_skin_2.png,0,0
+}
+
+//耳_ねこ耳シャープ_CCC
+surface22003
+{
+	element0,overlay,parts\22003_CCC_2.png,0,0
+	element1,overlay,parts\22003_CCC.png,0,0
+}
+
+//耳_とがり耳_SKIN
+surface22004
+{
+	element0,overlay,parts\22004_skin_2.png,0,0
+}
+
+//耳_犬耳立ち_CCC
+surface22005
+{
+	element0,overlay,parts\22005_CCC_2.png,0,0
+	element1,overlay,parts\22005_CCC.png,0,0
+}
+
+//耳_つりとがり耳小_SKIN
+surface22006
+{
+	element0,overlay,parts\22006_skin_2.png,0,0
+}
+
+//耳_つりとがり耳大_SKIN
+surface22007
+{
+	element0,overlay,parts\22007_skin_2.png,0,0
+}
+
+//耳_さがり犬耳_CC
+surface22008
+{
+	element0,overlay,parts\22008_CC_2.png,0,0
+}
+
+//耳_耳あて_CC
+surface22009
+{
+	element0,overlay,parts\22009_CC_2.png,0,0
+}
+
+//素体オプション_つの_CC
+surface23000
+{
+	element0,overlay,parts\23000_CC_2.png,0,0
+}
+
+//素体オプション_デフォルト
+surface23001
+{
+	element0,overlay,parts\23001.png,0,0
+}
+
+//素体オプション_人魚しっぽ_CC
+surface23002
+{
+	element0,overlay,parts\23002_CC_2.png,0,0
+}
+
+//素体オプション_翼_CC
+surface23003
+{
+	element0,overlay,parts\23003_CC_2.png,0,0
+}
+
+//素体オプション_胸_SKIN
+surface23004
+{
+	element0,overlay,parts\23004_skin_2.png,0,0
+}
+
+//素体オプション_鹿角_CCC
+surface23005
+{
+	element0,overlay,parts\23005_CCC_2.png,0,0
+	element1,overlay,parts\23005_CCC.png,0,0
+}
+
+//素体オプション_鼻_SKIN
+surface23006
+{
+	element0,overlay,parts\23006_skin_2.png,0,0
+}
+
+//素体オプション_あごたるみ_SKIN
+surface23007
+{
+	element0,overlay,parts\23007_skin_2.png,0,0
+}
+
+//肌オプション_白毫_CC
+surface24000
+{
+	element0,overlay,parts\24000_CC_2.png,0,0
+}
+
+//肌オプション_泣きぼくろ左_CC
+surface24001
+{
+	element0,overlay,parts\24001_CC_2.png,0,0
+}
+
+//肌オプション_泣きぼくろ右
+surface24002
+{
+	element0,overlay,parts\24002.png,0,0
+}
+
+//瞳色_左右_CC
+surface25000
+{
+	element0,overlay,parts\25000_CC_2.png,0,0
+}
+
+//瞳色_右_CC
+surface25001
+{
+	element0,overlay,parts\25001_CC_2.png,0,0
+}
+
+//目の形_デフォルト
+surface26000
+{
+	element0,overlay,parts\26000_skin_2.png,0,0
+	element1,overlay,parts\26000.png,0,0
+}
+
+//目の形_たて長
+surface26001
+{
+	element0,overlay,parts\26001_skin_2.png,0,0
+	element1,overlay,parts\26001.png,0,0
+}
+
+//目の形_つり目
+surface26002
+{
+	element0,overlay,parts\26002_skin_2.png,0,0
+	element1,overlay,parts\26002.png,0,0
+}
+
+//目の形_細つり目
+surface26003
+{
+	element0,overlay,parts\26003_skin_2.png,0,0
+	element1,overlay,parts\26003.png,0,0
+}
+
+//目の形_せんとくん
+surface26004
+{
+	element0,overlay,parts\26004_skin_2.png,0,0
+	element1,overlay,parts\26004.png,0,0
+}
+
+//目の形_つり目まつ毛付
+surface26005
+{
+	element0,overlay,parts\26005_skin_2.png,0,0
+	element1,overlay,parts\26005.png,0,0
+}
+
+//目の形_たれ目まつ毛付き
+surface26006
+{
+	element0,overlay,parts\26006_skin_2.png,0,0
+	element1,overlay,parts\26006.png,0,0
+}
+
+//目の形_つり目シャープ
+surface26007
+{
+	element0,overlay,parts\26007_skin_2.png,0,0
+	element1,overlay,parts\26007.png,0,0
+}
+
+//目の形_細たれ目
+surface26008
+{
+	element0,overlay,parts\26008_skin_2.png,0,0
+	element1,overlay,parts\26008.png,0,0
+}
+
+//目の形_たれ目普通
+surface26009
+{
+	element0,overlay,parts\26009_skin_2.png,0,0
+	element1,overlay,parts\26009.png,0,0
+}
+
+//目の形_普通目
+surface26010
+{
+	element0,overlay,parts\26010_skin_2.png,0,0
+	element1,overlay,parts\26010.png,0,0
+}
+
+//目の形_微つり目
+surface26011
+{
+	element0,overlay,parts\26011_skin_2.png,0,0
+	element1,overlay,parts\26011.png,0,0
+}
+
+//目の形_細目普通
+surface26012
+{
+	element0,overlay,parts\26012_skin_2.png,0,0
+	element1,overlay,parts\26012.png,0,0
+}
+
+//目の形_たれ目ぱっちり
+surface26013
+{
+	element0,overlay,parts\26013_skin_2.png,0,0
+	element1,overlay,parts\26013.png,0,0
+}
+
+//目の形_つり目ぱっちり
+surface26014
+{
+	element0,overlay,parts\26014_skin_2.png,0,0
+	element1,overlay,parts\26014.png,0,0
+}
+
+//瞳ハイライト_右上
+surface27000
+{
+	element0,overlay,parts\27000.png,0,0
+}
+
+//瞳ハイライト_左下
+surface27001
+{
+	element0,overlay,parts\27001.png,0,0
+}
+
+//瞳ハイライト_中央
+surface27002
+{
+	element0,overlay,parts\27002.png,0,0
+}
+
+//瞳ハイライト_細目用
+surface27003
+{
+	element0,overlay,parts\27003.png,0,0
+}
+
+//瞬きアニメ用パーツ
+//閉じ目
+surface28000
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\EyesC.png,0,0
+}
+//半目
+surface28001
+{
+	element0,overlay,parts\EyesH_skin_2.png,0,0
+	element1,overlay,parts\EyesH.png,0,0
+}
+
+//口_デフォルト
+surface29000
+{
+	element0,overlay,parts\29000_skin_2.png,0,0
+	element1,overlay,parts\29000_s.png,0,0
+}
+
+//口_シニカル
+surface29001
+{
+	element0,overlay,parts\29001_skin_2.png,0,0
+	element1,overlay,parts\29001_s.png,0,0
+}
+
+//口_むにむに
+surface29002
+{
+	element0,overlay,parts\29002_skin_2.png,0,0
+	element1,overlay,parts\29002_s.png,0,0
+}
+
+//口_小さめ
+surface29003
+{
+	element0,overlay,parts\29003_skin_2.png,0,0
+	element1,overlay,parts\29003_s.png,0,0
+}
+
+//口_牙付き
+surface29004
+{
+	element0,overlay,parts\29004_skin_2.png,0,0
+	element1,overlay,parts\29004_s.png,0,0
+}
+
+
+//口パクアニメ用パーツ
+//口_開
+surface30001
+{
+	element0,overlay,parts\mouth_skin_2.png,0,0
+	element1,overlay,parts\mouth_o.png,0,0
+}
+//口_閉
+surface30002
+{
+	element0,overlay,parts\mouth_skin_2.png,0,0
+	element1,overlay,parts\mouth_c.png,0,0
+}
+//口_開笑
+surface30004
+{
+	element0,overlay,parts\mouth_os.png,0,0
+}
+//口_笑
+surface30005
+{
+	element0,overlay,parts\mouth_skin_2.png,0,0
+	element1,overlay,parts\mouth_s.png,0,0
+}
+
+//赤面用パーツ
+surface31000
+{
+	element0,overlay,parts\31000.png,0,0
+}
+
+//眼鏡_角丸_CCT
+surface32000
+{
+	element0,overlay,parts\32000_CCT_2.png,0,0
+	element1,overlay,parts\32000_CCT_4.png,0,0
+}
+
+//眼鏡_眼帯太ベルト_CC
+surface32001
+{
+	element0,overlay,parts\32001_CC_2.png,0,0
+}
+
+//眼鏡_眼帯太ベルト右_CC
+surface32002
+{
+	element0,overlay,parts\32002_CC_2.png,0,0
+}
+
+//眼鏡_眼帯紐２本_CC
+surface32003
+{
+	element0,overlay,parts\32003_CC_2.png,0,0
+}
+
+//眼鏡_眼帯紐２本右_CC
+surface32004
+{
+	element0,overlay,parts\32004_CC_2.png,0,0
+}
+
+//眼鏡_眼帯紐１本_CC
+surface32005
+{
+	element0,overlay,parts\32005_CC_2.png,0,0
+}
+
+//眼鏡_眼帯紐１本右_CC
+surface32006
+{
+	element0,overlay,parts\32006_CC_2.png,0,0
+}
+
+//眼鏡_医療用眼帯_CC
+surface32007
+{
+	element0,overlay,parts\32007_CC_2.png,0,0
+}
+
+//眼鏡_医療用眼帯右_CC
+surface32008
+{
+	element0,overlay,parts\32008_CC_2.png,0,0
+}
+
+//眼鏡_オーバル・アンダーリム_CCT
+surface32009
+{
+	element0,overlay,parts\32009_CCT_2.png,0,0
+	element1,overlay,parts\32009_CCT_4.png,0,0
+}
+
+//インナー１_星ブラ_CC
+surface33000
+{
+	element0,overlay,parts\33000_CC_2.png,0,0
+}
+
+//インナー１_パンツ_CC
+surface33001
+{
+	element0,overlay,parts\33001_CC_2.png,0,0
+}
+
+//インナー１_ブラジャー_CC
+surface33002
+{
+	element0,overlay,parts\33002_CC_2.png,0,0
+}
+
+//靴下_ストッキング_CCC
+surface35000
+{
+	element0,overlay,parts\35000_CCC_2.png,0,0
+	element1,overlay,parts\35000_CCC.png,0,0
+}
+
+//靴下_タイツ_CC
+surface35001
+{
+	element0,overlay,parts\35001_CC_2.png,0,0
+}
+
+//靴下_ニーソックス_CC
+surface35002
+{
+	element0,overlay,parts\35002_CC_2.png,0,0
+}
+
+//靴下_レギンス１０分丈_CC
+surface35003
+{
+	element0,overlay,parts\35003_CC_2.png,0,0
+}
+
+//靴下_レギンス１０分丈くしゅくしゅ_CC
+surface35004
+{
+	element0,overlay,parts\35004_CC_2.png,0,0
+}
+
+//靴下_レギンス５分丈_CC
+surface35005
+{
+	element0,overlay,parts\35005_CC_2.png,0,0
+}
+
+//靴下_レギンス７分丈_CC
+surface35006
+{
+	element0,overlay,parts\35006_CC_2.png,0,0
+}
+
+//靴下_網タイツ_CC
+surface35007
+{
+	element0,overlay,parts\35007_CC_2.png,0,0
+}
+
+//靴下_クルーソックス_CC
+surface35008
+{
+	element0,overlay,parts\35008_CC_2.png,0,0
+}
+
+//靴下_ブーツカットソックス_CC
+surface35009
+{
+	element0,overlay,parts\35009_CC_2.png,0,0
+}
+
+//靴下装飾_ニーソックスストライプ_CC
+surface36000
+{
+	element0,overlay,parts\36000_CC_2.png,0,0
+}
+
+//靴下装飾_ニーソックスライン_CC
+surface36001
+{
+	element0,overlay,parts\36001_CC_2.png,0,0
+}
+
+//靴下装飾_ニーソックスライン２_CC
+surface36002
+{
+	element0,overlay,parts\36002_CC_2.png,0,0
+}
+
+//インナー２_シンプルブラウス_CC
+surface37000
+{
+	element0,overlay,parts\37000_CC_2.png,0,0
+}
+
+//インナー２_シンプルキャミ_CC
+surface37001
+{
+	element0,overlay,parts\37001_CC_2.png,0,0
+}
+
+//インナー２_フリルキャミ_CC
+surface37002
+{
+	element0,overlay,parts\37002_CC_2.png,0,0
+}
+
+//インナー２_襦袢風ノースリーブ_CC
+surface37003
+{
+	element0,overlay,parts\37003_CC_2.png,0,0
+}
+
+//インナー２_ハイネックノースリーブ_CC
+surface37004
+{
+	element0,overlay,parts\37004_CC_2.png,0,0
+}
+
+//インナー２_ハイネック長袖_CC
+surface37005
+{
+	element0,overlay,parts\37005_CC_2.png,0,0
+}
+
+//インナー２_シンプル長袖_CC
+surface37006
+{
+	element0,overlay,parts\37006_CC_2.png,0,0
+}
+
+//インナー２装飾_シンプル長袖ボーダー_CC
+surface38000
+{
+	element0,overlay,parts\38000_CC_2.png,0,0
+}
+
+//インナー３_ペチコート_CC
+surface39000
+{
+	element0,overlay,parts\39000_CC_2.png,0,0
+}
+
+//インナー３_アームカバー_CCT
+surface39001
+{
+	element0,overlay,parts\39001_CCT_2.png,0,0
+	element1,overlay,parts\39001_CCT_4.png,0,0
+}
+
+//インナー３_ロンググローブ_CC
+surface39002
+{
+	element0,overlay,parts\39002_CC_2.png,0,0
+}
+
+//インナー３_パフスリーブブラウス_CCT
+surface39003
+{
+	element0,overlay,parts\39003_CCT_2.png,0,0
+	element1,overlay,parts\39003_CCT_4.png,0,0
+}
+
+//インナー３_パフスリーブ_CC
+surface39004
+{
+	element0,overlay,parts\39004_CC_2.png,0,0
+}
+
+//インナー３_指なしロンググローブ_CC
+surface39005
+{
+	element0,overlay,parts\39005_CC_2.png,0,0
+}
+
+//インナー３_半袖ブラウス_CCT
+surface39006
+{
+	element0,overlay,parts\39006_CCT_2.png,0,0
+	element1,overlay,parts\39006_CCT_4.png,0,0
+}
+
+//インナー３_手袋スリム_CC
+surface39007
+{
+	element0,overlay,parts\39007_CC_2.png,0,0
+}
+
+//インナー３_ロンググローブスリム_CC
+surface39008
+{
+	element0,overlay,parts\39008_CC_2.png,0,0
+}
+
+//インナー３_スタンドカラーシャツ_CC
+surface39009
+{
+	element0,overlay,parts\39009_CC_2.png,0,0
+}
+
+//インナー３_指なしロンググローブ２_CCT
+surface39010
+{
+	element0,overlay,parts\39010_CCT_2.png,0,0
+	element1,overlay,parts\39010_CCT_4.png,0,0
+}
+
+//インナー３_開襟シャツスリム_CC
+surface39011
+{
+	element0,overlay,parts\39011_CC_2.png,0,0
+}
+
+//インナー３装飾_パフスリーブブラウス袖口装飾_CC
+surface40000
+{
+	element0,overlay,parts\40000_CC_2.png,0,0
+}
+
+//インナー３装飾_フリルカフス左_CCT
+surface40001
+{
+	element0,overlay,parts\40001_CCT_2.png,0,0
+	element1,overlay,parts\40001_CCT_4.png,0,0
+}
+
+//インナー３装飾_フリルカフス右_CCT
+surface40002
+{
+	element0,overlay,parts\40002_CCT_2.png,0,0
+	element1,overlay,parts\40002_CCT_4.png,0,0
+}
+
+//インナー３装飾_半袖ブラウス＃模様_CC
+surface40003
+{
+	element0,overlay,parts\40003_CC_2.png,0,0
+}
+
+//靴_ストラップシューズ_CC
+surface41000
+{
+	element0,overlay,parts\41000_CC_2.png,0,0
+}
+
+//靴_ロングブーツ_CC
+surface41001
+{
+	element0,overlay,parts\41001_CC_2.png,0,0
+}
+
+//靴_厚底ストラップシューズ_CCC
+surface41002
+{
+	element0,overlay,parts\41002_CCC_2.png,0,0
+	element1,overlay,parts\41002_CCC.png,0,0
+}
+
+//靴_ニーハイストレッチブーツ_CC
+surface41003
+{
+	element0,overlay,parts\41003_CC_2.png,0,0
+}
+
+//靴_クロスストラップシューズ_CCC
+surface41004
+{
+	element0,overlay,parts\41004_CCC_2.png,0,0
+	element1,overlay,parts\41004_CCC.png,0,0
+}
+
+//靴_ハーフブーツ_CC
+surface41005
+{
+	element0,overlay,parts\41005_CC_2.png,0,0
+}
+
+//靴_ローファー_CCC
+surface41006
+{
+	element0,overlay,parts\41006_CCC_2.png,0,0
+	element1,overlay,parts\41006_CCC.png,0,0
+}
+
+//靴_革靴_CC
+surface41007
+{
+	element0,overlay,parts\41007_CC_2.png,0,0
+}
+
+//靴_ローファー２_CCC
+surface41008
+{
+	element0,overlay,parts\41008_CCC_2.png,0,0
+	element1,overlay,parts\41008_CCC.png,0,0
+}
+
+//靴_パンプス_CC
+surface41009
+{
+	element0,overlay,parts\41009_CC_2.png,0,0
+}
+
+//靴_ロングブーツ太め_CCT
+surface41010
+{
+	element0,overlay,parts\41010_CCT_2.png,0,0
+	element1,overlay,parts\41010_CCT_4.png,0,0
+}
+
+//靴装飾_ロングブーツ用フリル_CCT
+surface42000
+{
+	element0,overlay,parts\42000_CCT_2.png,0,0
+	element1,overlay,parts\42000_CCT_4.png,0,0
+}
+
+//靴装飾_薔薇コサージュ_CC
+surface42001
+{
+	element0,overlay,parts\42001_CC_2.png,0,0
+}
+
+//靴装飾_アンクルカフス_CC
+surface42002
+{
+	element0,overlay,parts\42002_CC_2.png,0,0
+}
+
+//ズボン_シンプルロングパンツ_CC
+surface43000
+{
+	element0,overlay,parts\43000_CC_2.png,0,0
+}
+
+//ズボン_短パン_CC
+surface43001
+{
+	element0,overlay,parts\43001_CC_2.png,0,0
+}
+
+//ズボン_ニッカーボッカーズ_CC
+surface43002
+{
+	element0,overlay,parts\43002_CC_2.png,0,0
+}
+
+//ズボン_スリムショートパンツ_CCT
+surface43003
+{
+	element0,overlay,parts\43003_CCT_2.png,0,0
+	element1,overlay,parts\43003_CCT_4.png,0,0
+}
+
+//ズボン_スリムパンツ_CC
+surface43004
+{
+	element0,overlay,parts\43004_CC_2.png,0,0
+}
+
+//ズボン_膝上丈パンツ_CC
+surface43005
+{
+	element0,overlay,parts\43005_CC_2.png,0,0
+}
+
+//ズボン装飾_シンプルロングパンツチェック_CC
+surface44000
+{
+	element0,overlay,parts\44000_CC_2.png,0,0
+}
+
+//ズボン装飾_ベルト_CCT
+surface44001
+{
+	element0,overlay,parts\44001_CCT_2.png,0,0
+	element1,overlay,parts\44001_CCT_4.png,0,0
+}
+
+//ズボン装飾_ロングパンツ折り目ライン_CC
+surface44002
+{
+	element0,overlay,parts\44002_CC_2.png,0,0
+}
+
+//スカート_多スリットスカート_CC
+surface45000
+{
+	element0,overlay,parts\45000_CC_2.png,0,0
+}
+
+//スカート_プリーツスカート_CC
+surface45001
+{
+	element0,overlay,parts\45001_CC_2.png,0,0
+}
+
+//スカート_裳_CCT
+surface45002
+{
+	element0,overlay,parts\45002_CCT_2.png,0,0
+	element1,overlay,parts\45002_CCT_4.png,0,0
+}
+
+//スカート_膝丈すそ広がりスカート_CC
+surface45003
+{
+	element0,overlay,parts\45003_CC_2.png,0,0
+}
+
+//スカート_プリーツスカート膝上_CC
+surface45004
+{
+	element0,overlay,parts\45004_CC_2.png,0,0
+}
+
+//スカート_プリーツスカート膝下丈_CC
+surface45005
+{
+	element0,overlay,parts\45005_CC_2.png,0,0
+}
+
+//スカート_変形ボックスプリーツミニ_CC
+surface45006
+{
+	element0,overlay,parts\45006_CC_2.png,0,0
+}
+
+//スカート_ミニ丈フレアスカート_CC
+surface45007
+{
+	element0,overlay,parts\45007_CC_2.png,0,0
+}
+
+//スカート_ミニ丈タイトスカート_CC
+surface45008
+{
+	element0,overlay,parts\45008_CC_2.png,0,0
+}
+
+//スカート_ミニ丈タイトスリットスカート_CC
+surface45009
+{
+	element0,overlay,parts\45009_CC_2.png,0,0
+}
+
+//スカート装飾_多スリットスカート模様すそポイント_CC
+surface46000
+{
+	element0,overlay,parts\46000_CC_2.png,0,0
+}
+
+//スカート装飾_プリーツスカート裾ライン_CC
+surface46001
+{
+	element0,overlay,parts\46001_CC_2.png,0,0
+}
+
+//スカート装飾_裳帯_CC
+surface46002
+{
+	element0,overlay,parts\46002_CC_2.png,0,0
+}
+
+//スカート装飾_膝丈すそ広がりスカートフリル_CC
+surface46003
+{
+	element0,overlay,parts\46003_CC_2.png,0,0
+}
+
+//スカート装飾_プリーツスカート膝上裾ライン_CC
+surface46004
+{
+	element0,overlay,parts\46004_CC_2.png,0,0
+}
+
+//スカート装飾_プリーツスカート膝上チェック_CC
+surface46005
+{
+	element0,overlay,parts\46005_CC_2.png,0,0
+}
+
+//スカート装飾_プリーツスカート膝下丈チェック_CC
+surface46006
+{
+	element0,overlay,parts\46006_CC_2.png,0,0
+}
+
+//スカート装飾_変形ボックスプリーツミニ裾ライン_CC
+surface46007
+{
+	element0,overlay,parts\46007_CC_2.png,0,0
+}
+
+//スカート装飾_プリーツスカート裾フリル_CC
+surface46008
+{
+	element0,overlay,parts\46008_CC_2.png,0,0
+}
+
+//トップス１_シンプルブラウス_CC
+surface47000
+{
+	element0,overlay,parts\47000_CC_2.png,0,0
+}
+
+//トップス１_タートルネックスリットチュニック_CC
+surface47001
+{
+	element0,overlay,parts\47001_CC_2.png,0,0
+}
+
+//トップス１_ノースリーブシャツ_CCT
+surface47002
+{
+	element0,overlay,parts\47002_CCT_2.png,0,0
+	element1,overlay,parts\47002_CCT_4.png,0,0
+}
+
+//トップス１_半袖Ｔシャツ_CC
+surface47003
+{
+	element0,overlay,parts\47003_CC_2.png,0,0
+}
+
+//トップス１_変形キャミ_CC
+surface47004
+{
+	element0,overlay,parts\47004_CC_2.png,0,0
+}
+
+//トップス１_Yシャツはだけ_CC
+surface47005
+{
+	element0,overlay,parts\47005_CC_2.png,0,0
+}
+
+//トップス１_丈短ノースリーブカットソー_CC
+surface47006
+{
+	element0,overlay,parts\47006_CC_2.png,0,0
+}
+
+//トップス１_ハイネックノースリーブ_CC
+surface47007
+{
+	element0,overlay,parts\47007_CC_2.png,0,0
+}
+
+//トップス１_胸開きノースリーブ_CCT
+surface47008
+{
+	element0,overlay,parts\47008_CCT_2.png,0,0
+	element1,overlay,parts\47008_CCT_4.png,0,0
+}
+
+//トップス１装飾_フリルカフス_CCT
+surface48000
+{
+	element0,overlay,parts\48000_CCT_2.png,0,0
+	element1,overlay,parts\48000_CCT_4.png,0,0
+}
+
+//トップス１装飾_ブラウス装飾フリルボタン
+surface48001
+{
+	element0,overlay,parts\48001.png,0,0
+}
+
+//トップス１装飾_袖折り返し_CC
+surface48002
+{
+	element0,overlay,parts\48002_CC_2.png,0,0
+}
+
+//トップス１装飾_シャツ襟_CC
+surface48003
+{
+	element0,overlay,parts\48003_CC_2.png,0,0
+}
+
+//トップス１装飾_ゴシックカフス_CC
+surface48004
+{
+	element0,overlay,parts\48004_CC_2.png,0,0
+}
+
+//トップス１装飾_半袖Ｔシャツ袖口_CC
+surface48005
+{
+	element0,overlay,parts\48005_CC_2.png,0,0
+}
+
+//服上下_ティアードエプロンドレス_CCT
+surface49000
+{
+	element0,overlay,parts\49000_CCT_2.png,0,0
+	element1,overlay,parts\49000_CCT_4.png,0,0
+}
+
+//服上下_ノースリーブワンピース_CC
+surface49001
+{
+	element0,overlay,parts\49001_CC_2.png,0,0
+}
+
+//服上下_リッチフリルワンピース_CC
+surface49002
+{
+	element0,overlay,parts\49002_CC_2.png,0,0
+}
+
+//服上下_長袍_CCT
+surface49003
+{
+	element0,overlay,parts\49003_CCT_2.png,0,0
+	element1,overlay,parts\49003_CCT_4.png,0,0
+}
+
+//服上下_ハイウエストワンピ_CCT
+surface49004
+{
+	element0,overlay,parts\49004_CCT_2.png,0,0
+	element1,overlay,parts\49004_CCT_4.png,0,0
+}
+
+//服上下_ハイウエストワンピ膝下丈_CCT
+surface49005
+{
+	element0,overlay,parts\49005_CCT_2.png,0,0
+	element1,overlay,parts\49005_CCT_4.png,0,0
+}
+
+//服上下_オリエンタルドレス_CC
+surface49006
+{
+	element0,overlay,parts\49006_CC_2.png,0,0
+}
+
+//服上下装飾_ノースリーブワンピース模様ギンガムチェック_CC
+surface50000
+{
+	element0,overlay,parts\50000_CC_2.png,0,0
+}
+
+//服上下装飾_ノースリーブワンピース模様ボーダー_CC
+surface50001
+{
+	element0,overlay,parts\50001_CC_2.png,0,0
+}
+
+//服上下装飾_袖折り返し_CC
+surface50002
+{
+	element0,overlay,parts\50002_CC_2.png,0,0
+}
+
+//オーバースカート_編み上げオーバースカート_CC
+surface51000
+{
+	element0,overlay,parts\51000_CC_2.png,0,0
+}
+
+//オーバースカート_チャップスロング丈左_CC
+surface51001
+{
+	element0,overlay,parts\51001_CC_2.png,0,0
+}
+
+//オーバースカート_チャップスロング丈右_CC
+surface51002
+{
+	element0,overlay,parts\51002_CC_2.png,0,0
+}
+
+//オーバースカート_チャップスハーフ丈左_CC
+surface51003
+{
+	element0,overlay,parts\51003_CC_2.png,0,0
+}
+
+//オーバースカート_チャップスハーフ丈右_CC
+surface51004
+{
+	element0,overlay,parts\51004_CC_2.png,0,0
+}
+
+//オーバースカート_チャップス股下タイプ左_CC
+surface51005
+{
+	element0,overlay,parts\51005_CC_2.png,0,0
+}
+
+//オーバースカート_チャップス股下タイプ右_CC
+surface51006
+{
+	element0,overlay,parts\51006_CC_2.png,0,0
+}
+
+//オーバースカート_ブーツチャップス左_CC
+surface51007
+{
+	element0,overlay,parts\51007_CC_2.png,0,0
+}
+
+//オーバースカート_ブーツチャップス右_CC
+surface51008
+{
+	element0,overlay,parts\51008_CC_2.png,0,0
+}
+
+//オーバースカート_ブーツチャップスルーズ左_CC
+surface51009
+{
+	element0,overlay,parts\51009_CC_2.png,0,0
+}
+
+//オーバースカート_ブーツチャップスルーズ右_CC
+surface51010
+{
+	element0,overlay,parts\51010_CC_2.png,0,0
+}
+
+//オーバースカート装飾_オーバースカート模様逆十字_CC
+surface52000
+{
+	element0,overlay,parts\52000_CC_2.png,0,0
+}
+
+//ネクタイ・帯_ネクタイ_CC
+surface53000
+{
+	element0,overlay,parts\53000_CC_2.png,0,0
+}
+
+//ネクタイ・帯_ハイウエストリボンベルト_CC
+surface53001
+{
+	element0,overlay,parts\53001_CC_2.png,0,0
+}
+
+//ネクタイ・帯_高め帯_CC
+surface53002
+{
+	element0,overlay,parts\53002_CC_2.png,0,0
+}
+
+//ネクタイ・帯_セーラー襟スカーフ_CC
+surface53003
+{
+	element0,overlay,parts\53003_CC_2.png,0,0
+}
+
+//ネクタイ・帯_蝶ネクタイ_CC
+surface53004
+{
+	element0,overlay,parts\53004_CC_2.png,0,0
+}
+
+//タイピン・帯締め_ネクタイピン_CC
+surface54000
+{
+	element0,overlay,parts\54000_CC_2.png,0,0
+}
+
+//タイピン・帯締め_ネクタイピン２_CC
+surface54001
+{
+	element0,overlay,parts\54001_CC_2.png,0,0
+}
+
+//タイピン・帯締め_玉飾り付き帯締め_CCT
+surface54002
+{
+	element0,overlay,parts\54002_CCT_2.png,0,0
+	element1,overlay,parts\54002_CCT_4.png,0,0
+}
+
+//トップス２_コルセット風ベスト_CC
+surface55000
+{
+	element0,overlay,parts\55000_CC_2.png,0,0
+}
+
+//トップス２_女性用前開きベスト_CC
+surface55001
+{
+	element0,overlay,parts\55001_CC_2.png,0,0
+}
+
+//トップス２_シンプルベスト_CC
+surface55002
+{
+	element0,overlay,parts\55002_CC_2.png,0,0
+}
+
+//トップス２_Ｃ＃ベスト_CCT
+surface55003
+{
+	element0,overlay,parts\55003_CCT_2.png,0,0
+	element1,overlay,parts\55003_CCT_4.png,0,0
+}
+
+//トップス２_女性用ベスト長め_CCT
+surface55004
+{
+	element0,overlay,parts\55004_CCT_2.png,0,0
+	element1,overlay,parts\55004_CCT_4.png,0,0
+}
+
+//トップス２_Vネックセーター女性_CC
+surface55005
+{
+	element0,overlay,parts\55005_CC_2.png,0,0
+}
+
+//トップス２_Vネックセーター男性_CC
+surface55006
+{
+	element0,overlay,parts\55006_CC_2.png,0,0
+}
+
+//トップス２_Vネックロングセーター女性_CC
+surface55007
+{
+	element0,overlay,parts\55007_CC_2.png,0,0
+}
+
+//トップス２_Vネックロングセーター男性_CC
+surface55008
+{
+	element0,overlay,parts\55008_CC_2.png,0,0
+}
+
+//トップス２_Vネックゆったりセーター女性_CC
+surface55009
+{
+	element0,overlay,parts\55009_CC_2.png,0,0
+}
+
+//トップス２_Vネックゆったりセーター男性_CC
+surface55010
+{
+	element0,overlay,parts\55010_CC_2.png,0,0
+}
+
+//エプロン_サロンエプロン_CC
+surface57000
+{
+	element0,overlay,parts\57000_CC_2.png,0,0
+}
+
+//エプロン_胸当て付きフリルエプロン_CCT
+surface57001
+{
+	element0,overlay,parts\57001_CCT_2.png,0,0
+	element1,overlay,parts\57001_CCT_4.png,0,0
+}
+
+//エプロン_胸当て付きフリルエプロンロング_CCT
+surface57002
+{
+	element0,overlay,parts\57002_CCT_2.png,0,0
+	element1,overlay,parts\57002_CCT_4.png,0,0
+}
+
+//トップス３_ケープ_CC
+surface58000
+{
+	element0,overlay,parts\58000_CC_2.png,0,0
+}
+
+//トップス３_コルセット_CCT
+surface58001
+{
+	element0,overlay,parts\58001_CCT_2.png,0,0
+	element1,overlay,parts\58001_CCT_4.png,0,0
+}
+
+//トップス３装飾_コルセット用ベルト_CC
+surface59000
+{
+	element0,overlay,parts\59000_CC_2.png,0,0
+}
+
+//アクセサリー４_リボン付きフリルカラー_CCT
+surface60000
+{
+	element0,overlay,parts\60000_CCT_2.png,0,0
+	element1,overlay,parts\60000_CCT_4.png,0,0
+}
+
+//アクセサリー４_付け襟_CCT
+surface60001
+{
+	element0,overlay,parts\60001_CCT_2.png,0,0
+	element1,overlay,parts\60001_CCT_4.png,0,0
+}
+
+//アクセサリー４_二連アームブレスレット右_CC
+surface60002
+{
+	element0,overlay,parts\60002_CC_2.png,0,0
+}
+
+//アクセサリー４_二連アームブレスレット左_CC
+surface60003
+{
+	element0,overlay,parts\60003_CC_2.png,0,0
+}
+
+//アクセサリー４_二連ブレスレット右_CC
+surface60004
+{
+	element0,overlay,parts\60004_CC_2.png,0,0
+}
+
+//アクセサリー４_二連ブレスレット左_CC
+surface60005
+{
+	element0,overlay,parts\60005_CC_2.png,0,0
+}
+
+//アクセサリー４_二連アンクレット右_CC
+surface60006
+{
+	element0,overlay,parts\60006_CC_2.png,0,0
+}
+
+//アクセサリー４_二連アンクレット左_CC
+surface60007
+{
+	element0,overlay,parts\60007_CC_2.png,0,0
+}
+
+//アクセサリー４_チョーカー風フリル襟_CCT
+surface60008
+{
+	element0,overlay,parts\60008_CCT_2.png,0,0
+	element1,overlay,parts\60008_CCT_4.png,0,0
+}
+
+//アクセサリー４_口小さめ用猫口_skinC
+surface60009
+{
+	element0,overlay,parts\60009_skin_2.png,0,0
+	element1,overlay,parts\60009.png,0,0
+}
+
+//アクセサリー４_セーラー襟_CCT
+surface60010
+{
+	element0,overlay,parts\60010_CCT_2.png,0,0
+	element1,overlay,parts\60010_CCT_4.png,0,0
+}
+
+//アクセサリー４_眼帯装飾バラ_CC
+surface60011
+{
+	element0,overlay,parts\60011_CC_2.png,0,0
+}
+
+//アクセサリー４_眼帯装飾バラ右_CC
+surface60012
+{
+	element0,overlay,parts\60012_CC_2.png,0,0
+}
+
+//アクセサリー４_眼帯装飾ドクロ_CC
+surface60013
+{
+	element0,overlay,parts\60013_CC_2.png,0,0
+}
+
+//アクセサリー４_眼帯装飾ドクロ右_CC
+surface60014
+{
+	element0,overlay,parts\60014_CC_2.png,0,0
+}
+
+//アクセサリー４_眼帯装飾ハート_CC
+surface60015
+{
+	element0,overlay,parts\60015_CC_2.png,0,0
+}
+
+//アクセサリー４_眼帯装飾ハート右_CC
+surface60016
+{
+	element0,overlay,parts\60016_CC_2.png,0,0
+}
+
+//アクセサリー４_眼帯装飾ブロークンハート_CC
+surface60017
+{
+	element0,overlay,parts\60017_CC_2.png,0,0
+}
+
+//アクセサリー４_眼帯装飾ブロークンハート右_CC
+surface60018
+{
+	element0,overlay,parts\60018_CC_2.png,0,0
+}
+
+//アクセサリー４_シャツ襟_CC
+surface60019
+{
+	element0,overlay,parts\60019_CC_2.png,0,0
+}
+
+//トップス４_ゴシック風編み上げジャケット_CCT
+surface61000
+{
+	element0,overlay,parts\61000_CCT_2.png,0,0
+	element1,overlay,parts\61000_CCT_4.png,0,0
+}
+
+//トップス４_条帛_CC
+surface61001
+{
+	element0,overlay,parts\61001_CC_2.png,0,0
+}
+
+//トップス４_スーツジャケット_CC
+surface61002
+{
+	element0,overlay,parts\61002_CC_2.png,0,0
+}
+
+//トップス４_スーツジャケット前開き_CC
+surface61003
+{
+	element0,overlay,parts\61003_CC_2.png,0,0
+}
+
+//コート_膝上丈フロックコート_CCT
+surface63000
+{
+	element0,overlay,parts\63000_CCT_2.png,0,0
+	element1,overlay,parts\63000_CCT_4.png,0,0
+}
+
+//コート_フロックコート女性用_CCT
+surface63001
+{
+	element0,overlay,parts\63001_CCT_2.png,0,0
+	element1,overlay,parts\63001_CCT_4.png,0,0
+}
+
+//コート_プリンセスコート_CCT
+surface63002
+{
+	element0,overlay,parts\63002_CCT_2.png,0,0
+	element1,overlay,parts\63002_CCT_4.png,0,0
+}
+
+//ケープ_ショール大判_CC
+surface65000
+{
+	element0,overlay,parts\65000_CC_2.png,0,0
+}
+
+//ケープ_ショール小さめ_CC
+surface65001
+{
+	element0,overlay,parts\65001_CC_2.png,0,0
+}
+
+//ケープ_ショール小さめフィット_CC
+surface65002
+{
+	element0,overlay,parts\65002_CC_2.png,0,0
+}
+
+//ケープ_ショール大判フィット_CC
+surface65003
+{
+	element0,overlay,parts\65003_CC_2.png,0,0
+}
+
+//ケープ_マント前_CC
+surface65004
+{
+	element0,overlay,parts\65004_CC_2.png,0,0
+}
+
+//ケープ_ミニマント前_CC
+surface65005
+{
+	element0,overlay,parts\65005_CC_2.png,0,0
+}
+
+//ケープ_角丸ケープ_CC
+surface65006
+{
+	element0,overlay,parts\65006_CC_2.png,0,0
+}
+
+//ケープ装飾_角丸ケープファー_CC
+surface66000
+{
+	element0,overlay,parts\66000_CC_2.png,0,0
+}
+
+
+//眉
+//眉_デフォルト
+surface67000
+{
+	element0,overlay,parts\67000.png,0,0
+}
+
+//眉_下がりめ眉
+surface67001
+{
+	element0,overlay,parts\67001.png,0,0
+}
+
+//眉_太眉_CC
+surface67002
+{
+	element0,overlay,parts\67002_CC_2.png,0,0
+}
+
+//眉_下がりアーチ眉_CC
+surface67003
+{
+	element0,overlay,parts\67003_CC_2.png,0,0
+}
+
+//眉_つり眉_CC
+surface67004
+{
+	element0,overlay,parts\67004_CC_2.png,0,0
+}
+
+//眉_たれ太眉_CC
+surface67005
+{
+	element0,overlay,parts\67005_CC_2.png,0,0
+}
+
+//眉_低め_CC
+surface67006
+{
+	element0,overlay,parts\67006_CC_2.png,0,0
+}
+
+//眉_下がり微アーチ_CC
+surface67007
+{
+	element0,overlay,parts\67007_CC_2.png,0,0
+}
+
+//眉_微アーチ_CC
+surface67008
+{
+	element0,overlay,parts\67008_CC_2.png,0,0
+}
+
+//眉_中太眉_CC
+surface67009
+{
+	element0,overlay,parts\67009_CC_2.png,0,0
+}
+
+//眉_下がり微アーチ２_CC
+surface67010
+{
+	element0,overlay,parts\67010_CC_2.png,0,0
+}
+
+//眉_中太低め_CC
+surface67011
+{
+	element0,overlay,parts\67011_CC_2.png,0,0
+}
+
+//眉_低めつり眉_CC
+surface67012
+{
+	element0,overlay,parts\67012_CC_2.png,0,0
+}
+
+//眉_やや低めつり眉_CC
+surface67013
+{
+	element0,overlay,parts\67013_CC_2.png,0,0
+}
+
+//眉_微つり眉_CC
+surface67014
+{
+	element0,overlay,parts\67014_CC_2.png,0,0
+}
+
+//横髪_ぱっつん_CC
+surface69000
+{
+	element0,overlay,parts\69000_CC_2.png,0,0
+}
+
+//横髪_ぱっつんロング_CC
+surface69001
+{
+	element0,overlay,parts\69001_CC_2.png,0,0
+}
+
+//横髪_ナチュラル_CC
+surface69002
+{
+	element0,overlay,parts\69002_CC_2.png,0,0
+}
+
+//横髪_二段ストレート_CC
+surface69003
+{
+	element0,overlay,parts\69003_CC_2.png,0,0
+}
+
+//横髪_内巻き_CC
+surface69004
+{
+	element0,overlay,parts\69004_CC_2.png,0,0
+}
+
+//横髪_あごラインナチュラル_CC
+surface69005
+{
+	element0,overlay,parts\69005_CC_2.png,0,0
+}
+
+//横髪_あごラインざくざく_CC
+surface69006
+{
+	element0,overlay,parts\69006_CC_2.png,0,0
+}
+
+//横髪_耳下ざくざく内巻き_CC
+surface69007
+{
+	element0,overlay,parts\69007_CC_2.png,0,0
+}
+
+//横髪_ストレート肩ライン超え_CC
+surface69008
+{
+	element0,overlay,parts\69008_CC_2.png,0,0
+}
+
+//横髪_ウエーブロング_CC
+surface69009
+{
+	element0,overlay,parts\69009_CC_2.png,0,0
+}
+
+//横髪_ウエーブセミロング_CC
+surface69010
+{
+	element0,overlay,parts\69010_CC_2.png,0,0
+}
+
+//横髪_ストレートあごライン_CC
+surface69011
+{
+	element0,overlay,parts\69011_CC_2.png,0,0
+}
+
+//横髪_肩ライン左_CC
+surface69012
+{
+	element0,overlay,parts\69012_CC_2.png,0,0
+}
+
+//横髪_肩ライン右_CC
+surface69013
+{
+	element0,overlay,parts\69013_CC_2.png,0,0
+}
+
+//前髪_ぱっつん_CCC
+surface70000
+{
+	element0,overlay,parts\70000_CCC_2.png,0,0
+	element1,overlay,parts\70000_CCC.png,0,0
+}
+
+//前髪_ナチュラル_CCC
+surface70001
+{
+	element0,overlay,parts\70001_CCC_2.png,0,0
+	element1,overlay,parts\70001_CCC.png,0,0
+}
+
+//前髪_中寄りストレート_CCC
+surface70002
+{
+	element0,overlay,parts\70002_CCC_2.png,0,0
+	element1,overlay,parts\70002_CCC.png,0,0
+}
+
+//前髪_斜めナチュラル_CCC
+surface70003
+{
+	element0,overlay,parts\70003_CCC_2.png,0,0
+	element1,overlay,parts\70003_CCC.png,0,0
+}
+
+//前髪_ナチュラル＃2_CCC
+surface70004
+{
+	element0,overlay,parts\70004_CCC_2.png,0,0
+	element1,overlay,parts\70004_CCC.png,0,0
+}
+
+//前髪_斜めナチュラル右_CCC
+surface70005
+{
+	element0,overlay,parts\70005_CCC_2.png,0,0
+	element1,overlay,parts\70005_CCC.png,0,0
+}
+
+//前髪_中寄りナチュラル_CCC
+surface70006
+{
+	element0,overlay,parts\70006_CCC_2.png,0,0
+	element1,overlay,parts\70006_CCC.png,0,0
+}
+
+//前髪_ざくざく_CCC
+surface70007
+{
+	element0,overlay,parts\70007_CCC_2.png,0,0
+	element1,overlay,parts\70007_CCC.png,0,0
+}
+
+//前髪_斜めざっくり_CCC
+surface70008
+{
+	element0,overlay,parts\70008_CCC_2.png,0,0
+	element1,overlay,parts\70008_CCC.png,0,0
+}
+
+//前髪_真ん中分けあご下丈_CCC
+surface70009
+{
+	element0,overlay,parts\70009_CCC_2.png,0,0
+	element1,overlay,parts\70009_CCC.png,0,0
+}
+
+//前髪_アシンメトリー右_CCC
+surface70010
+{
+	element0,overlay,parts\70010_CCC_2.png,0,0
+	element1,overlay,parts\70010_CCC.png,0,0
+}
+
+//前髪_アシンメトリー左_CCC
+surface70011
+{
+	element0,overlay,parts\70011_CCC_2.png,0,0
+	element1,overlay,parts\70011_CCC.png,0,0
+}
+
+//前髪_斜め分け横はね右_CCC
+surface70012
+{
+	element0,overlay,parts\70012_CCC_2.png,0,0
+	element1,overlay,parts\70012_CCC.png,0,0
+}
+
+//前髪_重めナチュラル_CCC
+surface70013
+{
+	element0,overlay,parts\70013_CCC_2.png,0,0
+	element1,overlay,parts\70013_CCC.png,0,0
+}
+
+//前髪_斜め分け横はね左_CCC
+surface70014
+{
+	element0,overlay,parts\70014_CCC_2.png,0,0
+	element1,overlay,parts\70014_CCC.png,0,0
+}
+
+//前髪_オールバック_CCC
+surface70015
+{
+	element0,overlay,parts\70015_CCC_2.png,0,0
+	element1,overlay,parts\70015_CCC.png,0,0
+}
+
+//前髪_オールバックＭ字_CCC
+surface70016
+{
+	element0,overlay,parts\70016_CCC_2.png,0,0
+	element1,overlay,parts\70016_CCC.png,0,0
+}
+
+//前髪_右目やや隠れ_CCC
+surface70017
+{
+	element0,overlay,parts\70017_CCC_2.png,0,0
+	element1,overlay,parts\70017_CCC.png,0,0
+}
+
+//前髪_左目やや隠れ_CCC
+surface70018
+{
+	element0,overlay,parts\70018_CCC_2.png,0,0
+	element1,overlay,parts\70018_CCC.png,0,0
+}
+
+//前髪_片耳かけ右_CCC
+surface70019
+{
+	element0,overlay,parts\70019_CCC_2.png,0,0
+	element1,overlay,parts\70019_CCC.png,0,0
+}
+
+//前髪_片耳かけ左_CCC
+surface70020
+{
+	element0,overlay,parts\70020_CCC_2.png,0,0
+	element1,overlay,parts\70020_CCC.png,0,0
+}
+
+//前髪_くせ毛右_CCC
+surface70021
+{
+	element0,overlay,parts\70021_CCC_2.png,0,0
+	element1,overlay,parts\70021_CCC.png,0,0
+}
+
+//前髪_くせ毛左_CCC
+surface70022
+{
+	element0,overlay,parts\70022_CCC_2.png,0,0
+	element1,overlay,parts\70022_CCC.png,0,0
+}
+
+//髪オプション_前髪無造作風レイヤー_CCC
+surface71000
+{
+	element0,overlay,parts\71000_CCC_2.png,0,0
+	element1,overlay,parts\71000_CCC.png,0,0
+}
+
+//髪オプション_あほ毛２本_CC
+surface71001
+{
+	element0,overlay,parts\71001_CC_2.png,0,0
+}
+
+//髪オプション_あほ毛１本_CC
+surface71002
+{
+	element0,overlay,parts\71002_CC_2.png,0,0
+}
+
+//髪オプション_前髪ほつれ左_CC
+surface71003
+{
+	element0,overlay,parts\71003_CC_2.png,0,0
+}
+
+//髪オプション_前髪ほつれ中央寄り_CC
+surface71004
+{
+	element0,overlay,parts\71004_CC_2.png,0,0
+}
+
+//帽子・ヘッドドレス２_ゴシックヘッドドレス_CCT
+surface74000
+{
+	element0,overlay,parts\74000_CCT_2.png,0,0
+	element1,overlay,parts\74000_CCT_4.png,0,0
+}
+
+//帽子・ヘッドドレス２_シルクハット_CCT
+surface74001
+{
+	element0,overlay,parts\74001_CCT_2.png,0,0
+	element1,overlay,parts\74001_CCT_4.png,0,0
+}
+
+//帽子・ヘッドドレス２_ホワイトブリム_CC
+surface74002
+{
+	element0,overlay,parts\74002_CC_2.png,0,0
+}
+
+//帽子・ヘッドドレス２_細カチューシャ_CC
+surface74003
+{
+	element0,overlay,parts\74003_CC_2.png,0,0
+}
+
+//帽子・ヘッドドレス２_クロッシェ_CC
+surface74004
+{
+	element0,overlay,parts\74004_CC_2.png,0,0
+}
+
+//帽子・ヘッドドレス２_魔女帽子_CCT
+surface74005
+{
+	element0,overlay,parts\74005_CCT_2.png,0,0
+	element1,overlay,parts\74005_CCT_4.png,0,0
+}
+
+//帽子・ヘッドドレス２_ベレー帽_CCT
+surface74006
+{
+	element0,overlay,parts\74006_CCT_2.png,0,0
+	element1,overlay,parts\74006_CCT_4.png,0,0
+}
+
+//帽子・ヘッドドレス２_山高帽_CCT
+surface74007
+{
+	element0,overlay,parts\74007_CCT_2.png,0,0
+	element1,overlay,parts\74007_CCT_4.png,0,0
+}
+
+//帽子・ヘッドドレス２_シルクハット高め_CCT
+surface74008
+{
+	element0,overlay,parts\74008_CCT_2.png,0,0
+	element1,overlay,parts\74008_CCT_4.png,0,0
+}
+
+//帽子・ヘッドドレス２_ミニハット右_CCT
+surface74009
+{
+	element0,overlay,parts\74009_CCT_2.png,0,0
+	element1,overlay,parts\74009_CCT_4.png,0,0
+}
+
+//帽子・ヘッドドレス２_ミニハット左_CCT
+surface74010
+{
+	element0,overlay,parts\74010_CCT_2.png,0,0
+	element1,overlay,parts\74010_CCT_4.png,0,0
+}
+
+//帽子・ヘッドドレス２_中折れ帽_CCT
+surface74011
+{
+	element0,overlay,parts\74011_CCT_2.png,0,0
+	element1,overlay,parts\74011_CCT_4.png,0,0
+}
+
+//帽子・ヘッドドレス２_ウエスタンハット_CCT
+surface74012
+{
+	element0,overlay,parts\74012_CCT_2.png,0,0
+	element1,overlay,parts\74012_CCT_4.png,0,0
+}
+
+//帽子・ヘッドドレス２_ナイトキャップ_CCT
+surface74013
+{
+	element0,overlay,parts\74013_CCT_2.png,0,0
+	element1,overlay,parts\74013_CCT_4.png,0,0
+}
+
+//帽子・ヘッドドレス２_中太カチューシャ_CC
+surface74014
+{
+	element0,overlay,parts\74014_CC_2.png,0,0
+}
+
+//帽子・ヘッドドレス２_耳あて付きニットキャップ_CCT
+surface74015
+{
+	element0,overlay,parts\74015_CCT_2.png,0,0
+	element1,overlay,parts\74015_CCT_4.png,0,0
+}
+
+//帽子・ヘッドドレス２装飾_薔薇コサージュ_CC
+surface75000
+{
+	element0,overlay,parts\75000_CC_2.png,0,0
+}
+
+//帽子・ヘッドドレス２装飾_クロッシェ幅広ベルト_CC
+surface75001
+{
+	element0,overlay,parts\75001_CC_2.png,0,0
+}
+
+//アクセサリー５_薔薇コサージュ胸元_CC
+surface76000
+{
+	element0,overlay,parts\76000_CC_2.png,0,0
+}
+
+//アクセサリー５_ＳＳＰ
+surface76001
+{
+	element0,overlay,parts\76001.png,0,0
+}
+
+//アクセサリー５_はやぶさカプセル_CCC
+surface76002
+{
+	element0,overlay,parts\76002_CCC_2.png,0,0
+	element1,overlay,parts\76002_CCC.png,0,0
+}
+
+//アクセサリー５_細リボン右_CC
+surface76003
+{
+	element0,overlay,parts\76003_CC_2.png,0,0
+}
+
+//アクセサリー５_細リボン左_CC
+surface76004
+{
+	element0,overlay,parts\76004_CC_2.png,0,0
+}
+
+//アクセサリー５_紐リボンチョーカー_CC
+surface76005
+{
+	element0,overlay,parts\76005_CC_2.png,0,0
+}
+
+//アクセサリー５_襟元紐リボン_CC
+surface76006
+{
+	element0,overlay,parts\76006_CC_2.png,0,0
+}
+
+//アクセサリー５_３連リボン左_CC
+surface76007
+{
+	element0,overlay,parts\76007_CC_2.png,0,0
+}
+
+//アクセサリー５_３連リボン右_CC
+surface76008
+{
+	element0,overlay,parts\76008_CC_2.png,0,0
+}
+
+//アクセサリー５_髪飾り花右_CCT
+surface76009
+{
+	element0,overlay,parts\76009_CCT_2.png,0,0
+	element1,overlay,parts\76009_CCT_4.png,0,0
+}
+
+//アクセサリー５_髪飾り花左_CCT
+surface76010
+{
+	element0,overlay,parts\76010_CCT_2.png,0,0
+	element1,overlay,parts\76010_CCT_4.png,0,0
+}
+
+//アクセサリー５_犬耳垂れ長_CC
+surface76011
+{
+	element0,overlay,parts\76011_CC_2.png,0,0
+}
+
+//アクセサリー５_犬耳垂れ短_CC
+surface76012
+{
+	element0,overlay,parts\76012_CC_2.png,0,0
+}
+
+//アクセサリー５_細リボン_CC
+surface76013
+{
+	element0,overlay,parts\76013_CC_2.png,0,0
+}
+
+//アクセサリー５_大リボン_CC
+surface76014
+{
+	element0,overlay,parts\76014_CC_2.png,0,0
+}
+
+//アクセサリー５_大リボン右_CC
+surface76015
+{
+	element0,overlay,parts\76015_CC_2.png,0,0
+}
+
+//アクセサリー５_大リボン左_CC
+surface76016
+{
+	element0,overlay,parts\76016_CC_2.png,0,0
+}
+
+//アクセサリー５_頭用スカーフリボン_CC
+surface76017
+{
+	element0,overlay,parts\76017_CC_2.png,0,0
+}
+
+//アクセサリー５_襟元リボン_CC
+surface76018
+{
+	element0,overlay,parts\76018_CC_2.png,0,0
+}
+
+//アクセサリー５_天使の輪_CCC
+surface76019
+{
+	element0,overlay,parts\76019_CCC_2.png,0,0
+	element1,overlay,parts\76019_CCC.png,0,0
+}
+
+//アクセサリー５_着衣用胸増量_CCC
+surface76020
+{
+	element0,overlay,parts\76020_CCC_2.png,0,0
+	element1,overlay,parts\76020_CCC.png,0,0
+}
+
+//アクセサリー５_横髪エクステ_CC
+surface76021
+{
+	element0,overlay,parts\76021_CC_2.png,0,0
+}
+
+//アクセサリー５_薔薇コサージュ大・胸右側_CC
+surface76022
+{
+	element0,overlay,parts\76022_CC_2.png,0,0
+}
+
+//アクセサリー５_うさ耳右折れ_CCC
+surface76023
+{
+	element0,overlay,parts\76023_CCC_2.png,0,0
+	element1,overlay,parts\76023_CCC.png,0,0
+}
+
+//アクセサリー５_うさ耳左折れ_CCC
+surface76024
+{
+	element0,overlay,parts\76024_CCC_2.png,0,0
+	element1,overlay,parts\76024_CCC.png,0,0
+}
+
+//アクセサリー５_うさ耳両折れ_CCC
+surface76025
+{
+	element0,overlay,parts\76025_CCC_2.png,0,0
+	element1,overlay,parts\76025_CCC.png,0,0
+}
+
+//アクセサリー５_うさ耳_CCC
+surface76026
+{
+	element0,overlay,parts\76026_CCC_2.png,0,0
+	element1,overlay,parts\76026_CCC.png,0,0
+}
+
+//アクセサリー５_たれうさ耳_CC
+surface76027
+{
+	element0,overlay,parts\76027_CC_2.png,0,0
+}
+
+//アクセサリー５_Ｃ＃髪どめ_CCT
+surface76028
+{
+	element0,overlay,parts\76028_CCT_2.png,0,0
+	element1,overlay,parts\76028_CCT_4.png,0,0
+}
+
+//アクセサリー５_飾りボタンウエスト_CC
+surface76029
+{
+	element0,overlay,parts\76029_CC_2.png,0,0
+}
+
+//アクセサリー５_変形リボンタイ_CC
+surface76030
+{
+	element0,overlay,parts\76030_CC_2.png,0,0
+}
+
+//アクセサリー５_襟元ボンボン付き紐リボン_CCT
+surface76031
+{
+	element0,overlay,parts\76031_CCT_2.png,0,0
+	element1,overlay,parts\76031_CCT_4.png,0,0
+}
+
+//アクセサリー５_マフラー_CC
+surface76032
+{
+	element0,overlay,parts\76032_CC_2.png,0,0
+}
+
+//前景_フレーム_CC
+surface77000
+{
+	element0,overlay,parts\77000_CC_2.png,0,0
+}
+
+//前景_フレーム＃2_CC
+surface77001
+{
+	element0,overlay,parts\77001_CC_2.png,0,0
+}
+
+//前景_角丸ドットフレーム_CC
+surface77002
+{
+	element0,overlay,parts\77002_CC_2.png,0,0
+}
+
+//前景_ポラロイド風
+surface77003
+{
+	element0,overlay,parts\77003.png,0,0
+}
+
+//前景_映画フィルム風
+surface77004
+{
+	element0,overlay,parts\77004.png,0,0
+}
+
+//前景_映画フィルム風横
+surface77005
+{
+	element0,overlay,parts\77005.png,0,0
+}
+
+//前景_飾りフレーム_CC
+surface77006
+{
+	element0,overlay,parts\77006_CC_2.png,0,0
+}
+
+
+//目の形差分
+//目の形_デフォルト_half
+surface126000
+{
+	element0,overlay,parts\EyesH_skin_2.png,0,0
+	element1,overlay,parts\26000_half.png,0,0
+}
+
+//目の形_たて長_half
+surface126001
+{
+	element0,overlay,parts\EyesH_skin_2.png,0,0
+	element1,overlay,parts\26001_half.png,0,0
+}
+
+//目の形_つり目_half
+surface126002
+{
+	element0,overlay,parts\EyesH_skin_2.png,0,0
+	element1,overlay,parts\26002_half.png,0,0
+}
+
+//目の形_細つり目_half
+surface126003
+{
+	element0,overlay,parts\EyesH_skin_2.png,0,0
+	element1,overlay,parts\26003_half.png,0,0
+}
+
+//目の形_せんとくん_half
+surface126004
+{
+	element0,overlay,parts\EyesH_skin_2.png,0,0
+	element1,overlay,parts\26004_half.png,0,0
+}
+
+//目の形_つり目まつ毛付_half
+surface126005
+{
+	element0,overlay,parts\EyesH_skin_2.png,0,0
+	element1,overlay,parts\26005_half.png,0,0
+}
+
+//目の形_たれ目まつ毛付き_half
+surface126006
+{
+	element0,overlay,parts\EyesH_skin_2.png,0,0
+	element1,overlay,parts\26006_half.png,0,0
+}
+
+//目の形_つり目シャープ_half
+surface126007
+{
+	element0,overlay,parts\EyesH_skin_2.png,0,0
+	element1,overlay,parts\26007_half.png,0,0
+}
+
+//目の形_細たれ目_half
+surface126008
+{
+	element0,overlay,parts\EyesH_skin_2.png,0,0
+	element1,overlay,parts\26008_half.png,0,0
+}
+
+//目の形_たれ目普通_half
+surface126009
+{
+	element0,overlay,parts\EyesH_skin_2.png,0,0
+	element1,overlay,parts\26009_half.png,0,0
+}
+
+//目の形_普通目_half
+surface126010
+{
+	element0,overlay,parts\EyesH_skin_2.png,0,0
+	element1,overlay,parts\26010_half.png,0,0
+}
+
+//目の形_微つり目_half
+surface126011
+{
+	element0,overlay,parts\EyesH_skin_2.png,0,0
+	element1,overlay,parts\26011_half.png,0,0
+}
+
+//目の形_細目普通_half
+surface126012
+{
+	element0,overlay,parts\EyesH_skin_2.png,0,0
+	element1,overlay,parts\26012_half.png,0,0
+}
+
+//目の形_たれ目ぱっちり_half
+surface126013
+{
+	element0,overlay,parts\EyesH_skin_2.png,0,0
+	element1,overlay,parts\26013_half.png,0,0
+}
+
+//目の形_つり目ぱっちり_half
+surface126014
+{
+	element0,overlay,parts\EyesH_skin_2.png,0,0
+	element1,overlay,parts\26014_half.png,0,0
+}
+
+//目の形_デフォルト_close
+surface226000
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26000_close.png,0,0
+}
+
+//目の形_たて長_close
+surface226001
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26001_close.png,0,0
+}
+
+//目の形_つり目_close
+surface226002
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26002_close.png,0,0
+}
+
+//目の形_細つり目_close
+surface226003
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26003_close.png,0,0
+}
+
+//目の形_せんとくん_close
+surface226004
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26004_close.png,0,0
+}
+
+//目の形_つり目まつ毛付_close
+surface226005
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26005_close.png,0,0
+}
+
+//目の形_たれ目まつ毛付き_close
+surface226006
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26006_close.png,0,0
+}
+
+//目の形_つり目シャープ_close
+surface226007
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26007_close.png,0,0
+}
+
+//目の形_細たれ目_close
+surface226008
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26008_close.png,0,0
+}
+
+//目の形_たれ目普通_close
+surface226009
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26009_close.png,0,0
+}
+
+//目の形_普通目_close
+surface226010
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26010_close.png,0,0
+}
+
+//目の形_微つり目_close
+surface226011
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26011_close.png,0,0
+}
+
+//目の形_細目普通_close
+surface226012
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26012_close.png,0,0
+}
+
+//目の形_たれ目ぱっちり_close
+surface226013
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26013_close.png,0,0
+}
+
+//目の形_つり目ぱっちり_close
+surface226014
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26014_close.png,0,0
+}
+
+//目の形_デフォルト_smile
+surface326000
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26000_smile.png,0,0
+}
+
+//目の形_たて長_smile
+surface326001
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26001_smile.png,0,0
+}
+
+//目の形_つり目_smile
+surface326002
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26002_smile.png,0,0
+}
+
+//目の形_細つり目_smile
+surface326003
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26003_smile.png,0,0
+}
+
+//目の形_せんとくん_smile
+surface326004
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26004_smile.png,0,0
+}
+
+//目の形_つり目まつ毛付_smile
+surface326005
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26005_smile.png,0,0
+}
+
+//目の形_たれ目まつ毛付き_smile
+surface326006
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26006_smile.png,0,0
+}
+
+//目の形_つり目シャープ_smile
+surface326007
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26007_smile.png,0,0
+}
+
+//目の形_細たれ目_smile
+surface326008
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26008_smile.png,0,0
+}
+
+//目の形_たれ目普通_smile
+surface326009
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26009_smile.png,0,0
+}
+
+//目の形_普通目_smile
+surface326010
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26010_smile.png,0,0
+}
+
+//目の形_微つり目_smile
+surface326011
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26011_smile.png,0,0
+}
+
+//目の形_細目普通_smile
+surface326012
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26012_smile.png,0,0
+}
+
+//目の形_たれ目ぱっちり_smile
+surface326013
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26013_smile.png,0,0
+}
+
+//目の形_つり目ぱっちり_smile
+surface326014
+{
+	element0,overlay,parts\EyesC_skin_2.png,0,0
+	element1,overlay,parts\26014_smile.png,0,0
+}
+
+
+//眉差分
+//眉_デフォルト_驚
+surface167000
+{
+	element0,overlay,parts\67000_surprise.png,0,0
+}
+
+//眉_下がりめ眉_驚
+surface167001
+{
+	element0,overlay,parts\67001_surprise.png,0,0
+}
+
+//眉_太眉_驚_CC
+surface167002
+{
+	element0,overlay,parts\67002_surprise_CC_2.png,0,0
+}
+
+//眉_下がりアーチ眉_驚_CC
+surface167003
+{
+	element0,overlay,parts\67003_surprise_CC_2.png,0,0
+}
+
+//眉_つり眉_驚_CC
+surface167004
+{
+	element0,overlay,parts\67004_surprise_CC_2.png,0,0
+}
+
+//眉_たれ太眉_驚_CC
+surface167005
+{
+	element0,overlay,parts\67005_surprise_CC_2.png,0,0
+}
+
+//眉_低め_驚_CC
+surface167006
+{
+	element0,overlay,parts\67006_surprise_CC_2.png,0,0
+}
+
+//眉_下がり微アーチ_驚_CC
+surface167007
+{
+	element0,overlay,parts\67007_surprise_CC_2.png,0,0
+}
+
+//眉_微アーチ_驚_CC
+surface167008
+{
+	element0,overlay,parts\67008_surprise_CC_2.png,0,0
+}
+
+//眉_中太眉_驚_CC
+surface167009
+{
+	element0,overlay,parts\67009_surprise_CC_2.png,0,0
+}
+
+//眉_下がり微アーチ２_驚_CC
+surface167010
+{
+	element0,overlay,parts\67010_surprise_CC_2.png,0,0
+}
+
+//眉_中太低め_驚_CC
+surface167011
+{
+	element0,overlay,parts\67011_surprise_CC_2.png,0,0
+}
+
+//眉_低めつり眉_驚_CC
+surface167012
+{
+	element0,overlay,parts\67012_surprise_CC_2.png,0,0
+}
+
+//眉_やや低めつり眉_驚_CC
+surface167013
+{
+	element0,overlay,parts\67013_surprise_CC_2.png,0,0
+}
+
+//眉_微つり眉_驚_CC
+surface167014
+{
+	element0,overlay,parts\67014_surprise_CC_2.png,0,0
+}
+
+//眉_デフォルト_困
+surface267000
+{
+	element0,overlay,parts\67000_sad.png,0,0
+}
+
+//眉_下がりめ眉_困
+surface267001
+{
+	element0,overlay,parts\67001_sad.png,0,0
+}
+
+//眉_太眉_困_CC
+surface267002
+{
+	element0,overlay,parts\67002_sad_CC_2.png,0,0
+}
+
+//眉_下がりアーチ眉_困_CC
+surface267003
+{
+	element0,overlay,parts\67003_sad_CC_2.png,0,0
+}
+
+//眉_つり眉_困_CC
+surface267004
+{
+	element0,overlay,parts\67004_sad_CC_2.png,0,0
+}
+
+//眉_たれ太眉_困_CC
+surface267005
+{
+	element0,overlay,parts\67005_sad_CC_2.png,0,0
+}
+
+//眉_低め_困_CC
+surface267006
+{
+	element0,overlay,parts\67006_sad_CC_2.png,0,0
+}
+
+//眉_下がり微アーチ_困_CC
+surface267007
+{
+	element0,overlay,parts\67007_sad_CC_2.png,0,0
+}
+
+//眉_微アーチ_困_CC
+surface267008
+{
+	element0,overlay,parts\67008_sad_CC_2.png,0,0
+}
+
+//眉_中太眉_困_CC
+surface267009
+{
+	element0,overlay,parts\67009_sad_CC_2.png,0,0
+}
+
+//眉_下がり微アーチ２_困_CC
+surface267010
+{
+	element0,overlay,parts\67010_sad_CC_2.png,0,0
+}
+
+//眉_中太低め_困_CC
+surface267011
+{
+	element0,overlay,parts\67011_sad_CC_2.png,0,0
+}
+
+//眉_低めつり眉_困_CC
+surface267012
+{
+	element0,overlay,parts\67012_sad_CC_2.png,0,0
+}
+
+//眉_やや低めつり眉_困_CC
+surface267013
+{
+	element0,overlay,parts\67013_sad_CC_2.png,0,0
+}
+
+//眉_微つり眉_困_CC
+surface267014
+{
+	element0,overlay,parts\67014_sad_CC_2.png,0,0
+}
+
+//眉_デフォルト_怒
+surface367000
+{
+	element0,overlay,parts\67000_angry.png,0,0
+}
+
+//眉_下がりめ眉_怒
+surface367001
+{
+	element0,overlay,parts\67001_angry.png,0,0
+}
+
+//眉_太眉_怒_CC
+surface367002
+{
+	element0,overlay,parts\67002_angry_CC_2.png,0,0
+}
+
+//眉_下がりアーチ眉_怒_CC
+surface367003
+{
+	element0,overlay,parts\67003_angry_CC_2.png,0,0
+}
+
+//眉_つり眉_怒_CC
+surface367004
+{
+	element0,overlay,parts\67004_angry_CC_2.png,0,0
+}
+
+//眉_たれ太眉_怒_CC
+surface367005
+{
+	element0,overlay,parts\67005_angry_CC_2.png,0,0
+}
+
+//眉_低め_怒_CC
+surface367006
+{
+	element0,overlay,parts\67006_angry_CC_2.png,0,0
+}
+
+//眉_下がり微アーチ_怒_CC
+surface367007
+{
+	element0,overlay,parts\67007_angry_CC_2.png,0,0
+}
+
+//眉_微アーチ_怒_CC
+surface367008
+{
+	element0,overlay,parts\67008_angry_CC_2.png,0,0
+}
+
+//眉_中太眉_怒_CC
+surface367009
+{
+	element0,overlay,parts\67009_angry_CC_2.png,0,0
+}
+
+//眉_下がり微アーチ２_怒_CC
+surface367010
+{
+	element0,overlay,parts\67010_angry_CC_2.png,0,0
+}
+
+//眉_中太低め_怒_CC
+surface367011
+{
+	element0,overlay,parts\67011_angry_CC_2.png,0,0
+}
+
+//眉_低めつり眉_怒_CC
+surface367012
+{
+	element0,overlay,parts\67012_angry_CC_2.png,0,0
+}
+
+//眉_やや低めつり眉_怒_CC
+surface367013
+{
+	element0,overlay,parts\67013_angry_CC_2.png,0,0
+}
+
+//眉_微つり眉_怒_CC
+surface367014
+{
+	element0,overlay,parts\67014_angry_CC_2.png,0,0
+}
+
+
+//口差分
+//口_デフォルト_開
+surface229000
+{
+	element0,overlay,parts\29000_o.png,0,0
+}
+
+//口_シニカル_開
+surface229001
+{
+	element0,overlay,parts\29001_o.png,0,0
+}
+
+//口_むにむに_開
+surface229002
+{
+	element0,overlay,parts\29002_o.png,0,0
+}
+
+//口_小さめ_開
+surface229003
+{
+	element0,overlay,parts\29003_o.png,0,0
+}
+
+//口_牙付き_開
+surface229004
+{
+	element0,overlay,parts\29004_o.png,0,0
+}
+
+//口_デフォルト_閉
+surface329000
+{
+	element0,overlay,parts\29000_c.png,0,0
+}
+
+//口_シニカル_閉
+surface329001
+{
+	element0,overlay,parts\29001_c.png,0,0
+}
+
+//口_むにむに_閉
+surface329002
+{
+	element0,overlay,parts\29002_c.png,0,0
+}
+
+//口_小さめ_閉
+surface329003
+{
+	element0,overlay,parts\29003_c.png,0,0
+}
+
+//口_牙付き_閉
+surface329004
+{
+	element0,overlay,parts\29004_c.png,0,0
+}
+
+//口_デフォルト_開笑
+surface529000
+{
+	element0,overlay,parts\29000_os.png,0,0
+}
+
+//口_シニカル_開笑
+surface529001
+{
+	element0,overlay,parts\29001_os.png,0,0
+}
+
+//口_むにむに_開笑
+surface529002
+{
+	element0,overlay,parts\29002_os.png,0,0
+}
+
+//口_小さめ_開笑
+surface529003
+{
+	element0,overlay,parts\29003_os.png,0,0
+}
+
+//口_牙付き_開笑
+surface529004
+{
+	element0,overlay,parts\29004_os.png,0,0
+}
+
+//口_デフォルト_笑
+surface629000
+{
+	element0,overlay,parts\29000_s.png,0,0
+}
+
+//口_シニカル_笑
+surface629001
+{
+	element0,overlay,parts\29001_s.png,0,0
+}
+
+//口_むにむに_笑
+surface629002
+{
+	element0,overlay,parts\29002_s.png,0,0
+}
+
+//口_小さめ_笑
+surface629003
+{
+	element0,overlay,parts\29003_s.png,0,0
+}
+
+//口_牙付き_笑
+surface629004
+{
+	element0,overlay,parts\29004_s.png,0,0
+}
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//着せ替え定義（この行は消さない事）
+
+surface0-9,25,26,100-103,110-113,120-123,130-133,200-203,210-213,220-223,230-233,300-303,310-313,320-323,330-333,400-403,410-413,420-423,430-433
+{
+
+
+
+//背景_無地
+	animation9000.interval,bind
+	animation9000.pattern0,add,9000,0,0,0
+
+//背景_グラデーション
+	animation9001.interval,bind
+	animation9001.pattern0,add,9001,0,0,0
+
+//背景_グラデーション＃2
+	animation9002.interval,bind
+	animation9002.pattern0,add,9002,0,0,0
+
+//背景_グラデーション＃3
+	animation9003.interval,bind
+	animation9003.pattern0,add,9003,0,0,0
+
+//背景_グラデーション＃4
+	animation9004.interval,bind
+	animation9004.pattern0,add,9004,0,0,0
+
+//背景_キャンバス地
+	animation9005.interval,bind
+	animation9005.pattern0,add,9005,0,0,0
+
+//背景_チェック
+	animation10000.interval,bind
+	animation10000.pattern0,add,10000,0,0,0
+
+//背景装飾_宇宙
+	animation10001.interval,bind
+	animation10001.pattern0,add,10001,0,0,0
+
+//背景装飾_ゴシックホラー
+	animation10002.interval,bind
+	animation10002.pattern0,add,10002,0,0,0
+
+//背景装飾_スパイダー
+	animation10003.interval,bind
+	animation10003.pattern0,add,10003,0,0,0
+
+//背景装飾_市松模様
+	animation10004.interval,bind
+	animation10004.pattern0,add,10004,0,0,0
+
+//背景装飾_水玉
+	animation10005.interval,bind
+	animation10005.pattern0,add,10005,0,0,0
+
+//背景装飾_デザイン
+	animation10006.interval,bind
+	animation10006.pattern0,add,10006,0,0,0
+
+//背景装飾_足元影
+	animation10007.interval,bind
+	animation10007.pattern0,add,10007,0,0,0
+
+//アクセサリー１_蝶羽根左
+	animation11000.interval,bind
+	animation11000.pattern0,add,11000,0,0,0
+
+//アクセサリー１_蝶羽根右
+	animation11001.interval,bind
+	animation11001.pattern0,add,11001,0,0,0
+
+//結髪_ポニーテール
+	animation13000.interval,bind
+	animation13000.pattern0,add,13000,0,0,0
+
+//結髪_サイドテールロング左
+	animation13001.interval,bind
+	animation13001.pattern0,add,13001,0,0,0
+
+//結髪_サイドテールロング右
+	animation13002.interval,bind
+	animation13002.pattern0,add,13002,0,0,0
+
+//結髪_ロールツインテール
+	animation13003.interval,bind
+	animation13003.pattern0,add,13003,0,0,0
+
+//結髪_ハーフアップロング
+	animation13004.interval,bind
+	animation13004.pattern0,add,13004,0,0,0
+
+//結髪_ポニーテール肩ライン超え
+	animation13005.interval,bind
+	animation13005.pattern0,add,13005,0,0,0
+
+//結髪_ゆるウエーブツインテ
+	animation13006.interval,bind
+	animation13006.pattern0,add,13006,0,0,0
+
+//結髪_ダブルシニョン
+	animation13007.interval,bind
+	animation13007.pattern0,add,13007,0,0,0
+
+//結髪_細めツインテール腰丈
+	animation13008.interval,bind
+	animation13008.pattern0,add,13008,0,0,0
+
+//結髪_細めツインテール腰下
+	animation13009.interval,bind
+	animation13009.pattern0,add,13009,0,0,0
+
+//結髪_ツインドリル
+	animation13010.interval,bind
+	animation13010.pattern0,add,13010,0,0,0
+
+//結髪_ツインテール肩丈
+	animation13011.interval,bind
+	animation13011.pattern0,add,13011,0,0,0
+
+//アクセサリー２_ポニテ用リボン
+	animation14000.interval,bind
+	animation14000.pattern0,add,14000,0,0,0
+
+//アクセサリー２_ツインテール用リボン
+	animation14001.interval,bind
+	animation14001.pattern0,add,14001,0,0,0
+
+//アクセサリー２_アンテナパーツ
+	animation14002.interval,bind
+	animation14002.pattern0,add,14002,0,0,0
+
+//アクセサリー２_ポニテ用リボン下垂れあり
+	animation14003.interval,bind
+	animation14003.pattern0,add,14003,0,0,0
+
+//アクセサリー２_花弁風リボン左
+	animation14004.interval,bind
+	animation14004.pattern0,add,14004,0,0,0
+
+//アクセサリー２_花弁風リボン右
+	animation14005.interval,bind
+	animation14005.pattern0,add,14005,0,0,0
+
+//後髪_ロングストレート
+	animation15000.interval,bind
+	animation15000.pattern0,add,15000,0,0,0
+
+//後髪_結髪用シンプル
+	animation15001.interval,bind
+	animation15001.pattern0,add,15001,0,0,0
+
+//後髪_超ロングツインロール
+	animation15002.interval,bind
+	animation15002.pattern0,add,15002,0,0,0
+
+//後髪_超ロングナチュラル
+	animation15003.interval,bind
+	animation15003.pattern0,add,15003,0,0,0
+
+//後髪_あごライン裾広がりざくざく
+	animation15004.interval,bind
+	animation15004.pattern0,add,15004,0,0,0
+
+//後髪_ショート襟足外はね
+	animation15005.interval,bind
+	animation15005.pattern0,add,15005,0,0,0
+
+//後髪_ショート襟足外はねボリューム減
+	animation15006.interval,bind
+	animation15006.pattern0,add,15006,0,0,0
+
+//後髪_ショート
+	animation15007.interval,bind
+	animation15007.pattern0,add,15007,0,0,0
+
+//後髪_ミディアムボブ
+	animation15008.interval,bind
+	animation15008.pattern0,add,15008,0,0,0
+
+//後髪_ミディアムボブストレート
+	animation15009.interval,bind
+	animation15009.pattern0,add,15009,0,0,0
+
+//後髪_あごラインボブ丸め
+	animation15010.interval,bind
+	animation15010.pattern0,add,15010,0,0,0
+
+//後髪_ウエーブロング
+	animation15011.interval,bind
+	animation15011.pattern0,add,15011,0,0,0
+
+//後髪_ウエーブきつめセミロング
+	animation15012.interval,bind
+	animation15012.pattern0,add,15012,0,0,0
+
+//後髪_ウエーブゆるめセミロング
+	animation15013.interval,bind
+	animation15013.pattern0,add,15013,0,0,0
+
+//後髪_ウエーブセミロング
+	animation15014.interval,bind
+	animation15014.pattern0,add,15014,0,0,0
+
+//後髪_短髪逆毛
+	animation15015.interval,bind
+	animation15015.pattern0,add,15015,0,0,0
+
+//後髪_くせ毛肩ラインボブ
+	animation15016.interval,bind
+	animation15016.pattern0,add,15016,0,0,0
+
+//後髪_ショートナチュラル
+	animation15017.interval,bind
+	animation15017.pattern0,add,15017,0,0,0
+
+//後髪_ナチュラルロング
+	animation15018.interval,bind
+	animation15018.pattern0,add,15018,0,0,0
+
+//後髪_ミディアムボブナチュラル
+	animation15019.interval,bind
+	animation15019.pattern0,add,15019,0,0,0
+
+//帽子・ヘッドドレス１_三角巾風ヘッドドレス
+	animation17000.interval,bind
+	animation17000.pattern0,add,17000,0,0,0
+
+//帽子・ヘッドドレス１_ナース風キャップ
+	animation17001.interval,bind
+	animation17001.pattern0,add,17001,0,0,0
+
+//帽子・ヘッドドレス１_パラボラアンテナ
+	animation17002.interval,bind
+	animation17002.pattern0,add,17002,0,0,0
+
+//アクセサリー３_はやぶさパネル
+	animation19000.interval,bind
+	animation19000.pattern0,add,19000,0,0,0
+
+//アクセサリー３_マント後ろ
+	animation19001.interval,bind
+	animation19001.pattern0,add,19001,0,0,0
+
+//アクセサリー３_マント後ろコウモリ
+	animation19002.interval,bind
+	animation19002.pattern0,add,19002,0,0,0
+
+//アクセサリー３_マント後ろギザギザ
+	animation19003.interval,bind
+	animation19003.pattern0,add,19003,0,0,0
+
+//アクセサリー３_ミニマント後ろ
+	animation19004.interval,bind
+	animation19004.pattern0,add,19004,0,0,0
+
+//素体オプション背後_ねこしっぽ
+	animation20000.interval,bind
+	animation20000.pattern0,add,20000,0,0,0
+
+//素体オプション背後_翼
+	animation20001.interval,bind
+	animation20001.pattern0,add,20001,0,0,0
+
+//素体オプション背後_はやぶさボディ
+	animation20002.interval,bind
+	animation20002.pattern0,add,20002,0,0,0
+
+//素体オプション背後_コウモリ翼左
+	animation20003.interval,bind
+	animation20003.pattern0,add,20003,0,0,0
+
+//素体オプション背後_コウモリ翼右
+	animation20004.interval,bind
+	animation20004.pattern0,add,20004,0,0,0
+
+//素体オプション背後_犬しっぽ上
+	animation20005.interval,bind
+	animation20005.pattern0,add,20005,0,0,0
+
+//素体オプション背後_犬しっぽ下
+	animation20006.interval,bind
+	animation20006.pattern0,add,20006,0,0,0
+
+//素体オプション背後_狐しっぽ
+	animation20007.interval,bind
+	animation20007.pattern0,add,20007,0,0,0
+
+//素体オプション背後_狐しっぽ左
+	animation20008.interval,bind
+	animation20008.pattern0,add,20008,0,0,0
+
+//素体_肌_CC
+	animation21000.interval,bind
+	animation21000.pattern0,add,21000,0,0,0
+
+//耳_デフォルト
+	animation22000.interval,bind
+	animation22000.pattern0,add,22000,0,0,0
+
+//耳_ねこ耳
+	animation22001.interval,bind
+	animation22001.pattern0,add,22001,0,0,0
+
+//耳_福耳
+	animation22002.interval,bind
+	animation22002.pattern0,add,22002,0,0,0
+
+//耳_ねこ耳シャープ
+	animation22003.interval,bind
+	animation22003.pattern0,add,22003,0,0,0
+
+//耳_とがり耳
+	animation22004.interval,bind
+	animation22004.pattern0,add,22004,0,0,0
+
+//耳_犬耳立ち
+	animation22005.interval,bind
+	animation22005.pattern0,add,22005,0,0,0
+
+//耳_つりとがり耳小
+	animation22006.interval,bind
+	animation22006.pattern0,add,22006,0,0,0
+
+//耳_つりとがり耳大
+	animation22007.interval,bind
+	animation22007.pattern0,add,22007,0,0,0
+
+//耳_さがり犬耳
+	animation22008.interval,bind
+	animation22008.pattern0,add,22008,0,0,0
+
+//耳_耳あて
+	animation22009.interval,bind
+	animation22009.pattern0,add,22009,0,0,0
+
+//素体オプション_つの
+	animation23000.interval,bind
+	animation23000.pattern0,add,23000,0,0,0
+
+//素体オプション_デフォルト
+	animation23001.interval,bind
+	animation23001.pattern0,add,23001,0,0,0
+
+//素体オプション_人魚しっぽ
+	animation23002.interval,bind
+	animation23002.pattern0,add,23002,0,0,0
+
+//素体オプション_翼
+	animation23003.interval,bind
+	animation23003.pattern0,add,23003,0,0,0
+
+//素体オプション_胸
+	animation23004.interval,bind
+	animation23004.pattern0,add,23004,0,0,0
+
+//素体オプション_鹿角
+	animation23005.interval,bind
+	animation23005.pattern0,add,23005,0,0,0
+
+//素体オプション_鼻
+	animation23006.interval,bind
+	animation23006.pattern0,add,23006,0,0,0
+
+//素体オプション_あごたるみ
+	animation23007.interval,bind
+	animation23007.pattern0,add,23007,0,0,0
+
+//肌オプション_白毫
+	animation24000.interval,bind
+	animation24000.pattern0,add,24000,0,0,0
+
+//肌オプション_泣きぼくろ左
+	animation24001.interval,bind
+	animation24001.pattern0,add,24001,0,0,0
+
+//肌オプション_泣きぼくろ右
+	animation24002.interval,bind
+	animation24002.pattern0,add,24002,0,0,0
+
+//瞳色_左右_CC
+	animation25000.interval,bind
+	animation25000.pattern0,add,25000,0,0,0
+
+//瞳色_右_CC
+	animation25001.interval,bind
+	animation25001.pattern0,add,25001,0,0,0
+	
+
+//眼鏡_角丸
+	animation32000.interval,bind
+	animation32000.pattern0,add,32000,0,0,0
+
+//眼鏡_眼帯太ベルト
+	animation32001.interval,bind
+	animation32001.pattern0,add,32001,0,0,0
+
+//眼鏡_眼帯太ベルト右
+	animation32002.interval,bind
+	animation32002.pattern0,add,32002,0,0,0
+
+//眼鏡_眼帯紐２本
+	animation32003.interval,bind
+	animation32003.pattern0,add,32003,0,0,0
+
+//眼鏡_眼帯紐２本右
+	animation32004.interval,bind
+	animation32004.pattern0,add,32004,0,0,0
+
+//眼鏡_眼帯紐１本
+	animation32005.interval,bind
+	animation32005.pattern0,add,32005,0,0,0
+
+//眼鏡_眼帯紐１本右
+	animation32006.interval,bind
+	animation32006.pattern0,add,32006,0,0,0
+
+//眼鏡_医療用眼帯
+	animation32007.interval,bind
+	animation32007.pattern0,add,32007,0,0,0
+
+//眼鏡_医療用眼帯右
+	animation32008.interval,bind
+	animation32008.pattern0,add,32008,0,0,0
+
+//眼鏡_オーバル・アンダーリム
+	animation32009.interval,bind
+	animation32009.pattern0,add,32009,0,0,0
+
+//インナー１_星ブラ
+	animation33000.interval,bind
+	animation33000.pattern0,add,33000,0,0,0
+
+//インナー１_パンツ
+	animation33001.interval,bind
+	animation33001.pattern0,add,33001,0,0,0
+
+//インナー１_ブラジャー
+	animation33002.interval,bind
+	animation33002.pattern0,add,33002,0,0,0
+
+//靴下_ストッキング
+	animation35000.interval,bind
+	animation35000.pattern0,add,35000,0,0,0
+
+//靴下_タイツ
+	animation35001.interval,bind
+	animation35001.pattern0,add,35001,0,0,0
+
+//靴下_ニーソックス
+	animation35002.interval,bind
+	animation35002.pattern0,add,35002,0,0,0
+
+//靴下_レギンス１０分丈
+	animation35003.interval,bind
+	animation35003.pattern0,add,35003,0,0,0
+
+//靴下_レギンス１０分丈くしゅくしゅ
+	animation35004.interval,bind
+	animation35004.pattern0,add,35004,0,0,0
+
+//靴下_レギンス５分丈
+	animation35005.interval,bind
+	animation35005.pattern0,add,35005,0,0,0
+
+//靴下_レギンス７分丈
+	animation35006.interval,bind
+	animation35006.pattern0,add,35006,0,0,0
+
+//靴下_網タイツ
+	animation35007.interval,bind
+	animation35007.pattern0,add,35007,0,0,0
+
+//靴下_クルーソックス
+	animation35008.interval,bind
+	animation35008.pattern0,add,35008,0,0,0
+
+//靴下_ブーツカットソックス
+	animation35009.interval,bind
+	animation35009.pattern0,add,35009,0,0,0
+
+//靴下装飾_ニーソックスストライプ
+	animation36000.interval,bind
+	animation36000.pattern0,add,36000,0,0,0
+
+//靴下装飾_ニーソックスライン
+	animation36001.interval,bind
+	animation36001.pattern0,add,36001,0,0,0
+
+//靴下装飾_ニーソックスライン２
+	animation36002.interval,bind
+	animation36002.pattern0,add,36002,0,0,0
+
+//インナー２_シンプルブラウス
+	animation37000.interval,bind
+	animation37000.pattern0,add,37000,0,0,0
+
+//インナー２_シンプルキャミ
+	animation37001.interval,bind
+	animation37001.pattern0,add,37001,0,0,0
+
+//インナー２_フリルキャミ
+	animation37002.interval,bind
+	animation37002.pattern0,add,37002,0,0,0
+
+//インナー２_襦袢風ノースリーブ
+	animation37003.interval,bind
+	animation37003.pattern0,add,37003,0,0,0
+
+//インナー２_ハイネックノースリーブ
+	animation37004.interval,bind
+	animation37004.pattern0,add,37004,0,0,0
+
+//インナー２_ハイネック長袖
+	animation37005.interval,bind
+	animation37005.pattern0,add,37005,0,0,0
+
+//インナー２_シンプル長袖
+	animation37006.interval,bind
+	animation37006.pattern0,add,37006,0,0,0
+
+//インナー２装飾_シンプル長袖ボーダー
+	animation38000.interval,bind
+	animation38000.pattern0,add,38000,0,0,0
+
+//インナー３_ペチコート
+	animation39000.interval,bind
+	animation39000.pattern0,add,39000,0,0,0
+
+//インナー３_アームカバー
+	animation39001.interval,bind
+	animation39001.pattern0,add,39001,0,0,0
+
+//インナー３_ロンググローブ
+	animation39002.interval,bind
+	animation39002.pattern0,add,39002,0,0,0
+
+//インナー３_パフスリーブブラウス
+	animation39003.interval,bind
+	animation39003.pattern0,add,39003,0,0,0
+
+//インナー３_パフスリーブ
+	animation39004.interval,bind
+	animation39004.pattern0,add,39004,0,0,0
+
+//インナー３_指なしロンググローブ
+	animation39005.interval,bind
+	animation39005.pattern0,add,39005,0,0,0
+
+//インナー３_半袖ブラウス
+	animation39006.interval,bind
+	animation39006.pattern0,add,39006,0,0,0
+
+//インナー３_手袋スリム
+	animation39007.interval,bind
+	animation39007.pattern0,add,39007,0,0,0
+
+//インナー３_ロンググローブスリム
+	animation39008.interval,bind
+	animation39008.pattern0,add,39008,0,0,0
+
+//インナー３_スタンドカラーシャツ
+	animation39009.interval,bind
+	animation39009.pattern0,add,39009,0,0,0
+
+//インナー３_指なしロンググローブ２
+	animation39010.interval,bind
+	animation39010.pattern0,add,39010,0,0,0
+
+//インナー３_開襟シャツスリム
+	animation39011.interval,bind
+	animation39011.pattern0,add,39011,0,0,0
+
+//インナー３装飾_パフスリーブブラウス袖口装飾
+	animation40000.interval,bind
+	animation40000.pattern0,add,40000,0,0,0
+
+//インナー３装飾_フリルカフス左
+	animation40001.interval,bind
+	animation40001.pattern0,add,40001,0,0,0
+
+//インナー３装飾_フリルカフス右
+	animation40002.interval,bind
+	animation40002.pattern0,add,40002,0,0,0
+
+//インナー３装飾_半袖ブラウス＃模様
+	animation40003.interval,bind
+	animation40003.pattern0,add,40003,0,0,0
+
+//靴_ストラップシューズ
+	animation41000.interval,bind
+	animation41000.pattern0,add,41000,0,0,0
+
+//靴_ロングブーツ
+	animation41001.interval,bind
+	animation41001.pattern0,add,41001,0,0,0
+
+//靴_厚底ストラップシューズ
+	animation41002.interval,bind
+	animation41002.pattern0,add,41002,0,0,0
+
+//靴_ニーハイストレッチブーツ
+	animation41003.interval,bind
+	animation41003.pattern0,add,41003,0,0,0
+
+//靴_クロスストラップシューズ
+	animation41004.interval,bind
+	animation41004.pattern0,add,41004,0,0,0
+
+//靴_ハーフブーツ
+	animation41005.interval,bind
+	animation41005.pattern0,add,41005,0,0,0
+
+//靴_ローファー
+	animation41006.interval,bind
+	animation41006.pattern0,add,41006,0,0,0
+
+//靴_革靴
+	animation41007.interval,bind
+	animation41007.pattern0,add,41007,0,0,0
+
+//靴_ローファー２
+	animation41008.interval,bind
+	animation41008.pattern0,add,41008,0,0,0
+
+//靴_パンプス
+	animation41009.interval,bind
+	animation41009.pattern0,add,41009,0,0,0
+
+//靴_ロングブーツ太め
+	animation41010.interval,bind
+	animation41010.pattern0,add,41010,0,0,0
+
+//靴装飾_ロングブーツ用フリル
+	animation42000.interval,bind
+	animation42000.pattern0,add,42000,0,0,0
+
+//靴装飾_薔薇コサージュ
+	animation42001.interval,bind
+	animation42001.pattern0,add,42001,0,0,0
+
+//靴装飾_アンクルカフス
+	animation42002.interval,bind
+	animation42002.pattern0,add,42002,0,0,0
+
+//ズボン_シンプルロングパンツ
+	animation43000.interval,bind
+	animation43000.pattern0,add,43000,0,0,0
+
+//ズボン_短パン
+	animation43001.interval,bind
+	animation43001.pattern0,add,43001,0,0,0
+
+//ズボン_ニッカーボッカーズ
+	animation43002.interval,bind
+	animation43002.pattern0,add,43002,0,0,0
+
+//ズボン_スリムショートパンツ
+	animation43003.interval,bind
+	animation43003.pattern0,add,43003,0,0,0
+
+//ズボン_スリムパンツ
+	animation43004.interval,bind
+	animation43004.pattern0,add,43004,0,0,0
+
+//ズボン_膝上丈パンツ
+	animation43005.interval,bind
+	animation43005.pattern0,add,43005,0,0,0
+
+//ズボン装飾_シンプルロングパンツチェック
+	animation44000.interval,bind
+	animation44000.pattern0,add,44000,0,0,0
+
+//ズボン装飾_ベルト
+	animation44001.interval,bind
+	animation44001.pattern0,add,44001,0,0,0
+
+//ズボン装飾_ロングパンツ折り目ライン
+	animation44002.interval,bind
+	animation44002.pattern0,add,44002,0,0,0
+
+//スカート_多スリットスカート
+	animation45000.interval,bind
+	animation45000.pattern0,add,45000,0,0,0
+
+//スカート_プリーツスカート
+	animation45001.interval,bind
+	animation45001.pattern0,add,45001,0,0,0
+
+//スカート_裳
+	animation45002.interval,bind
+	animation45002.pattern0,add,45002,0,0,0
+
+//スカート_膝丈すそ広がりスカート
+	animation45003.interval,bind
+	animation45003.pattern0,add,45003,0,0,0
+
+//スカート_プリーツスカート膝上
+	animation45004.interval,bind
+	animation45004.pattern0,add,45004,0,0,0
+
+//スカート_プリーツスカート膝下丈
+	animation45005.interval,bind
+	animation45005.pattern0,add,45005,0,0,0
+
+//スカート_変形ボックスプリーツミニ
+	animation45006.interval,bind
+	animation45006.pattern0,add,45006,0,0,0
+
+//スカート_ミニ丈フレアスカート
+	animation45007.interval,bind
+	animation45007.pattern0,add,45007,0,0,0
+
+//スカート_ミニ丈タイトスカート
+	animation45008.interval,bind
+	animation45008.pattern0,add,45008,0,0,0
+
+//スカート_ミニ丈タイトスリットスカート
+	animation45009.interval,bind
+	animation45009.pattern0,add,45009,0,0,0
+
+//スカート装飾_多スリットスカート模様すそポイント
+	animation46000.interval,bind
+	animation46000.pattern0,add,46000,0,0,0
+
+//スカート装飾_プリーツスカート裾ライン
+	animation46001.interval,bind
+	animation46001.pattern0,add,46001,0,0,0
+
+//スカート装飾_裳帯
+	animation46002.interval,bind
+	animation46002.pattern0,add,46002,0,0,0
+
+//スカート装飾_膝丈すそ広がりスカートフリル
+	animation46003.interval,bind
+	animation46003.pattern0,add,46003,0,0,0
+
+//スカート装飾_プリーツスカート膝上裾ライン
+	animation46004.interval,bind
+	animation46004.pattern0,add,46004,0,0,0
+
+//スカート装飾_プリーツスカート膝上チェック
+	animation46005.interval,bind
+	animation46005.pattern0,add,46005,0,0,0
+
+//スカート装飾_プリーツスカート膝下丈チェック
+	animation46006.interval,bind
+	animation46006.pattern0,add,46006,0,0,0
+
+//スカート装飾_変形ボックスプリーツミニ裾ライン
+	animation46007.interval,bind
+	animation46007.pattern0,add,46007,0,0,0
+
+//スカート装飾_プリーツスカート裾フリル
+	animation46008.interval,bind
+	animation46008.pattern0,add,46008,0,0,0
+
+//トップス１_シンプルブラウス
+	animation47000.interval,bind
+	animation47000.pattern0,add,47000,0,0,0
+
+//トップス１_タートルネックスリットチュニック
+	animation47001.interval,bind
+	animation47001.pattern0,add,47001,0,0,0
+
+//トップス１_ノースリーブシャツ
+	animation47002.interval,bind
+	animation47002.pattern0,add,47002,0,0,0
+
+
+//トップス１_半袖Ｔシャツ
+	animation47003.interval,bind
+	animation47003.pattern0,add,47003,0,0,0
+
+//トップス１_変形キャミ
+	animation47004.interval,bind
+	animation47004.pattern0,add,47004,0,0,0
+
+//トップス１_Yシャツはだけ
+	animation47005.interval,bind
+	animation47005.pattern0,add,47005,0,0,0
+
+//トップス１_丈短ノースリーブカットソー
+	animation47006.interval,bind
+	animation47006.pattern0,add,47006,0,0,0
+
+//トップス１_ハイネックノースリーブ
+	animation47007.interval,bind
+	animation47007.pattern0,add,47007,0,0,0
+
+//トップス１_胸開きノースリーブ
+	animation47008.interval,bind
+	animation47008.pattern0,add,47008,0,0,0
+
+//トップス１装飾_フリルカフス
+	animation48000.interval,bind
+	animation48000.pattern0,add,48000,0,0,0
+
+//トップス１装飾_ブラウス装飾フリルボタン
+	animation48001.interval,bind
+	animation48001.pattern0,add,48001,0,0,0
+
+//トップス１装飾_袖折り返し
+	animation48002.interval,bind
+	animation48002.pattern0,add,48002,0,0,0
+
+//トップス１装飾_シャツ襟
+	animation48003.interval,bind
+	animation48003.pattern0,add,48003,0,0,0
+
+//トップス１装飾_ゴシックカフス
+	animation48004.interval,bind
+	animation48004.pattern0,add,48004,0,0,0
+
+//トップス１装飾_半袖Ｔシャツ袖口
+	animation48005.interval,bind
+	animation48005.pattern0,add,48005,0,0,0
+
+//服上下_ティアードエプロンドレス
+	animation49000.interval,bind
+	animation49000.pattern0,add,49000,0,0,0
+
+//服上下_ノースリーブワンピース
+	animation49001.interval,bind
+	animation49001.pattern0,add,49001,0,0,0
+
+//服上下_リッチフリルワンピース
+	animation49002.interval,bind
+	animation49002.pattern0,add,49002,0,0,0
+
+//服上下_長袍
+	animation49003.interval,bind
+	animation49003.pattern0,add,49003,0,0,0
+
+//服上下_ハイウエストワンピ
+	animation49004.interval,bind
+	animation49004.pattern0,add,49004,0,0,0
+
+//服上下_ハイウエストワンピ膝下丈
+	animation49005.interval,bind
+	animation49005.pattern0,add,49005,0,0,0
+
+//服上下_オリエンタルドレス
+	animation49006.interval,bind
+	animation49006.pattern0,add,49006,0,0,0
+
+//服上下装飾_ノースリーブワンピース模様ギンガムチェック
+	animation50000.interval,bind
+	animation50000.pattern0,add,50000,0,0,0
+
+//服上下装飾_ノースリーブワンピース模様ボーダー
+	animation50001.interval,bind
+	animation50001.pattern0,add,50001,0,0,0
+
+//服上下装飾_袖折り返し
+	animation50002.interval,bind
+	animation50002.pattern0,add,50002,0,0,0
+
+//オーバースカート_編み上げオーバースカート
+	animation51000.interval,bind
+	animation51000.pattern0,add,51000,0,0,0
+
+//オーバースカート_チャップスロング丈左
+	animation51001.interval,bind
+	animation51001.pattern0,add,51001,0,0,0
+
+//オーバースカート_チャップスロング丈右
+	animation51002.interval,bind
+	animation51002.pattern0,add,51002,0,0,0
+
+//オーバースカート_チャップスハーフ丈左
+	animation51003.interval,bind
+	animation51003.pattern0,add,51003,0,0,0
+
+//オーバースカート_チャップスハーフ丈右
+	animation51004.interval,bind
+	animation51004.pattern0,add,51004,0,0,0
+
+//オーバースカート_チャップス股下タイプ左
+	animation51005.interval,bind
+	animation51005.pattern0,add,51005,0,0,0
+
+//オーバースカート_チャップス股下タイプ右
+	animation51006.interval,bind
+	animation51006.pattern0,add,51006,0,0,0
+
+//オーバースカート_ブーツチャップス左
+	animation51007.interval,bind
+	animation51007.pattern0,add,51007,0,0,0
+
+//オーバースカート_ブーツチャップス右
+	animation51008.interval,bind
+	animation51008.pattern0,add,51008,0,0,0
+
+//オーバースカート_ブーツチャップスルーズ左
+	animation51009.interval,bind
+	animation51009.pattern0,add,51009,0,0,0
+
+//オーバースカート_ブーツチャップスルーズ右
+	animation51010.interval,bind
+	animation51010.pattern0,add,51010,0,0,0
+
+//オーバースカート装飾_オーバースカート模様逆十字
+	animation52000.interval,bind
+	animation52000.pattern0,add,52000,0,0,0
+
+//ネクタイ・帯_ネクタイ
+	animation53000.interval,bind
+	animation53000.pattern1,add,53000,0,0,0
+
+//ネクタイ・帯_ハイウエストリボンベルト
+	animation53001.interval,bind
+	animation53001.pattern0,add,53001,0,0,0
+
+//ネクタイ・帯_高め帯
+	animation53002.interval,bind
+	animation53002.pattern0,add,53002,0,0,0
+
+//ネクタイ・帯_セーラー襟スカーフ
+	animation53003.interval,bind
+	animation53003.pattern0,add,53003,0,0,0
+
+//ネクタイ・帯_蝶ネクタイ
+	animation53004.interval,bind
+	animation53004.pattern0,add,53004,0,0,0
+
+//タイピン・帯締め_ネクタイピン
+	animation54000.interval,bind
+	animation54000.pattern0,add,54000,0,0,0
+
+//タイピン・帯締め_ネクタイピン２
+	animation54001.interval,bind
+	animation54001.pattern0,add,54001,0,0,0
+
+//タイピン・帯締め_玉飾り付き帯締め
+	animation54002.interval,bind
+	animation54002.pattern0,add,54002,0,0,0
+
+//トップス２_コルセット風ベスト
+	animation55000.interval,bind
+	animation55000.pattern0,add,55000,0,0,0
+
+//トップス２_女性用前開きベスト
+	animation55001.interval,bind
+	animation55001.pattern0,add,55001,0,0,0
+
+//トップス２_シンプルベスト
+	animation55002.interval,bind
+	animation55002.pattern0,add,55002,0,0,0
+
+//トップス２_Ｃ＃ベスト
+	animation55003.interval,bind
+	animation55003.pattern0,add,55003,0,0,0
+
+//トップス２_女性用ベスト長め
+	animation55004.interval,bind
+	animation55004.pattern0,add,55004,0,0,0
+
+//トップス２_Vネックセーター女性
+	animation55005.interval,bind
+	animation55005.pattern0,add,55005,0,0,0
+
+//トップス２_Vネックセーター男性
+	animation55006.interval,bind
+	animation55006.pattern0,add,55006,0,0,0
+
+//トップス２_Vネックロングセーター女性
+	animation55007.interval,bind
+	animation55007.pattern0,add,55007,0,0,0
+
+//トップス２_Vネックロングセーター男性
+	animation55008.interval,bind
+	animation55008.pattern0,add,55008,0,0,0
+
+//トップス２_Vネックゆったりセーター女性
+	animation55009.interval,bind
+	animation55009.pattern0,add,55009,0,0,0
+
+//トップス２_Vネックゆったりセーター男性
+	animation55010.interval,bind
+	animation55010.pattern0,add,55010,0,0,0
+
+//エプロン_サロンエプロン
+	animation57000.interval,bind
+	animation57000.pattern0,add,57000,0,0,0
+
+//エプロン_胸当て付きフリルエプロン
+	animation57001.interval,bind
+	animation57001.pattern0,add,57001,0,0,0
+
+//エプロン_胸当て付きフリルエプロンロング
+	animation57002.interval,bind
+	animation57002.pattern0,add,57002,0,0,0
+
+//トップス３_ケープ
+	animation58000.interval,bind
+	animation58000.pattern0,add,58000,0,0,0
+
+//トップス３_コルセット
+	animation58001.interval,bind
+	animation58001.pattern0,add,58001,0,0,0
+
+//トップス３装飾_コルセット用ベルト
+	animation59000.interval,bind
+	animation59000.pattern0,add,59000,0,0,0
+
+//アクセサリー４_リボン付きフリルカラー
+	animation60000.interval,bind
+	animation60000.pattern0,add,60000,0,0,0
+
+//アクセサリー４_付け襟
+	animation60001.interval,bind
+	animation60001.pattern0,add,60001,0,0,0
+
+//アクセサリー４_二連アームブレスレット右
+	animation60002.interval,bind
+	animation60002.pattern0,add,60002,0,0,0
+
+//アクセサリー４_二連アームブレスレット左
+	animation60003.interval,bind
+	animation60003.pattern0,add,60003,0,0,0
+
+//アクセサリー４_二連ブレスレット右
+	animation60004.interval,bind
+	animation60004.pattern0,add,60004,0,0,0
+
+//アクセサリー４_二連ブレスレット左
+	animation60005.interval,bind
+	animation60005.pattern0,add,60005,0,0,0
+
+//アクセサリー４_二連アンクレット右
+	animation60006.interval,bind
+	animation60006.pattern0,add,60006,0,0,0
+
+//アクセサリー４_二連アンクレット左
+	animation60007.interval,bind
+	animation60007.pattern0,add,60007,0,0,0
+
+//アクセサリー４_チョーカー風フリル襟
+	animation60008.interval,bind
+	animation60008.pattern0,add,60008,0,0,0
+
+//アクセサリー４_口小さめ用猫口
+	animation60009.interval,bind
+	animation60009.pattern0,add,60009,0,0,0
+
+//アクセサリー４_セーラー襟
+	animation60010.interval,bind
+	animation60010.pattern0,add,60010,0,0,0
+
+//アクセサリー４_眼帯装飾バラ
+	animation60011.interval,bind
+	animation60011.pattern0,add,60011,0,0,0
+
+//アクセサリー４_眼帯装飾バラ右
+	animation60012.interval,bind
+	animation60012.pattern0,add,60012,0,0,0
+
+//アクセサリー４_眼帯装飾ドクロ
+	animation60013.interval,bind
+	animation60013.pattern0,add,60013,0,0,0
+
+//アクセサリー４_眼帯装飾ドクロ右
+	animation60014.interval,bind
+	animation60014.pattern0,add,60014,0,0,0
+
+//アクセサリー４_眼帯装飾ハート
+	animation60015.interval,bind
+	animation60015.pattern0,add,60015,0,0,0
+
+//アクセサリー４_眼帯装飾ハート右
+	animation60016.interval,bind
+	animation60016.pattern0,add,60016,0,0,0
+
+//アクセサリー４_眼帯装飾ブロークンハート
+	animation60017.interval,bind
+	animation60017.pattern0,add,60017,0,0,0
+
+//アクセサリー４_眼帯装飾ブロークンハート右
+	animation60018.interval,bind
+	animation60018.pattern0,add,60018,0,0,0
+
+//アクセサリー４_シャツ襟
+	animation60019.interval,bind
+	animation60019.pattern0,add,60019,0,0,0
+
+//トップス４_ゴシック風編み上げジャケット
+	animation61000.interval,bind
+	animation61000.pattern0,add,61000,0,0,0
+
+//トップス４_条帛
+	animation61001.interval,bind
+	animation61001.pattern0,add,61001,0,0,0
+
+//トップス４_スーツジャケット
+	animation61002.interval,bind
+	animation61002.pattern0,add,61002,0,0,0
+
+//トップス４_スーツジャケット前開き
+	animation61003.interval,bind
+	animation61003.pattern0,add,61003,0,0,0
+
+//コート_膝上丈フロックコート
+	animation63000.interval,bind
+	animation63000.pattern0,add,63000,0,0,0
+
+//コート_フロックコート女性用
+	animation63001.interval,bind
+	animation63001.pattern0,add,63001,0,0,0
+
+//コート_プリンセスコート
+	animation63002.interval,bind
+	animation63002.pattern0,add,63002,0,0,0
+
+//ケープ_ショール大判
+	animation65000.interval,bind
+	animation65000.pattern0,add,65000,0,0,0
+
+//ケープ_ショール小さめ
+	animation65001.interval,bind
+	animation65001.pattern0,add,65001,0,0,0
+
+//ケープ_ショール小さめフィット
+	animation65002.interval,bind
+	animation65002.pattern0,add,65002,0,0,0
+
+//ケープ_ショール大判フィット
+	animation65003.interval,bind
+	animation65003.pattern0,add,65003,0,0,0
+
+//ケープ_マント前
+	animation65004.interval,bind
+	animation65004.pattern0,add,65004,0,0,0
+
+//ケープ_ミニマント前
+	animation65005.interval,bind
+	animation65005.pattern0,add,65005,0,0,0
+
+//ケープ_角丸ケープ
+	animation65006.interval,bind
+	animation65006.pattern0,add,65006,0,0,0
+
+//ケープ装飾_角丸ケープファー
+	animation66000.interval,bind
+	animation66000.pattern0,add,66000,0,0,0
+
+//横髪_ぱっつん
+	animation69000.interval,bind
+	animation69000.pattern0,add,69000,0,0,0
+
+//横髪_ぱっつんロング
+	animation69001.interval,bind
+	animation69001.pattern0,add,69001,0,0,0
+
+//横髪_ナチュラル
+	animation69002.interval,bind
+	animation69002.pattern0,add,69002,0,0,0
+
+//横髪_二段ストレート
+	animation69003.interval,bind
+	animation69003.pattern0,add,69003,0,0,0
+
+//横髪_内巻き
+	animation69004.interval,bind
+	animation69004.pattern0,add,69004,0,0,0
+
+//横髪_あごラインナチュラル
+	animation69005.interval,bind
+	animation69005.pattern0,add,69005,0,0,0
+
+//横髪_あごラインざくざく
+	animation69006.interval,bind
+	animation69006.pattern0,add,69006,0,0,0
+
+//横髪_耳下ざくざく内巻き
+	animation69007.interval,bind
+	animation69007.pattern0,add,69007,0,0,0
+
+//横髪_ストレート肩ライン超え
+	animation69008.interval,bind
+	animation69008.pattern0,add,69008,0,0,0
+
+//横髪_ウエーブロング
+	animation69009.interval,bind
+	animation69009.pattern0,add,69009,0,0,0
+
+//横髪_ウエーブセミロング
+	animation69010.interval,bind
+	animation69010.pattern0,add,69010,0,0,0
+
+//横髪_ストレートあごライン
+	animation69011.interval,bind
+	animation69011.pattern0,add,69011,0,0,0
+
+//横髪_肩ライン左
+	animation69012.interval,bind
+	animation69012.pattern0,add,69012,0,0,0
+
+//横髪_肩ライン右
+	animation69013.interval,bind
+	animation69013.pattern0,add,69013,0,0,0
+
+//前髪_ぱっつん
+	animation70000.interval,bind
+	animation70000.pattern0,add,70000,0,0,0
+
+//前髪_ナチュラル
+	animation70001.interval,bind
+	animation70001.pattern0,add,70001,0,0,0
+
+//前髪_中寄りストレート
+	animation70002.interval,bind
+	animation70002.pattern0,add,70002,0,0,0
+
+//前髪_斜めナチュラル
+	animation70003.interval,bind
+	animation70003.pattern0,add,70003,0,0,0
+
+//前髪_ナチュラル＃2
+	animation70004.interval,bind
+	animation70004.pattern0,add,70004,0,0,0
+
+//前髪_斜めナチュラル右
+	animation70005.interval,bind
+	animation70005.pattern0,add,70005,0,0,0
+
+//前髪_中寄りナチュラル
+	animation70006.interval,bind
+	animation70006.pattern0,add,70006,0,0,0
+
+//前髪_ざくざく
+	animation70007.interval,bind
+	animation70007.pattern0,add,70007,0,0,0
+
+//前髪_斜めざっくり
+	animation70008.interval,bind
+	animation70008.pattern0,add,70008,0,0,0
+
+//前髪_真ん中分けあご下丈
+	animation70009.interval,bind
+	animation70009.pattern0,add,70009,0,0,0
+
+//前髪_アシンメトリー右
+	animation70010.interval,bind
+	animation70010.pattern0,add,70010,0,0,0
+
+//前髪_アシンメトリー左
+	animation70011.interval,bind
+	animation70011.pattern0,add,70011,0,0,0
+
+//前髪_斜め分け横はね右
+	animation70012.interval,bind
+	animation70012.pattern0,add,70012,0,0,0
+
+//前髪_重めナチュラル
+	animation70013.interval,bind
+	animation70013.pattern0,add,70013,0,0,0
+
+//前髪_斜め分け横はね左
+	animation70014.interval,bind
+	animation70014.pattern0,add,70014,0,0,0
+
+//前髪_オールバック
+	animation70015.interval,bind
+	animation70015.pattern0,add,70015,0,0,0
+
+//前髪_オールバックＭ字
+	animation70016.interval,bind
+	animation70016.pattern0,add,70016,0,0,0
+
+//前髪_右目やや隠れ
+	animation70017.interval,bind
+	animation70017.pattern0,add,70017,0,0,0
+
+//前髪_左目やや隠れ
+	animation70018.interval,bind
+	animation70018.pattern0,add,70018,0,0,0
+
+//前髪_片耳かけ右
+	animation70019.interval,bind
+	animation70019.pattern0,add,70019,0,0,0
+
+//前髪_片耳かけ左
+	animation70020.interval,bind
+	animation70020.pattern0,add,70020,0,0,0
+
+//前髪_くせ毛右
+	animation70021.interval,bind
+	animation70021.pattern0,add,70021,0,0,0
+
+//前髪_くせ毛左
+	animation70022.interval,bind
+	animation70022.pattern0,add,70022,0,0,0
+
+//髪オプション_前髪無造作風レイヤー
+	animation71000.interval,bind
+	animation71000.pattern0,add,71000,0,0,0
+
+//髪オプション_あほ毛２本
+	animation71001.interval,bind
+	animation71001.pattern0,add,71001,0,0,0
+
+//髪オプション_あほ毛１本
+	animation71002.interval,bind
+	animation71002.pattern0,add,71002,0,0,0
+
+//髪オプション_前髪ほつれ左
+	animation71003.interval,bind
+	animation71003.pattern0,add,71003,0,0,0
+
+//髪オプション_前髪ほつれ中央寄り
+	animation71004.interval,bind
+	animation71004.pattern0,add,71004,0,0,0
+
+//帽子・ヘッドドレス２_ゴシックヘッドドレス
+	animation74000.interval,bind
+	animation74000.pattern0,add,74000,0,0,0
+
+//帽子・ヘッドドレス２_シルクハット
+	animation74001.interval,bind
+	animation74001.pattern0,add,74001,0,0,0
+
+//帽子・ヘッドドレス２_ホワイトブリム
+	animation74002.interval,bind
+	animation74002.pattern0,add,74002,0,0,0
+
+//帽子・ヘッドドレス２_細カチューシャ
+	animation74003.interval,bind
+	animation74003.pattern0,add,74003,0,0,0
+
+//帽子・ヘッドドレス２_クロッシェ
+	animation74004.interval,bind
+	animation74004.pattern0,add,74004,0,0,0
+
+//帽子・ヘッドドレス２_魔女帽子
+	animation74005.interval,bind
+	animation74005.pattern0,add,74005,0,0,0
+
+//帽子・ヘッドドレス２_ベレー帽
+	animation74006.interval,bind
+	animation74006.pattern0,add,74006,0,0,0
+
+//帽子・ヘッドドレス２_山高帽
+	animation74007.interval,bind
+	animation74007.pattern0,add,74007,0,0,0
+
+//帽子・ヘッドドレス２_シルクハット高め
+	animation74008.interval,bind
+	animation74008.pattern0,add,74008,0,0,0
+
+//帽子・ヘッドドレス２_ミニハット右
+	animation74009.interval,bind
+	animation74009.pattern0,add,74009,0,0,0
+
+//帽子・ヘッドドレス２_ミニハット左
+	animation74010.interval,bind
+	animation74010.pattern0,add,74010,0,0,0
+
+//帽子・ヘッドドレス２_中折れ帽
+	animation74011.interval,bind
+	animation74011.pattern0,add,74011,0,0,0
+
+//帽子・ヘッドドレス２_ウエスタンハット
+	animation74012.interval,bind
+	animation74012.pattern0,add,74012,0,0,0
+
+//帽子・ヘッドドレス２_ナイトキャップ
+	animation74013.interval,bind
+	animation74013.pattern0,add,74013,0,0,0
+
+//帽子・ヘッドドレス２_中太カチューシャ
+	animation74014.interval,bind
+	animation74014.pattern0,add,74014,0,0,0
+
+//帽子・ヘッドドレス２_耳あて付きニットキャップ
+	animation74015.interval,bind
+	animation74015.pattern0,add,74015,0,0,0
+
+//帽子・ヘッドドレス２装飾_薔薇コサージュ
+	animation75000.interval,bind
+	animation75000.pattern0,add,75000,0,0,0
+
+//帽子・ヘッドドレス２装飾_クロッシェ幅広ベルト
+	animation75001.interval,bind
+	animation75001.pattern0,add,75001,0,0,0
+
+//アクセサリー５_薔薇コサージュ胸元
+	animation76000.interval,bind
+	animation76000.pattern0,add,76000,0,0,0
+
+//アクセサリー５_ＳＳＰ
+	animation76001.interval,bind
+	animation76001.pattern0,add,76001,0,0,0
+
+//アクセサリー５_はやぶさカプセル
+	animation76002.interval,bind
+	animation76002.pattern0,add,76002,0,0,0
+
+//アクセサリー５_細リボン右
+	animation76003.interval,bind
+	animation76003.pattern0,add,76003,0,0,0
+
+//アクセサリー５_細リボン左
+	animation76004.interval,bind
+	animation76004.pattern0,add,76004,0,0,0
+
+//アクセサリー５_紐リボンチョーカー
+	animation76005.interval,bind
+	animation76005.pattern0,add,76005,0,0,0
+
+//アクセサリー５_襟元紐リボン
+	animation76006.interval,bind
+	animation76006.pattern0,add,76006,0,0,0
+
+//アクセサリー５_３連リボン左
+	animation76007.interval,bind
+	animation76007.pattern0,add,76007,0,0,0
+
+//アクセサリー５_３連リボン右
+	animation76008.interval,bind
+	animation76008.pattern0,add,76008,0,0,0
+
+//アクセサリー５_髪飾り花右
+	animation76009.interval,bind
+	animation76009.pattern0,add,76009,0,0,0
+
+//アクセサリー５_髪飾り花左
+	animation76010.interval,bind
+	animation76010.pattern0,add,76010,0,0,0
+
+//アクセサリー５_犬耳垂れ長
+	animation76011.interval,bind
+	animation76011.pattern0,add,76011,0,0,0
+
+//アクセサリー５_犬耳垂れ短
+	animation76012.interval,bind
+	animation76012.pattern0,add,76012,0,0,0
+
+//アクセサリー５_細リボン
+	animation76013.interval,bind
+	animation76013.pattern0,add,76013,0,0,0
+
+//アクセサリー５_大リボン
+	animation76014.interval,bind
+	animation76014.pattern0,add,76014,0,0,0
+
+//アクセサリー５_大リボン右
+	animation76015.interval,bind
+	animation76015.pattern0,add,76015,0,0,0
+
+//アクセサリー５_大リボン左
+	animation76016.interval,bind
+	animation76016.pattern0,add,76016,0,0,0
+
+//アクセサリー５_頭用スカーフリボン
+	animation76017.interval,bind
+	animation76017.pattern0,add,76017,0,0,0
+
+//アクセサリー５_襟元リボン
+	animation76018.interval,bind
+	animation76018.pattern0,add,76018,0,0,0
+
+//アクセサリー５_天使の輪
+	animation76019.interval,bind
+	animation76019.pattern0,add,76019,0,0,0
+
+//アクセサリー５_着衣用胸増量
+	animation76020.interval,bind
+	animation76020.pattern0,add,76020,0,0,0
+
+//アクセサリー５_横髪エクステ
+	animation76021.interval,bind
+	animation76021.pattern0,add,76021,0,0,0
+
+//アクセサリー５_薔薇コサージュ大・胸右側
+	animation76022.interval,bind
+	animation76022.pattern0,add,76022,0,0,0
+
+//アクセサリー５_うさ耳右折れ
+	animation76023.interval,bind
+	animation76023.pattern0,add,76023,0,0,0
+
+//アクセサリー５_うさ耳左折れ
+	animation76024.interval,bind
+	animation76024.pattern0,add,76024,0,0,0
+
+//アクセサリー５_うさ耳両折れ
+	animation76025.interval,bind
+	animation76025.pattern0,add,76025,0,0,0
+
+//アクセサリー５_うさ耳
+	animation76026.interval,bind
+	animation76026.pattern0,add,76026,0,0,0
+
+//アクセサリー５_たれうさ耳
+	animation76027.interval,bind
+	animation76027.pattern0,add,76027,0,0,0
+
+//アクセサリー５_Ｃ＃髪どめ
+	animation76028.interval,bind
+	animation76028.pattern0,add,76028,0,0,0
+
+//アクセサリー５_飾りボタンウエスト
+	animation76029.interval,bind
+	animation76029.pattern0,add,76029,0,0,0
+
+//アクセサリー５_変形リボンタイ
+	animation76030.interval,bind
+	animation76030.pattern0,add,76030,0,0,0
+
+//アクセサリー５_襟元ボンボン付き紐リボン
+	animation76031.interval,bind
+	animation76031.pattern0,add,76031,0,0,0
+
+//アクセサリー５_マフラー
+	animation76032.interval,bind
+	animation76032.pattern0,add,76032,0,0,0
+
+//前景_フレーム
+	animation77000.interval,bind
+	animation77000.pattern0,add,77000,0,0,0
+
+//前景_フレーム＃2
+	animation77001.interval,bind
+	animation77001.pattern0,add,77001,0,0,0
+
+//前景_角丸ドットフレーム
+	animation77002.interval,bind
+	animation77002.pattern0,add,77002,0,0,0
+
+//前景_ポラロイド風
+	animation77003.interval,bind
+	animation77003.pattern0,add,77003,0,0,0
+
+//前景_映画フィルム風
+	animation77004.interval,bind
+	animation77004.pattern0,add,77004,0,0,0
+
+//前景_映画フィルム風横
+	animation77005.interval,bind
+	animation77005.pattern0,add,77005,0,0,0
+
+//前景_飾りフレーム
+	animation77006.interval,bind
+	animation77006.pattern0,add,77006,0,0,0
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//眉着せ替え設定
+
+//眉着せ替え・素
+surface0,1,5,6,100-103,110-113,120-123,130-133
+{
+
+//眉１_デフォルト
+	animation67000.interval,bind
+	animation67000.pattern0,add,67000,0,0,0
+
+//眉１_下がりめ眉
+	animation67001.interval,bind
+	animation67001.pattern0,add,67001,0,0,0
+
+//眉１_太眉_CC
+	animation67002.interval,bind
+	animation67002.pattern0,add,67002,0,0,0
+
+//眉１_下がりアーチ眉_CC
+	animation67003.interval,bind
+	animation67003.pattern0,add,67003,0,0,0
+
+//眉１_つり眉_CC
+	animation67004.interval,bind
+	animation67004.pattern0,add,67004,0,0,0
+
+//眉１_たれ太眉_CC
+	animation67005.interval,bind
+	animation67005.pattern0,add,67005,0,0,0
+
+//眉１_低め_CC
+	animation67006.interval,bind
+	animation67006.pattern0,add,67006,0,0,0
+
+//眉１_下がり微アーチ_CC
+	animation67007.interval,bind
+	animation67007.pattern0,add,67007,0,0,0
+
+//眉１_微アーチ_CC
+	animation67008.interval,bind
+	animation67008.pattern0,add,67008,0,0,0
+
+//眉１_中太眉_CC
+	animation67009.interval,bind
+	animation67009.pattern0,add,67009,0,0,0
+
+//眉１_下がり微アーチ２_CC
+	animation67010.interval,bind
+	animation67010.pattern0,add,67010,0,0,0
+
+//眉１_中太低め_CC
+	animation67011.interval,bind
+	animation67011.pattern0,add,67011,0,0,0
+
+//眉１_低めつり眉_CC
+	animation67012.interval,bind
+	animation67012.pattern0,add,67012,0,0,0
+
+//眉１_やや低めつり眉_CC
+	animation67013.interval,bind
+	animation67013.pattern0,add,67013,0,0,0
+
+//眉１_微つり眉_CC
+	animation67014.interval,bind
+	animation67014.pattern0,add,67014,0,0,0
+
+//眉２_デフォルト
+	animation72000.interval,bind
+	animation72000.pattern0,add,67000,0,0,0
+
+//眉２_下がりめ眉
+	animation72001.interval,bind
+	animation72001.pattern0,add,67001,0,0,0
+
+//眉２_太眉_CC
+	animation72002.interval,bind
+	animation72002.pattern0,add,67002,0,0,0
+
+//眉２_下がりアーチ眉_CC
+	animation72003.interval,bind
+	animation72003.pattern0,add,67003,0,0,0
+
+//眉２_つり眉_CC
+	animation72004.interval,bind
+	animation72004.pattern0,add,67004,0,0,0
+
+//眉２_たれ太眉_CC
+	animation72005.interval,bind
+	animation72005.pattern0,add,67005,0,0,0
+
+//眉２_低め_CC
+	animation72006.interval,bind
+	animation72006.pattern0,add,67006,0,0,0
+
+//眉２_下がり微アーチ_CC
+	animation72007.interval,bind
+	animation72007.pattern0,add,67007,0,0,0
+
+//眉２_微アーチ_CC
+	animation72008.interval,bind
+	animation72008.pattern0,add,67008,0,0,0
+
+//眉２_中太眉_CC
+	animation72009.interval,bind
+	animation72009.pattern0,add,67009,0,0,0
+
+//眉２_下がり微アーチ２_CC
+	animation72010.interval,bind
+	animation72010.pattern0,add,67010,0,0,0
+
+//眉２_中太低め_CC
+	animation72011.interval,bind
+	animation72011.pattern0,add,67011,0,0,0
+
+//眉２_低めつり眉_CC
+	animation72012.interval,bind
+	animation72012.pattern0,add,67012,0,0,0
+
+//眉２_やや低めつり眉_CC
+	animation72013.interval,bind
+	animation72013.pattern0,add,67013,0,0,0
+
+//眉２_微つり眉_CC
+	animation72014.interval,bind
+	animation72014.pattern0,add,67014,0,0,0
+}
+
+//眉着せ替え・驚
+surface2,25,26,200-203,210-213,220-223,230-233
+{
+
+//眉１_デフォルト
+	animation67000.interval,bind
+	animation67000.pattern0,add,167000,0,0,0
+
+//眉１_下がりめ眉
+	animation67001.interval,bind
+	animation67001.pattern0,add,167001,0,0,0
+
+//眉１_太眉_CC
+	animation67002.interval,bind
+	animation67002.pattern0,add,167002,0,0,0
+
+//眉１_下がりアーチ眉_CC
+	animation67003.interval,bind
+	animation67003.pattern0,add,167003,0,0,0
+
+//眉１_つり眉_CC
+	animation67004.interval,bind
+	animation67004.pattern0,add,167004,0,0,0
+
+//眉１_たれ太眉_CC
+	animation67005.interval,bind
+	animation67005.pattern0,add,167005,0,0,0
+
+//眉１_低め_CC
+	animation67006.interval,bind
+	animation67006.pattern0,add,167006,0,0,0
+
+//眉１_下がり微アーチ_CC
+	animation67007.interval,bind
+	animation67007.pattern0,add,167007,0,0,0
+
+//眉１_微アーチ_CC
+	animation67008.interval,bind
+	animation67008.pattern0,add,167008,0,0,0
+
+//眉１_中太眉_CC
+	animation67009.interval,bind
+	animation67009.pattern0,add,167009,0,0,0
+
+//眉１_下がり微アーチ２_CC
+	animation67010.interval,bind
+	animation67010.pattern0,add,167010,0,0,0
+
+//眉１_中太低め_CC
+	animation67011.interval,bind
+	animation67011.pattern0,add,167011,0,0,0
+
+//眉１_低めつり眉_CC
+	animation67012.interval,bind
+	animation67012.pattern0,add,167012,0,0,0
+
+//眉１_やや低めつり眉_CC
+	animation67013.interval,bind
+	animation67013.pattern0,add,167013,0,0,0
+
+//眉１_微つり眉_CC
+	animation67014.interval,bind
+	animation67014.pattern0,add,167014,0,0,0
+
+//眉２_デフォルト
+	animation72000.interval,bind
+	animation72000.pattern0,add,167000,0,0,0
+
+//眉２_下がりめ眉
+	animation72001.interval,bind
+	animation72001.pattern0,add,167001,0,0,0
+
+//眉２_太眉_CC
+	animation72002.interval,bind
+	animation72002.pattern0,add,167002,0,0,0
+
+//眉２_下がりアーチ眉_CC
+	animation72003.interval,bind
+	animation72003.pattern0,add,167003,0,0,0
+
+//眉２_つり眉_CC
+	animation72004.interval,bind
+	animation72004.pattern0,add,167004,0,0,0
+
+//眉２_たれ太眉_CC
+	animation72005.interval,bind
+	animation72005.pattern0,add,167005,0,0,0
+
+//眉２_低め_CC
+	animation72006.interval,bind
+	animation72006.pattern0,add,167006,0,0,0
+
+//眉２_下がり微アーチ_CC
+	animation72007.interval,bind
+	animation72007.pattern0,add,167007,0,0,0
+
+//眉２_微アーチ_CC
+	animation72008.interval,bind
+	animation72008.pattern0,add,167008,0,0,0
+
+//眉２_中太眉_CC
+	animation72009.interval,bind
+	animation72009.pattern0,add,167009,0,0,0
+
+//眉２_下がり微アーチ２_CC
+	animation72010.interval,bind
+	animation72010.pattern0,add,167010,0,0,0
+
+//眉２_中太低め_CC
+	animation72011.interval,bind
+	animation72011.pattern0,add,167011,0,0,0
+
+//眉２_低めつり眉_CC
+	animation72012.interval,bind
+	animation72012.pattern0,add,167012,0,0,0
+
+//眉２_やや低めつり眉_CC
+	animation72013.interval,bind
+	animation72013.pattern0,add,167013,0,0,0
+
+//眉２_微つり眉_CC
+	animation72014.interval,bind
+	animation72014.pattern0,add,167014,0,0,0
+}
+
+//眉着せ替え・困
+surface3,4,8,300-303,310-313,320-323,330-333
+{
+
+//眉１_デフォルト
+	animation67000.interval,bind
+	animation67000.pattern0,add,267000,0,0,0
+
+//眉１_下がりめ眉
+	animation67001.interval,bind
+	animation67001.pattern0,add,267001,0,0,0
+
+//眉１_太眉_CC
+	animation67002.interval,bind
+	animation67002.pattern0,add,267002,0,0,0
+
+//眉１_下がりアーチ眉_CC
+	animation67003.interval,bind
+	animation67003.pattern0,add,267003,0,0,0
+
+//眉１_つり眉_CC
+	animation67004.interval,bind
+	animation67004.pattern0,add,267004,0,0,0
+
+//眉１_たれ太眉_CC
+	animation67005.interval,bind
+	animation67005.pattern0,add,267005,0,0,0
+
+//眉１_低め_CC
+	animation67006.interval,bind
+	animation67006.pattern0,add,267006,0,0,0
+
+//眉１_下がり微アーチ_CC
+	animation67007.interval,bind
+	animation67007.pattern0,add,267007,0,0,0
+
+//眉１_微アーチ_CC
+	animation67008.interval,bind
+	animation67008.pattern0,add,267008,0,0,0
+
+//眉１_中太眉_CC
+	animation67009.interval,bind
+	animation67009.pattern0,add,267009,0,0,0
+
+//眉１_下がり微アーチ２_CC
+	animation67010.interval,bind
+	animation67010.pattern0,add,267010,0,0,0
+
+//眉１_中太低め_CC
+	animation67011.interval,bind
+	animation67011.pattern0,add,267011,0,0,0
+
+//眉１_低めつり眉_CC
+	animation67012.interval,bind
+	animation67012.pattern0,add,267012,0,0,0
+
+//眉１_やや低めつり眉_CC
+	animation67013.interval,bind
+	animation67013.pattern0,add,267013,0,0,0
+
+//眉１_微つり眉_CC
+	animation67014.interval,bind
+	animation67014.pattern0,add,267014,0,0,0
+
+//眉２_デフォルト
+	animation72000.interval,bind
+	animation72000.pattern0,add,267000,0,0,0
+
+//眉２_下がりめ眉
+	animation72001.interval,bind
+	animation72001.pattern0,add,267001,0,0,0
+
+//眉２_太眉_CC
+	animation72002.interval,bind
+	animation72002.pattern0,add,267002,0,0,0
+
+//眉２_下がりアーチ眉_CC
+	animation72003.interval,bind
+	animation72003.pattern0,add,267003,0,0,0
+
+//眉２_つり眉_CC
+	animation72004.interval,bind
+	animation72004.pattern0,add,267004,0,0,0
+
+//眉２_たれ太眉_CC
+	animation72005.interval,bind
+	animation72005.pattern0,add,267005,0,0,0
+
+//眉２_低め_CC
+	animation72006.interval,bind
+	animation72006.pattern0,add,267006,0,0,0
+
+//眉２_下がり微アーチ_CC
+	animation72007.interval,bind
+	animation72007.pattern0,add,267007,0,0,0
+
+//眉２_微アーチ_CC
+	animation72008.interval,bind
+	animation72008.pattern0,add,267008,0,0,0
+
+//眉２_中太眉_CC
+	animation72009.interval,bind
+	animation72009.pattern0,add,267009,0,0,0
+
+//眉２_下がり微アーチ２_CC
+	animation72010.interval,bind
+	animation72010.pattern0,add,267010,0,0,0
+
+//眉２_中太低め_CC
+	animation72011.interval,bind
+	animation72011.pattern0,add,267011,0,0,0
+
+//眉２_低めつり眉_CC
+	animation72012.interval,bind
+	animation72012.pattern0,add,267012,0,0,0
+
+//眉２_やや低めつり眉_CC
+	animation72013.interval,bind
+	animation72013.pattern0,add,267013,0,0,0
+
+//眉２_微つり眉_CC
+	animation72014.interval,bind
+	animation72014.pattern0,add,267014,0,0,0
+}
+
+//眉着せ替え・怒
+surface7,9,400-403,410-413,420-423,430-433
+{
+
+//眉１_デフォルト
+	animation67000.interval,bind
+	animation67000.pattern0,add,367000,0,0,0
+
+//眉１_下がりめ眉
+	animation67001.interval,bind
+	animation67001.pattern0,add,367001,0,0,0
+
+//眉１_太眉_CC
+	animation67002.interval,bind
+	animation67002.pattern0,add,367002,0,0,0
+
+//眉１_下がりアーチ眉_CC
+	animation67003.interval,bind
+	animation67003.pattern0,add,367003,0,0,0
+
+//眉１_つり眉_CC
+	animation67004.interval,bind
+	animation67004.pattern0,add,367004,0,0,0
+
+//眉１_たれ太眉_CC
+	animation67005.interval,bind
+	animation67005.pattern0,add,367005,0,0,0
+
+//眉１_低め_CC
+	animation67006.interval,bind
+	animation67006.pattern0,add,367006,0,0,0
+
+//眉１_下がり微アーチ_CC
+	animation67007.interval,bind
+	animation67007.pattern0,add,367007,0,0,0
+
+//眉１_微アーチ_CC
+	animation67008.interval,bind
+	animation67008.pattern0,add,367008,0,0,0
+
+//眉１_中太眉_CC
+	animation67009.interval,bind
+	animation67009.pattern0,add,367009,0,0,0
+
+//眉１_下がり微アーチ２_CC
+	animation67010.interval,bind
+	animation67010.pattern0,add,367010,0,0,0
+
+//眉１_中太低め_CC
+	animation67011.interval,bind
+	animation67011.pattern0,add,367011,0,0,0
+
+//眉１_低めつり眉_CC
+	animation67012.interval,bind
+	animation67012.pattern0,add,367012,0,0,0
+
+//眉１_やや低めつり眉_CC
+	animation67013.interval,bind
+	animation67013.pattern0,add,367013,0,0,0
+
+//眉１_微つり眉_CC
+	animation67014.interval,bind
+	animation67014.pattern0,add,367014,0,0,0
+
+//眉２_デフォルト
+	animation72000.interval,bind
+	animation72000.pattern0,add,367000,0,0,0
+
+//眉２_下がりめ眉
+	animation72001.interval,bind
+	animation72001.pattern0,add,367001,0,0,0
+
+//眉２_太眉_CC
+	animation72002.interval,bind
+	animation72002.pattern0,add,367002,0,0,0
+
+//眉２_下がりアーチ眉_CC
+	animation72003.interval,bind
+	animation72003.pattern0,add,367003,0,0,0
+
+//眉２_つり眉_CC
+	animation72004.interval,bind
+	animation72004.pattern0,add,367004,0,0,0
+
+//眉２_たれ太眉_CC
+	animation72005.interval,bind
+	animation72005.pattern0,add,367005,0,0,0
+
+//眉２_低め_CC
+	animation72006.interval,bind
+	animation72006.pattern0,add,367006,0,0,0
+
+//眉２_下がり微アーチ_CC
+	animation72007.interval,bind
+	animation72007.pattern0,add,367007,0,0,0
+
+//眉２_微アーチ_CC
+	animation72008.interval,bind
+	animation72008.pattern0,add,367008,0,0,0
+
+//眉２_中太眉_CC
+	animation72009.interval,bind
+	animation72009.pattern0,add,367009,0,0,0
+
+//眉２_下がり微アーチ２_CC
+	animation72010.interval,bind
+	animation72010.pattern0,add,367010,0,0,0
+
+//眉２_中太低め_CC
+	animation72011.interval,bind
+	animation72011.pattern0,add,367011,0,0,0
+
+//眉２_低めつり眉_CC
+	animation72012.interval,bind
+	animation72012.pattern0,add,367012,0,0,0
+
+//眉２_やや低めつり眉_CC
+	animation72013.interval,bind
+	animation72013.pattern0,add,367013,0,0,0
+
+//眉２_微つり眉_CC
+	animation72014.interval,bind
+	animation72014.pattern0,add,367014,0,0,0
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//口着せ替え設定
+
+
+
+
+//口着せ替え・開
+surface2,7,100,110,120,130,200,210,220,230,300,310,320,330,400,410,420,430
+{
+
+//口_デフォルト
+	animation29000.interval,bind
+	animation29000.pattern0,add,229000,0,0,0
+
+//口_シニカル
+	animation29001.interval,bind
+	animation29001.pattern0,add,229001,0,0,0
+
+//口_むにむに
+	animation29002.interval,bind
+	animation29002.pattern0,add,229002,0,0,0
+
+//口_小さめ
+	animation29003.interval,bind
+	animation29003.pattern0,add,229003,0,0,0
+
+//口_牙付き
+	animation29004.interval,bind
+	animation29004.pattern0,add,229004,0,0,0
+}
+
+//口着せ替え・閉
+surface1,3,4,6,9,101,111,121,131,201,211,221,231,301,311,321,331,401,411,421,431
+{
+
+//口_デフォルト
+	animation29000.interval,bind
+	animation29000.pattern0,add,329000,0,0,0
+
+//口_シニカル
+	animation29001.interval,bind
+	animation29001.pattern0,add,329001,0,0,0
+
+//口_むにむに
+	animation29002.interval,bind
+	animation29002.pattern0,add,329002,0,0,0
+
+//口_小さめ
+	animation29003.interval,bind
+	animation29003.pattern0,add,329003,0,0,0
+
+//口_牙付き
+	animation29004.interval,bind
+	animation29004.pattern0,add,329004,0,0,0
+}
+
+//口着せ替え・開笑
+surface8,102,112,122,132,202,212,222,232,302,312,322,332,402,412,422,432
+{
+
+//口_デフォルト
+	animation29000.interval,bind
+	animation29000.pattern0,add,529000,0,0,0
+
+//口_シニカル
+	animation29001.interval,bind
+	animation29001.pattern0,add,529001,0,0,0
+
+//口_むにむに
+	animation29002.interval,bind
+	animation29002.pattern0,add,529002,0,0,0
+
+//口_小さめ
+	animation29003.interval,bind
+	animation29003.pattern0,add,529003,0,0,0
+
+//口_牙付き
+	animation29004.interval,bind
+	animation29004.pattern0,add,529004,0,0,0
+}
+
+//口着せ替え・笑
+surface0,5,25,26,103,113,123,133,203,213,223,233,303,313,323,333,403,413,423,433
+{
+
+//口_デフォルト
+	animation29000.interval,bind
+	animation29000.pattern0,add,629000,0,0,0
+
+//口_シニカル
+	animation29001.interval,bind
+	animation29001.pattern0,add,629001,0,0,0
+
+//口_むにむに
+	animation29002.interval,bind
+	animation29002.pattern0,add,629002,0,0,0
+
+//口_小さめ
+	animation29003.interval,bind
+	animation29003.pattern0,add,629003,0,0,0
+
+//口_牙付き
+	animation29004.interval,bind
+	animation29004.pattern0,add,629004,0,0,0
+}
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//目着せ替え設定
+
+//通常目
+surface0,1,2,7,9,100-103,200-203,300-303,400-403,3,8,110-113,210-213,310-313,410-413
+{
+
+//目の形_デフォルト
+	animation26000.interval,bind
+	animation26000.pattern0,add,26000,0,0,0
+
+//目の形_たて長
+	animation26001.interval,bind
+	animation26001.pattern0,add,26001,0,0,0
+
+//目の形_つり目
+	animation26002.interval,bind
+	animation26002.pattern0,add,26002,0,0,0
+
+//目の形_細つり目
+	animation26003.interval,bind
+	animation26003.pattern0,add,26003,0,0,0
+
+//目の形_せんとくん
+	animation26004.interval,bind
+	animation26004.pattern0,add,26004,0,0,0
+
+//目の形_つり目まつ毛付
+	animation26005.interval,bind
+	animation26005.pattern0,add,26005,0,0,0
+
+//目の形_たれ目まつ毛付き
+	animation26006.interval,bind
+	animation26006.pattern0,add,26006,0,0,0
+
+//目の形_つり目シャープ
+	animation26007.interval,bind
+	animation26007.pattern0,add,26007,0,0,0
+
+//目の形_細たれ目
+	animation26008.interval,bind
+	animation26008.pattern0,add,26008,0,0,0
+
+//目の形_たれ目普通
+	animation26009.interval,bind
+	animation26009.pattern0,add,26009,0,0,0
+
+//目の形_普通目
+	animation26010.interval,bind
+	animation26010.pattern0,add,26010,0,0,0
+
+//目の形_微つり目
+	animation26011.interval,bind
+	animation26011.pattern0,add,26011,0,0,0
+
+//目の形_細目普通
+	animation26012.interval,bind
+	animation26012.pattern0,add,26012,0,0,0
+
+//目の形_たれ目ぱっちり
+	animation26013.interval,bind
+	animation26013.pattern0,add,26013,0,0,0
+
+//目の形_つり目ぱっちり
+	animation26014.interval,bind
+	animation26014.pattern0,add,26014,0,0,0
+}
+
+
+//半目
+surface3,8,110-113,210-213,310-313,410-413
+{
+
+//半目まぶた
+	animation27900.interval,runonce
+	animation27900.pattern1,overlay,28001,0,0,0
+
+}
+
+
+//目閉じ
+surface4,6,25,26,120-123,220-223,320-323,420-423
+{
+
+//目の形_デフォルト
+	animation26000.interval,bind
+	animation26000.pattern0,add,26000,0,0,0
+	animation26000.pattern1,add,226000,0,0,0
+
+//目の形_たて長
+	animation26001.interval,bind
+	animation26001.pattern0,add,26001,0,0,0
+	animation26001.pattern1,add,226001,0,0,0
+
+//目の形_つり目
+	animation26002.interval,bind
+	animation26002.pattern0,add,26002,0,0,0
+	animation26002.pattern1,add,226002,0,0,0
+
+//目の形_細つり目
+	animation26003.interval,bind
+	animation26003.pattern0,add,26003,0,0,0
+	animation26003.pattern1,add,226003,0,0,0
+
+//目の形_せんとくん
+	animation26004.interval,bind
+	animation26004.pattern0,add,26004,0,0,0
+	animation26004.pattern1,add,226004,0,0,0
+
+//目の形_つり目まつ毛付
+	animation26005.interval,bind
+	animation26005.pattern0,add,26005,0,0,0
+	animation26005.pattern1,add,226005,0,0,0
+
+//目の形_たれ目まつ毛付き
+	animation26006.interval,bind
+	animation26006.pattern0,add,26006,0,0,0
+	animation26006.pattern1,add,226006,0,0,0
+
+//目の形_つり目シャープ
+	animation26007.interval,bind
+	animation26007.pattern0,add,26007,0,0,0
+	animation26007.pattern1,add,226007,0,0,0
+
+//目の形_細たれ目
+	animation26008.interval,bind
+	animation26008.pattern0,add,26008,0,0,0
+	animation26008.pattern1,add,226008,0,0,0
+
+//目の形_たれ目普通
+	animation26009.interval,bind
+	animation26009.pattern0,add,26009,0,0,0
+	animation26009.pattern1,add,226009,0,0,0
+
+//目の形_普通目
+	animation26010.interval,bind
+	animation26010.pattern0,add,26010,0,0,0
+	animation26010.pattern1,add,226010,0,0,0
+
+//目の形_微つり目
+	animation26011.interval,bind
+	animation26011.pattern0,add,26011,0,0,0
+	animation26011.pattern1,add,226011,0,0,0
+
+//目の形_細目普通
+	animation26012.interval,bind
+	animation26012.pattern0,add,26012,0,0,0
+	animation26012.pattern1,add,226012,0,0,0
+
+//目の形_たれ目ぱっちり
+	animation26013.interval,bind
+	animation26013.pattern0,add,26013,0,0,0
+	animation26013.pattern1,add,226013,0,0,0
+
+//目の形_つり目ぱっちり
+	animation26014.interval,bind
+	animation26014.pattern0,add,26014,0,0,0
+	animation26014.pattern1,add,226014,0,0,0
+}
+
+
+//笑い目
+surface5,130-133,230-233,330-333,430-433
+{
+
+//目の形_デフォルト
+	animation26000.interval,bind
+	animation26000.pattern0,add,26000,0,0,0
+	animation26000.pattern1,add,326000,0,0,0
+
+//目の形_たて長
+	animation26001.interval,bind
+	animation26001.pattern0,add,26001,0,0,0
+	animation26001.pattern1,add,326001,0,0,0
+
+//目の形_つり目
+	animation26002.interval,bind
+	animation26002.pattern0,add,26002,0,0,0
+	animation26002.pattern1,add,326002,0,0,0
+
+//目の形_細つり目
+	animation26003.interval,bind
+	animation26003.pattern0,add,26003,0,0,0
+	animation26003.pattern1,add,326003,0,0,0
+
+//目の形_せんとくん
+	animation26004.interval,bind
+	animation26004.pattern0,add,26004,0,0,0
+	animation26004.pattern1,add,326004,0,0,0
+
+//目の形_つり目まつ毛付
+	animation26005.interval,bind
+	animation26005.pattern0,add,26005,0,0,0
+	animation26005.pattern1,add,326005,0,0,0
+
+//目の形_たれ目まつ毛付き
+	animation26006.interval,bind
+	animation26006.pattern0,add,26006,0,0,0
+	animation26006.pattern1,add,326006,0,0,0
+
+//目の形_つり目シャープ
+	animation26007.interval,bind
+	animation26007.pattern0,add,26007,0,0,0
+	animation26007.pattern1,add,326007,0,0,0
+
+//目の形_細たれ目
+	animation26008.interval,bind
+	animation26008.pattern0,add,26008,0,0,0
+	animation26008.pattern1,add,326008,0,0,0
+
+//目の形_たれ目普通
+	animation26009.interval,bind
+	animation26009.pattern0,add,26009,0,0,0
+	animation26009.pattern1,add,326009,0,0,0
+
+//目の形_普通目
+	animation26010.interval,bind
+	animation26010.pattern0,add,26010,0,0,0
+	animation26010.pattern1,add,326010,0,0,0
+
+//目の形_微つり目
+	animation26011.interval,bind
+	animation26011.pattern0,add,26011,0,0,0
+	animation26011.pattern1,add,326011,0,0,0
+
+//目の形_細目普通
+	animation26012.interval,bind
+	animation26012.pattern0,add,26012,0,0,0
+	animation26012.pattern1,add,326012,0,0,0
+
+//目の形_たれ目ぱっちり
+	animation26013.interval,bind
+	animation26013.pattern0,add,26013,0,0,0
+	animation26013.pattern1,add,326013,0,0,0
+
+//目の形_つり目ぱっちり
+	animation26014.interval,bind
+	animation26014.pattern0,add,26014,0,0,0
+	animation26014.pattern1,add,326014,0,0,0
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+//瞳ハイライト着せ替え
+
+surface0,1,2,7,9,100-103,200-203,300-303,400-403,3,8,110-113,210-213,310-313,410-413
+{	
+
+//瞳ハイライト_右上
+	animation27000.interval,bind
+	animation27000.pattern0,add,27000,0,0,0
+
+
+//瞳ハイライト_左下
+	animation27001.interval,bind
+	animation27001.pattern0,add,27001,0,0,0
+
+//瞳ハイライト_中央
+	animation27002.interval,bind
+	animation27002.pattern0,add,27002,0,0,0
+
+//瞳ハイライト_細目用
+	animation27003.interval,bind
+	animation27003.pattern0,add,27003,0,0,0
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//瞬きアニメ（瞬きさせるサーフィスをスコープ名に追加）
+surface0-3,7-9,100-103,110-113,200-203,210-213,300-303,310-313,400-403,410-413
+{	
+	animation28000.interval,rarely
+	animation28000.pattern0,overlay,28000,100,0,0
+	animation28000.pattern1,overlay,28001,100,0,0
+	animation28000.pattern2,overlay,-1,100,0,0
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//口パクアニメ設定
+
+//口・開
+surface2,7,100,110,120,130,200,210,220,230,300,310,320,330,400,410,420,430
+{
+	animation30000.interval,talk,2
+	animation30000.pattern0,overlay,30002,50,0,0
+	animation30000.pattern1,overlay,-1,100,0,0
+}
+
+//口・閉
+surface1,3,4,6,9,101,111,121,131,201,211,221,231,301,311,321,331,411,421,431
+{
+	animation30000.interval,talk,2
+	animation30000.pattern0,overlay,30001,50,0,0
+	animation30000.pattern1,overlay,-1,100,0,0
+}
+
+//口・開笑
+surface8,102,112,122,132,202,212,222,232,302,312,322,332,402,412,422,432
+{
+	animation30000.interval,talk,2
+	animation30000.pattern0,overlay,30005,50,0,0
+	animation30000.pattern1,overlay,-1,100,0,0
+}
+
+//口・笑
+surface0,5,103,113,123,133,203,213,223,233,303,313,323,333,403,413,423,433
+{
+	animation30000.interval,talk,2
+	animation30000.pattern0,overlay,30004,50,0,0
+	animation30000.pattern1,overlay,-1,100,0,0
+}
+
+//口・歌
+surface25
+{
+	animation30000.interval,talk,3
+	animation30000.pattern0,overlay,30001,80,0,0
+	animation30000.pattern1,overlay,30002,200,0,0
+	animation30000.pattern2,overlay,-1,150,0,0
+}
+
+//口・歌２
+surface26
+{
+	animation30000.interval,always
+	animation30000.pattern0,overlay,30001,80,0,0
+	animation30000.pattern1,overlay,30002,200,0,0
+	animation30000.pattern2,overlay,-1,150,0,0
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+//基本設定
+
+
+//デフォルト表示
+surface0-9,25,26,100-103,110-113,120-123,130-133,200-203,210-213,220-223,230-233,300-303,310-313,320-323,330-333,400-403,410-413,420-423,430-433
+{
+	element0,overlay,parts\21000_CC_2.png,0,0
+	
+//赤面アニメ（呼び出さない限り発動しない）
+	animation31000.interval,never
+	animation31000.pattern0,overlay,31000,0,0,0
+	
+}
+
+//透明
+surface10
+{
+	element0,overlay,parts\transparent.png,0,0
+	
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+//メニュー周り
+
+
+//アンカーアイコン
+surface30
+{
+	element0,overlay,toolbox\anchor.png,0,0
+	
+	collision0,328,20,391,46,anchor
+}
+
+//ツールボックス
+surface31
+{
+	element0,overlay,toolbox\toolbox.png,0,0
+	
+	//ボタン領域指定
+	collision0,328,20,391,46,anchor2
+	collision1,13,9,51,46,kisekae
+	collision2,58,9,95,46,addparts
+	collision3,103,9,140,46,zip
+	collision4,146,9,186,46,snap
+	collision5,190,9,230,46,dic
+	collision6,235,9,275,46,save
+	collision7,279,8,319,45,cfg
+	
+	//着せ替えボタンオンマウス
+	animation0.interval,never
+	animation0.pattern0,overlayfast,1000000,0,0,0
+	
+	//着せ替えボタンダウン
+	animation1.interval,never
+	animation1.pattern0,overlayfast,1000001,0,0,0
+	
+	//パーツ追加ボタンオンマウス
+	animation2.interval,never
+	animation2.pattern0,overlayfast,1000002,0,0,0
+	
+	//パーツ追加ボタンダウン
+	animation3.interval,never
+	animation3.pattern0,overlayfast,1000003,0,0,0
+	
+	//ZIPボタンオンマウス
+	animation4.interval,never
+	animation4.pattern0,overlayfast,1000004,0,0,0
+	
+	//ZIPダウン
+	animation5.interval,never
+	animation5.pattern0,overlayfast,1000005,0,0,0
+	
+	//スナップオンマウス
+	animation6.interval,never
+	animation6.pattern0,overlayfast,1000006,0,0,0
+	
+	//スナップボタンダウン
+	animation7.interval,never
+	animation7.pattern0,overlayfast,1000007,0,0,0
+	
+	//トークボタンオンマウス
+	animation8.interval,never
+	animation8.pattern0,overlayfast,1000008,0,0,0
+	
+	//トークボタンダウン
+	animation9.interval,never
+	animation9.pattern0,overlayfast,1000009,0,0,0
+	
+	//セーブボタンオンマウス
+	animation10.interval,never
+	animation10.pattern0,overlayfast,10000010,0,0,0
+	
+	//セーブボタンダウン
+	animation11.interval,never
+	animation11.pattern0,overlayfast,10000011,0,0,0
+	
+	//設定ボタンオンマウス
+	animation12.interval,never
+	animation12.pattern0,overlayfast,10000012,0,0,0
+	
+	//設定ボタンダウン
+	animation13.interval,never
+	animation13.pattern0,overlayfast,10000013,0,0,0
+
+}
+
+
+
+
+//メニュー周りアニメーション部品サーフィス定義
+surface1000000
+{
+	element0,overlay,toolbox\button_kisekae_on.png,0,0
+}
+
+surface1000001
+{
+	element0,overlay,toolbox\button_kisekae_down.png,0,0
+}
+
+surface1000002
+{
+	element0,overlay,toolbox\button_addparts_on.png,0,0
+}
+
+surface1000003
+{
+	element0,overlay,toolbox\button_addparts_down.png,0,0
+}
+
+surface1000004
+{
+	element0,overlay,toolbox\button_zip_on.png,0,0
+}
+
+surface1000005
+{
+	element0,overlay,toolbox\button_zip_down.png,0,0
+}
+
+surface1000006
+{
+	element0,overlay,toolbox\button_snap_on.png,0,0
+}
+
+surface1000007
+{
+	element0,overlay,toolbox\button_snap_down.png,0,0
+}
+
+surface1000008
+{
+	element0,overlay,toolbox\button_dic_on.png,0,0
+}
+
+surface1000009
+{
+	element0,overlay,toolbox\button_dic_down.png,0,0
+}
+
+surface10000010
+{
+	element0,overlay,toolbox\button_save_on.png,0,0
+}
+
+surface10000011
+{
+	element0,overlay,toolbox\button_save_down.png,0,0
+}
+
+surface10000012
+{
+	element0,overlay,toolbox\button_cfg_on.png,0,0
+}
+
+surface10000013
+{
+	element0,overlay,toolbox\button_cfg_down.png,0,0
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//マウス反応
+
+surface0-9,25,26,100-103,110-113,120-123,130-133,200-203,210-213,220-223,230-233,300-303,310-313,320-323,330-333,400-403,410-413,420-423,430-433
+{
+	collision0,82,50,213,117,head
+	collision1,119,121,178,167,face
+	collision2,129,175,172,199,bust
+}

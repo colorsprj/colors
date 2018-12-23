@@ -1,0 +1,74 @@
+# ColorsUpdate 更新確認用変数類
+# 初回起動で設定しておく
+
+ColorsUpdateCallback.OnFirstBoot : $(
+	# 口パーツ着せ替え化パッチ適用済み
+	setstr ColorsUpdate.vars.mouthpatch 2;
+	# RGB.Skinエントリ増殖対策済み
+	setstr ColorsUpdate.vars.rgbskindelete 1;
+	# セーブデータに@付きエントリが入っている問題に対処
+	setstr ColorsUpdate.vars.rgbatdelete 1;
+	# tempフォルダ以下を整備する
+	function ColorsUpdate.Path $(
+		return $(cncpath ${System.DataPath} $(cncpath "temp" $@arg[1]));
+	);
+	function ColorsUpdate.Mkdir $(
+		if $[ ! $(isexist $(ColorsUpdate.Path $@arg[1])) ] $(
+			create_directory $(ColorsUpdate.Path $@arg[1]);
+			silent;
+		);
+	);
+	# 画像テンポラリ(既にあるかもしれないが念のため)
+	ColorsUpdate.Mkdir tempimg;
+	# レシピテンポラリ
+	ColorsUpdate.Mkdir temprecipe;
+	
+	# ゴーストテンポラリ
+	ColorsUpdate.Mkdir ghosttemplate;
+	ColorsUpdate.Mkdir ghosttemplate/ghost;
+	ColorsUpdate.Mkdir ghosttemplate/ghost/master;
+	ColorsUpdate.Mkdir ghosttemplate/shell;
+	ColorsUpdate.Mkdir ghosttemplate/shell/master;
+	
+	# サプリメントテンポラリ(展開先)
+	ColorsUpdate.Mkdir tempsupplement;
+	ColorsUpdate.Mkdir tempsupplement/talk;
+	ColorsUpdate.Mkdir tempsupplement/recipe;
+	
+	# サプリメントテンポラリ(展開元)
+	ColorsUpdate.Mkdir supplementtemplate;
+	ColorsUpdate.Mkdir supplementtemplate/ghost;
+	ColorsUpdate.Mkdir supplementtemplate/ghost/master;
+	ColorsUpdate.Mkdir supplementtemplate/ghost/master/temp;
+	ColorsUpdate.Mkdir supplementtemplate/ghost/master/temp/tempsupplement;
+	ColorsUpdate.Mkdir supplementtemplate/ghost/master/temp/tempsupplement/talk;
+	ColorsUpdate.Mkdir supplementtemplate/ghost/master/temp/tempsupplement/recipe;
+
+	# 後始末
+	rmfunc ColorsUpdate.Path;
+	rmfunc ColorsUpdate.Mkdir;	
+	setstr ColorsUpdate.vars.maketempdirs 1;
+	
+	# トップス３装飾カテゴリが「トップス3装飾」になっていたバグに対処済み
+	setstr ColorsUpdate.vars.tops3convert 1;
+	# 過去のパッチが正しくあたっているか確認済み
+	setstr ColorsUpdate.vars.comprehensive100913 1;
+	# フェイリス用パーツの一部を差し替え済み
+	setstr ColorsUpdate.vars.farispartsupdate 1;
+	# フェイリス用パーツが当たっていなかったRevision 10対策済み
+	setstr ColorsUpdate.vars.farisrepatch 1;
+	# マウス反応対応させるパッチ対策済み
+	setstr ColorsUpdate.vars.mousepatch 1;
+	# 2010/10/4パーツの一部を差し替え済み
+	setstr ColorsUpdate.vars.101004partsupdate 1;
+	# 2010/11/3パーツの一部を修正済み
+	setstr ColorsUpdate.vars.101103partsupdate 1;
+	# 2010/10/31パーツの一部を修正済み
+	setstr ColorsUpdate.vars.101031partsupdate 1;
+	# 後髪をマルチセレクト可能にする
+	setstr ColorsUpdate.vars..behindhairmultiselect 1;
+	# 結髪・細めツインテール腰下を名前変更する
+	setstr ColorsUpdate.vars.renametwintail 1;
+	# バックアップ機構を追加する
+	setstr ColorsUpdate.vars.backupsystem 1;
+)

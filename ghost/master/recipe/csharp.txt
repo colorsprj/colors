@@ -1,0 +1,45 @@
+declare	RECIPE/1.0	COLORS
+select	素体	肌_CC
+mayuselect	1
+paint	素体	肌_CC		255	231	210
+select	瞳ハイライト	細目用
+select	口	デフォルト
+select	靴下	ニーソックス_CC
+paint	靴下	ニーソックス_CC		126	109	117
+select	靴下装飾	ニーソックスライン_CC
+select	背景装飾	足元影_CC
+paint	背景装飾	足元影_CC		10	10	10
+select	靴下装飾	ニーソックスライン２_CC
+select	インナー３	半袖ブラウス_CCT
+paint	インナー３	半袖ブラウス_CCT	2toneCC1	126	109	117
+select	インナー３装飾	半袖ブラウス＃模様_CC
+select	靴	ローファー２_CCC
+paint	靴	ローファー２_CCC		105	71	48
+select	ズボン	短パン_CC
+paint	ズボン	短パン_CC		83	104	121
+select	スカート	変形ボックスプリーツミニ_CC
+paint	スカート	変形ボックスプリーツミニ_CC		126	109	117
+select	スカート装飾	変形ボックスプリーツミニ裾ライン_CC
+select	トップス２	Ｃ＃ベスト_CCT
+paint	トップス２	Ｃ＃ベスト_CCT	2toneCC1	233	225	156
+select	アクセサリー４	シャツ襟_CC
+paint	アクセサリー４	シャツ襟_CC		126	109	117
+select	眉１	つり眉_CC
+select	後髪	くせ毛肩ラインボブ_CC
+select	耳	さがり犬耳_CC
+paint	耳	さがり犬耳_CC		235	206	109
+select	素体オプション	デフォルト
+select	瞳色	左右_CC
+paint	瞳色	左右_CC		188	220	139
+select	目の形	デフォルト
+select	横髪	耳下ざくざく内巻き_CC
+select	横髪	ストレートあごライン_CC
+select	前髪	斜めナチュラル右_CCC
+select	アクセサリー５	Ｃ＃髪どめ_CCT
+paint	アクセサリー５	Ｃ＃髪どめ_CCT	2toneCC2	109	155	87	188	220	139
+select	アクセサリー５	飾りボタンウエスト_CC
+paint	アクセサリー５	飾りボタンウエスト		244	213	115
+select	アクセサリー５	変形リボンタイ_CC
+paint	アクセサリー５	変形リボンタイ_CC		237	203	84
+paint	眉	つり眉_CC		58	50	48
+paint	結髪	くせ毛肩ラインボブ_CC		235	206	109

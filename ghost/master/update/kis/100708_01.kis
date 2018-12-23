@@ -1,0 +1,115 @@
+=kis
+# 口パーツ着せ替え化パッチ S.Sato 2010/7/8
+# 機能1: surfaces.txtの口パーツの定義を書き換えて自動追加対応する
+# 機能2: 上記のために画像ファイルをコピーして作成する→中止
+
+if $[ ${ColorsUpdate.vars.mouthpatch} != "2" ] $(
+	# 口パーツ着せ替え化パッチ適用してない
+	function ColorsUpdate.Mouthpatch $(
+		# 引数1にファイル名を受け取る
+		# 受け取ったファイル名を../../shell/colorsから探す
+		# 存在しなければ終わり、存在したら@textに読み込む
+		# 内部に持ったマッチパターンに合致する行を、パッチで置き換える
+		# 該当ファイルにパッチした@textを上書きする
+		setstr @shellpath $(
+			split @datapath $(cncpath ${System.DataPath}) $(cncpath "\\");
+			clear @datapath[-2..-1];
+			pushstr @datapath "shell";
+			pushstr @datapath "colors";
+			join @datapath $(cncpath "\\");
+		);
+		setstr @path $(cncpath ${@shellpath} $@arg[1]);
+		
+		if $[ ! $(isexist ${@path}) ] $(return);
+		logprint "＠＠＠ mouthpatch: exist!:/"${@path}"/";
+		
+		# 該当行抽出
+		textload @text ${@path};
+		
+		setstr @matchptn "	element1,overlay,parts\29000.png,0,0";
+		setstr @replace  "	element1,overlay,parts\29000_s.png,0,0";
+		setstr @replace2 "	element0,overlay,parts\29000_skin_2.png,0,0";
+		loop $(size @text) $(
+			setstr @i ${-1};
+			if $[ $(match $@text[${@i}] ${@matchptn}) >= 0 ] $(
+				# 該当行があったのでパッチ当て
+				setstr @text[${@i}]      ${@replace};
+				setstr @text[$[${@i}-1]] ${@replace2};
+				setstr @matched 1;
+				break;
+			);
+		);
+		# 該当なければ帰る
+		if $[ ! ${@matched} ] $(return);
+		logprint "＠＠＠ mouthpatch: matched!:/"${@i}" line/";
+		
+		# 口の着せ替え設定を編集(1)
+		setstr @matched 0;
+		loop $(size @text) $(
+			setstr @pos ${-1};
+			if $[ $@text[${@pos}] == "//口着せ替え設定" ] $(
+				setstr @matched 1;
+			);
+			if $[ ${@matched} && $@text[${@pos}] == "//口着せ替え・待機" ] $(
+				setstr @matched 2;
+				break;
+			); 
+		);
+		# 該当なければ帰る
+		if $[ ${@matched} != "2" ] $(return);
+		logprint "＠＠＠ mouthpatch: found!:/"${@pos}" line/";
+		# 閉じカッコを探す
+		setstr @matched 0;
+		setstr @pos_end ${@pos};
+		while $[ ${@pos_end} < $(size @text) ] $(
+			if $[ $@text[${@pos_end}] == "}" ] $(
+				setstr @matched 1;
+				break;
+			);
+			inc @pos_end;
+		);
+		# 該当なければ帰る
+		if $[ ! ${@matched} || ${@pos_end} == $(size @text) ] $(return);
+		logprint "＠＠＠ mouthpatch: found(close)!:/"${@pos_end}" line/";
+		
+		# 口着せ替え・待機を削除
+		clear @text[${@pos}..${@pos_end}];
+		
+		# 口の着せ替え設定を編集(2)
+		# 検索箇所は削除した直後から
+		setstr @matched 0;
+		setstr @matchptn "surface0,5,103,113,123,133,203,213,223,233,303,313,323,333,403,413,423,433";
+		setstr @replace "surface0,5,25,26,103,113,123,133,203,213,223,233,303,313,323,333,403,413,423,433";
+		while $[ ${@pos} < $(size @text) ] $(
+			if $[ $(match $@text[${@pos}] ${@matchptn}) >= 0 ] $(
+				setstr @text[${@pos}] ${@replace};
+				setstr @matched 1;
+			logprint "＠＠＠ mouthpatch: found(2)!:/"${@pos}" line/";
+				break;
+			);
+			inc @pos;
+		);
+		
+		# パッチを当てていたらファイル上書き
+		if ${@matched} $(
+			textsave $(cncpath "../../shell/colors" $@arg[1]) @text;
+			# 画像ファイルも名前変更
+			setstr @sp $(cncpath ${@shellpath} "parts");
+			PushCurrentShellName "COLORS";
+			PNGCopy $(cncpath ${@sp} "mouth_skin.png")   "29000_skin";
+			PNGCopy $(cncpath ${@sp} "mouth_skin_2.png") "29000_skin_2";
+			PopCurrentShellName;
+			setstr @ret 1;
+		);
+		return ${@ret};
+	);
+	# パッチ実行
+	setstr @patched 0;
+	if $(ColorsUpdate.Mouthpatch surfaces.txt) $(inc @patched);
+	if $(ColorsUpdate.Mouthpatch surfaces_backup.txt) $(inc @patched);
+	# 影響を最小限に抑えるため、必要なくなった関数自体も削除
+	rmfunc ColorsUpdate.Mouthpatch;
+	
+	if ${@patched} $(setstr ColorsUpdate.vars.mouthpatch 2);
+);
+=end

@@ -1,0 +1,43 @@
+declare	RECIPE/1.0	COLORS
+select	素体	肌_CC
+mayuselect	1
+paint	素体	肌_CC		254	235	203
+select	背景	無地_CC
+paint	背景	無地_CC		163	131	131
+select	横髪	ナチュラル_CC
+select	横髪	二段ストレート_CC
+select	前髪	斜めナチュラル右_CCC
+select	帽子・ヘッドドレス２	シルクハット_CCT
+paint	帽子・ヘッドドレス２	シルクハット_CCT	2toneCC2	70	73	89	78	105	156
+select	前景	フレーム_CC
+paint	前景	フレーム_CC		234	201	123
+select	後髪	結髪用シンプル_CC
+select	耳	デフォルト_SKIN
+select	素体オプション	デフォルト
+select	瞳色	左右_CC
+paint	瞳色	左右_CC		131	198	145
+select	瞳色	右_CC
+paint	瞳色	右_CC		210	95	90
+select	目の形	つり目
+select	瞳ハイライト	左下
+select	口	デフォルト
+select	靴下	タイツ_CC
+paint	靴下	タイツ_CC		255	255	255
+select	インナー２	シンプルブラウス_CC
+select	靴	厚底ストラップシューズ_CCC
+paint	靴	厚底ストラップシューズ_CCC		118	91	73
+select	靴装飾	アンクルカフス_CC
+paint	靴装飾	アンクルカフス_CC		99	75	61
+select	ズボン	ニッカーボッカーズ_CC
+paint	ズボン	ニッカーボッカーズ_CC		73	88	118
+select	トップス１装飾	ブラウス装飾フリルボタン
+select	トップス１装飾	ゴシックカフス_CC
+paint	トップス１装飾	ゴシックカフス_CC		255	255	255
+select	トップス２	コルセット風ベスト_CC
+paint	トップス２	コルセット風ベスト_CC		70	70	70
+select	トップス３	ケープ_CC
+paint	トップス３	ケープ_CC		73	88	118
+select	アクセサリー４	リボン付きフリルカラー_CCT
+paint	アクセサリー４	リボン付きフリルカラー_CCT	2toneCC2	255	255	255	10	10	10
+select	眉１	デフォルト
+paint	横髪	ナチュラル_CC		166	115	96

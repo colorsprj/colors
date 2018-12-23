@@ -1,0 +1,20 @@
+declare	RECIPE/1.0	COLORS
+cc	後髪	ミディアムボブナチュラル	15019_CC_1_.png
+eye	目の形	つり目ぱっちり	26014_.png	26014_skin_.png	26014_half_.png	26014_half_1_.png	26014_close_.png	26014_close_1_.png	26014_smile_.png
+cct	眼鏡	オーバル・アンダーリム	32009_CCT_1_.png	32009_CCT_3_.png
+cc	インナー３	開襟シャツスリム	39011_CC_1_.png
+cct	靴	ロングブーツ太め	41010_CCT_1_.png	41010_CCT_3_.png
+cc	スカート	ミニ丈フレアスカート	45007_CC_1_.png
+cc	スカート	ミニ丈タイトスカート	45008_CC_1_.png
+cc	スカート	ミニ丈タイトスリットスカート	45009_CC_1_.png
+cc	トップス２	Vネックセーター女性	55005_CC_1_.png
+cc	トップス２	Vネックセーター男性	55006_CC_1_.png
+cc	トップス２	Vネックロングセーター女性	55007_CC_1_.png
+cc	トップス２	Vネックロングセーター男性	55008_CC_1_.png
+cc	トップス２	Vネックゆったりセーター女性	55009_CC_1_.png
+cc	トップス２	Vネックゆったりセーター男性	55010_CC_1_.png
+mayuc	眉１	微つり眉	67014_CC_1_.png	67014_surprise_CC_1_.png	67014_sad_CC_1_.png	67014_angry_CC_1_.png
+cc	横髪	肩ライン左	69012_CC_1_.png
+cc	横髪	肩ライン右	69013_CC_1_.png
+ccc	前髪	片耳かけ右	70021_CCC_1_.png	70021_CCC_.png
+ccc	前髪	片耳かけ左	70022_CCC_1_.png	70022_CCC_.png

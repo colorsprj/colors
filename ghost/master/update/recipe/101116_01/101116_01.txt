@@ -1,0 +1,7 @@
+declare	RECIPE/1.0	COLORS
+cct	コート	フロックコート女性用	63002_CCT_1_.png	63002_CCT_3_.png
+cct	コート	プリンセスコート	63003_CCT_1_.png	63003_CCT_3_.png
+cc	ケープ	角丸ケープ	65006_CC_1_.png
+cc	ケープ装飾	角丸ケープファー	66000_CC_1_.png
+cct	帽子・ヘッドドレス２	ナイトキャップ	74013_CCT_1_.png	74013_CCT_3_.png
+cct	アクセサリー５	襟元ボンボン付き紐リボン	76031_CCT_1_.png	76031_CCT_3_.png

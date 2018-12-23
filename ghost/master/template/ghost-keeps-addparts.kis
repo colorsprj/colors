@@ -1,0 +1,715 @@
+#----------------------------------------------------------------------------
+# 関数群、エントリ設定
+
+=kis
+# 実際のカテゴリから、ユーザ提示用のカテゴリに変換
+clear AddParts.CategoryList;
+copy EditSurfaces.Item AddParts.CategoryList;
+# 番兵を弾く
+clear AddParts.CategoryList[-1];
+
+setstr @i 0;
+while $[ ${@i} < $(size AddParts.CategoryList) ] $(
+	if $[ $(match $AddParts.CategoryList[${@i}] "（") >= 0 || $AddParts.CategoryList[${@i}] == "眉２" || $AddParts.CategoryList[${@i}] == "素体" || $AddParts.CategoryList[${@i}] == "瞳色" ] $(
+		# 括弧を含むカテゴリは内部用なので弾く
+		# 「眉２」「素体」「瞳色」も弾く
+		clear AddParts.CategoryList[${@i}];
+	) else if $[ $AddParts.CategoryList[${@i}] == "眉１" ] $(
+		# 「眉１｣はユーザ提示時は「眉」に変換
+		setstr AddParts.CategoryList[${@i}] "眉";
+	) else $(
+		inc @i;
+	);
+);
+=end
+
+#----------------------------------------------------------------------------
+# パーツ追加メニュー入り口
+
+Select.Page.AddParts : (
+	$(set MenuBookmark Select.Page.KisekaeTop)
+	${MenuHeader.AddParts}
+	${SMarker}パーツ情報\n\n[half]
+	　カテゴリー：$(IconTxBQ editfile 19 ${AddParts.Category} Page.AddParts.Category)\n\n[half]
+	　パーツ名　：$(IconTxBQ editfile 19 ${AddParts.Parts} Page.AddParts.Partsname)\n\n[half]
+	　パーツ種類：$(IconTxBQ editfile 19 ${AddParts.Method} Page.AddParts.Method)\n\n[half]
+	\n
+	${SMarker}ファイル情報\n\n[half]
+	　ファイル１：$(IconTxBQ fopen 19 $(escape $(filename ${AddParts.File1})) addparts.file1)\n\n[half]
+	$(
+		if $(size AddParts.FileNo.${AddParts.Method}) $(
+			setstr @i 2;
+			while $[ ${AddParts.FileNo.${AddParts.Method}} >= ${@i} ] (
+				$(setstr @fno $(char_at "０１２３４５６７" ${@i}))
+				　ファイル${@fno}：$(IconTxBQ fopen 19 $(escape $(filename ${AddParts.File${@i}})) addparts.file${@i})\n\n[half]
+				$(inc @i)
+			);
+		);
+	)
+	${HR}
+	\n\n[half]
+	$(
+		if ${AddParts.Execp}
+			$(IconQ go パーツ追加実行 Page.AddParts.Exec)
+		else
+			"\f[color,160,160,160]"　パーツ追加実行\f[default]
+	)
+	　　
+	$(IconQ reset 直前のパーツ追加を取消 Page.AddParts.Undo)\n\n[half]
+	　
+	$(IconTxQ editfile 19 パーツ管理 Page.AddParts.Manage)\n\n[half]
+	${DressNaviMenu}
+)
+
+# パーツ種類による必要ファイル数
+AddParts.FileNo.通常 : 1
+AddParts.FileNo.色替え : 1
+AddParts.FileNo.色替え不可部分付き色替え : 2
+AddParts.FileNo.２色色替え : 2
+AddParts.FileNo.肌色塗り替え : 1
+AddParts.FileNo.色替え不可部分付き肌色塗り替え : 2
+AddParts.FileNo.目パーツ専用 : 7
+AddParts.FileNo.眉パーツ専用 : 4
+AddParts.FileNo.口パーツ専用 : 5
+AddParts.FileNo.色替え眉パーツ専用 : 4
+AddParts.FileNo.一括追加 : 1
+
+# ファイルの説明
+AddParts.FileHelp.通常 : "追加する画像ファイル"
+AddParts.FileHelp.色替え : "色を塗り替える画像ファイル"
+AddParts.FileHelp.色替え不可部分付き色替え (
+	"ベースとなる画像ファイル",
+	"色を塗り替えない部分の画像ファイル"
+)
+AddParts.FileHelp.２色色替え (
+	"ベースとなる画像ファイル",
+	"上に重ねる画像ファイル"
+)
+AddParts.FileHelp.肌色塗り替え : "肌色部分の画像ファイル"
+AddParts.FileHelp.色替え不可部分付き肌色塗り替え (
+	"ベースとなる肌色部分の画像ファイル",
+	"色を塗り替えない部分の肌色部画像ファイル"
+)
+AddParts.FileHelp.目パーツ専用 (
+	"デフォルト状態の目。開いた状態の目の外形・瞳の外形と陰影・白目等を一枚の画像にしたファイル",
+	"目の周辺肌部分。白一色で描く。余分な瞳色を覆い隠す用のファイル",
+	"半目の画像ファイル。デフォルト状態の目に重ねて使う。アイラインのみ。",
+	"半目の画像ファイル。デフォルト状態の目に重ねて使う。開いた目の上半分を覆う。",
+	"目を閉じた画像ファイル。デフォルト状態の目に重ねて使う。アイラインのみ。",
+	"目を閉じた画像ファイル。デフォルト状態の目に重ねて使う。開いた目を完全に覆う。",
+	"笑った目の画像ファイル。"
+)
+AddParts.FileHelp.眉パーツ専用 (
+	"通常の眉の画像ファイル",
+	"驚いた表情の眉の画像ファイル",
+	"困った表情の眉の画像ファイル",
+	"怒った表情の眉の画像ファイル"
+)
+AddParts.FileHelp.口パーツ専用 (
+	"開いた口の画像ファイル",
+	"閉じた口の画像ファイル",
+	"開いて笑っている口の画像ファイル",
+	"笑っている口の画像ファイル",
+	"口全体をマスクする画像ファイル"
+)
+AddParts.FileHelp.色替え眉パーツ専用 (
+	"通常の眉の画像ファイル",
+	"驚いた表情の眉の画像ファイル",
+	"困った表情の眉の画像ファイル",
+	"怒った表情の眉の画像ファイル"
+)
+AddParts.FileHelp.一括追加 : "パーツ一括追加レシピファイル。拡張子は.txt、同じフォルダに追加する画像ファイルがあること。"
+AddParts.FileHelp.その他 : "追加する画像パーツ"
+
+# バルーンのツールチップ
+=kis
+function AddPartsFileTooltip $(
+	setstr @method $(
+		if $(size AddParts.Method)
+			${AddParts.Method}
+		else
+			"その他"
+	);
+	return $AddParts.FileHelp.${@method}[$[ $@arg[1] - 1 ]];
+)
+=end
+
+balloon_tooltip.addparts.file1 : $(AddPartsFileTooltip 1)
+balloon_tooltip.addparts.file2 : $(AddPartsFileTooltip 2)
+balloon_tooltip.addparts.file3 : $(AddPartsFileTooltip 3)
+balloon_tooltip.addparts.file4 : $(AddPartsFileTooltip 4)
+balloon_tooltip.addparts.file5 : $(AddPartsFileTooltip 5)
+balloon_tooltip.addparts.file6 : $(AddPartsFileTooltip 6)
+balloon_tooltip.addparts.file7 : $(AddPartsFileTooltip 7)
+
+
+#----------------------------------------------------------------------------
+# パーツのカテゴリー選択
+
+Select.Page.AddParts.Category : (
+	$(set MenuBookmark Select.Page.AddParts)
+	${MenuHeader.AddParts}
+	${SMarker}カテゴリー選択\n\n[half]
+	$(
+		# ページ設定
+		setstr @pagelength 13;
+		# パンくずリスト作成
+		TopicPath
+			AddParts.CategoryList
+			${@pagelength}
+			AddParts.Category.Page
+			Page.AddParts.Category
+		;
+		# ページ作成
+		setstr @i     $[ ${AddParts.Category.Page} * ${@pagelength} ];
+		setstr @limit $[ ( ${AddParts.Category.Page} + 1 ) * ${@pagelength} ];
+		while $[ ${@i} < ${@limit} && ${@i} < $(size AddParts.CategoryList) ] $(
+			setstr @C $AddParts.CategoryList[${@i}];
+			echo 　\![*]\q[$(FillSpc15 ${@C})","Page.AddParts.CategorySelected","${@C}]\n\n[half];
+			inc @i;
+		);
+	)
+	${DressNaviMenu}
+)
+
+# 現在のページ
+AddParts.Category.Page : 0
+
+# カテゴリー選択結果
+Select.Page.AddParts.CategorySelected : $(
+	setstr AddParts.Category ${ChoiceInfo.1};
+	# カテゴリ選択により自動的にパーツ種類が決定される場合
+	if $[ ${AddParts.Category} == "目の形" ] $(
+		setstr AddParts.Method "目パーツ専用";
+	) else if $[ ${AddParts.Category} == "眉" ] $(
+		if $[ ${AddParts.Method} != "色替え眉パーツ専用" ] $(
+			setstr AddParts.Method "眉パーツ専用";
+		);
+	) else if $[ ${AddParts.Category} == "口" ] $(
+		setstr AddParts.Method "口パーツ専用";
+	);
+)${Select.Page.AddParts}
+
+#----------------------------------------------------------------------------
+# パーツの種類選択（通常/色替え/色替え不可部分付き色替え/多色色替え）
+
+Select.Page.AddParts.Method : (
+	$(set MenuBookmark Select.Page.AddParts)
+	${MenuHeader.AddParts}
+	${SMarker}パーツ種類\n\n[half]
+	　\![*]\q[$(FillSpc15 通常パーツ)",AddParts.MethodSelected,通常"]\n
+	　\![*]\q[$(FillSpc15 色替えパーツ)",AddParts.MethodSelected,色替え"]\n
+	　\![*]\q[$(FillSpc15 色替え不可部分付き色替えパーツ)",AddParts.MethodSelected,色替え不可部分付き色替え"]\n
+#	　\![*]\q[$(FillSpc15 多色色替えパーツ)",AddParts.MethodSelected,多色色替え"]\n
+	　\![*]\q[$(FillSpc15 ２色色替えパーツ)",AddParts.MethodSelected,２色色替え"]\n
+	　\![*]\q[$(FillSpc15 肌色塗り替えパーツ)",AddParts.MethodSelected,肌色塗り替え"]\n
+	　\![*]\q[$(FillSpc15 色替え不可部分付き肌色塗り替えパーツ)",AddParts.MethodSelected,色替え不可部分付き肌色塗り替え"]\n
+	　\![*]\q[$(FillSpc15 目パーツ専用)",AddParts.MethodSelected,目パーツ専用"]\n
+	　\![*]\q[$(FillSpc15 眉パーツ専用)",AddParts.MethodSelected,眉パーツ専用"]\n
+	　\![*]\q[$(FillSpc15 口パーツ専用)",AddParts.MethodSelected,口パーツ専用"]\n
+	　\![*]\q[$(FillSpc15 色替え眉パーツ専用)",AddParts.MethodSelected,色替え眉パーツ専用"]\n
+	\n
+	　\![*]\q[$(FillSpc15 一括追加)",AddParts.MethodSelected,一括追加"]\n
+
+	${DressNaviMenu}
+)
+
+# パーツ種類選択結果
+Select.AddParts.MethodSelected : $(
+	setstr AddParts.Method ${ChoiceInfo.1};
+	# パーツ種類により自動的にカテゴリが決定される場合
+	if $[ ${AddParts.Method} == "目パーツ専用" ] $(
+		setstr AddParts.Category "目の形";
+	) else if $[ ${AddParts.Method} == "眉パーツ専用" || ${AddParts.Method} == "色替え眉パーツ専用" ] $(
+		setstr AddParts.Category "眉";
+	) else if $[ ${AddParts.Method} == "口パーツ専用" ] $(
+		setstr AddParts.Category "口";
+	)
+)${Select.Page.AddParts}
+
+#----------------------------------------------------------------------------
+# パーツ名入力
+
+Select.Page.AddParts.Partsname : (
+	$(set MenuBookmark Select.Page.AddParts)
+	${MenuHeader.AddParts}
+	パーツに名前を付けて下さい。
+	\!["open,inputbox,InputPartsName,-1"$(if $(size AddParts.Parts) ","${AddParts.Parts})]
+	\!["quicksession,false"]
+	\e
+)
+
+TalkInput.InputPartsName : $(setstr AddParts.Parts $(EntNamReference 1))${Select.Page.AddParts}
+TalkInputCancel.InputPartsName :${Select.Page.AddParts}
+
+#----------------------------------------------------------------------------
+# ファイル選択
+
+# ファイル名のフィルタ
+AddParts.Filter : $(if $[ ${AddParts.Method} == "一括追加" ] "テキスト|*.txt" else "PNG|*.png")
+
+=kis
+# ファイル選択ダイヤログ共通
+function AddPartsFileDialog $(
+	set MenuBookmark Select.Page.AddParts;
+	return (
+		${MenuHeader.AddParts}
+		使用するファイルを選んでください。\n\n\n
+		\!["open,dialog,open,--title=ファイル"$@arg[1]"選択,--filter="${AddParts.Filter}",--ext=png,--id=AddParts.File"$@arg[1]"Selected"]
+		${DressNaviMenu}
+	);
+);
+
+# ファイル選択後共通
+function AddPartsFileSelected $(
+	setstr AddParts.File$@arg[1] $(cncpath $(Reference 2));
+	return ${Select.Page.AddParts};
+);
+=end
+
+# ファイル選択ダイヤログ
+Select.addparts.file1 : $(AddPartsFileDialog 1)
+Select.addparts.file2 : $(AddPartsFileDialog 2)
+Select.addparts.file3 : $(AddPartsFileDialog 3)
+Select.addparts.file4 : $(AddPartsFileDialog 4)
+Select.addparts.file5 : $(AddPartsFileDialog 5)
+Select.addparts.file6 : $(AddPartsFileDialog 6)
+Select.addparts.file7 : $(AddPartsFileDialog 7)
+
+# ファイル選択後
+Dialog.AddParts.File1Selected : $(AddPartsFileSelected 1)
+Dialog.AddParts.File2Selected : $(AddPartsFileSelected 2)
+Dialog.AddParts.File3Selected : $(AddPartsFileSelected 3)
+Dialog.AddParts.File4Selected : $(AddPartsFileSelected 4)
+Dialog.AddParts.File5Selected : $(AddPartsFileSelected 5)
+Dialog.AddParts.File6Selected : $(AddPartsFileSelected 6)
+Dialog.AddParts.File7Selected : $(AddPartsFileSelected 7)
+
+# キャンセル
+DialogCancel.AddParts.File1Selected : ${${MenuBookmark}}
+DialogCancel.AddParts.File2Selected : ${${MenuBookmark}}
+DialogCancel.AddParts.File3Selected : ${${MenuBookmark}}
+DialogCancel.AddParts.File4Selected : ${${MenuBookmark}}
+DialogCancel.AddParts.File5Selected : ${${MenuBookmark}}
+DialogCancel.AddParts.File6Selected : ${${MenuBookmark}}
+DialogCancel.AddParts.File7Selected : ${${MenuBookmark}}
+
+#----------------------------------------------------------------------------
+# パーツ追加実行
+
+# パーツ追加実行可能かどうか判定
+AddParts.Execp : $(
+	if $[ ${AddParts.Method} == "一括追加" && $(size AddParts.File1) ] $(
+		# 一括追加だけはファイル1さえあれば実行可能
+		return true;
+	);
+	if $[ $(size AddParts.Category) && $(size AddParts.Parts)  && $(size AddParts.Method) ] $(
+		setstr @fcount 0;
+		loop 7 $(
+			setstr @i $[ ${-1} + 1 ];
+			inc @fcount $(size AddParts.File${@i});
+		);
+		if $[ ${@fcount} == ${AddParts.FileNo.${AddParts.Method}} ] $(
+			return true;
+		) else $(
+			return false;
+		);
+	) else $(
+		return false;
+	);
+)
+
+# パーツ追加実行本体
+Select.Page.AddParts.Exec :$(
+	clear AddParts.ConflictPartsList;
+	if $[ ${AddParts.Method} == "一括追加" ] $(
+		# パーツ一括追加
+		setstr @error $(VerifyAddRecipe ${AddParts.File1});
+		if ${@error} $(
+			# 重複するパーツ名がある
+			split AddParts.ConflictPartsList ${@error} "|";
+			echo ${AddParts.PartsNameConflict};
+		) else (
+			# 重複パーツ名なし
+			${Select.Page.AddParts.ExecOK}
+		);
+	) else $(
+		# 単体パーツ追加
+		setstr @error $(FindSurfaceID ${AddParts.Category} ${AddParts.Parts});
+		if ${@error} $(
+			# 重複するパーツ名がある
+			setstr AddParts.ConflictPartsList ${AddParts.Category}.${AddParts.Parts};
+			echo ${AddParts.PartsNameConflict};
+		) else (
+			# 重複パーツ名なし
+			${Select.Page.AddParts.ExecOK}
+		);
+	);
+)
+
+# 重複パーツ名があるので確認
+# 引数: AddParts.ConflictPartsList(カテゴリ.パーツ名形式)
+AddParts.PartsNameConflict : (
+	${MenuHeader.AddParts}
+	　指定されたパーツ名は、既に使われています。\n\n[half]
+	　重複しないよう名前に「＃"("数字")"」を付けて登録します。\n\n[half]
+	　よろしいですか？\n\n\n[half]
+	　$(IconQ yes $(TextArea 6 はい) Page.AddParts.ExecOK)　$(IconQ no $(TextArea 6 いいえ) Page.AddParts)\n
+	\n
+	${HR}\n\n[half]
+	■重複しているパーツ一覧\n\n[half]
+	　（カテゴリ／パーツ）\n\n[half]
+	$(
+		foreach @part AddParts.ConflictPartsList $(
+			clear @element;
+			split @element ${@part} ".";
+			echo (
+				　　
+				$@element[0]／$(DeleteColorID $@element[1])
+				\n\n[half]
+			);
+		);
+	)
+	\n\n[half]
+	${DressNaviMenu}
+)
+
+Select.Page.AddParts.ExecOK : $(
+	WaitMsg パーツ追加中です。 Select.Page.AddParts.ExecMain;
+)
+
+Select.Page.AddParts.ExecMain : $(
+	if $[ ${AddParts.Method} == "通常" ] $(
+		AddNormalSurface ${AddParts.Category} ${AddParts.Parts} ${AddParts.File1};
+	) else if $[ ${AddParts.Method} == "色替え" ] $(
+		AddCCSurface ${AddParts.Category} ${AddParts.Parts} ${AddParts.File1};
+	) else if $[ ${AddParts.Method} == "色替え不可部分付き色替え" ] $(
+		AddCCCSurface ${AddParts.Category} ${AddParts.Parts} ${AddParts.File1} ${AddParts.File2};
+#	) else if $[ ${AddParts.Method} == "多色色替え" ] $(
+#		AddCCPSurface ${AddParts.Category} ${AddParts.Parts} ${AddParts.File1}  ${AddParts.File2};
+	) else if $[ ${AddParts.Method} == "２色色替え" ] $(
+		AddCCTSurface ${AddParts.Category} ${AddParts.Parts} ${AddParts.File1}  ${AddParts.File2};
+	) else if $[ ${AddParts.Method} == "肌色塗り替え" ] $(
+		AddSkinSurface ${AddParts.Category} ${AddParts.Parts} ${AddParts.File1};
+	) else if $[ ${AddParts.Method} == "色替え不可部分付き肌色塗り替え" ] $(
+		AddSkinCSurface ${AddParts.Category} ${AddParts.Parts} ${AddParts.File1}  ${AddParts.File2};
+	) else if $[ ${AddParts.Method} == "目パーツ専用" ] $(
+		AddEyesSurface ${AddParts.Parts} ${AddParts.File1} ${AddParts.File2} ${AddParts.File3} ${AddParts.File4} ${AddParts.File5} ${AddParts.File6} ${AddParts.File7};
+	) else if $[ ${AddParts.Method} == "眉パーツ専用" ] $(
+		AddNormalMayuSurface  ${AddParts.Parts} ${AddParts.File1}  ${AddParts.File2} ${AddParts.File3} ${AddParts.File4};
+	) else if $[ ${AddParts.Method} == "口パーツ専用" ] $(
+		AddNormalMouthSurface  ${AddParts.Parts} ${AddParts.File1}  ${AddParts.File2} ${AddParts.File3} ${AddParts.File4} ${AddParts.File5};
+	) else if $[ ${AddParts.Method} == "色替え眉パーツ専用" ] $(
+		AddCCMayuSurface  ${AddParts.Parts} ${AddParts.File1}  ${AddParts.File2} ${AddParts.File3} ${AddParts.File4};
+	) else if $[ ${AddParts.Method} == "一括追加" ] $(
+		ExecRecipe ${AddParts.File1} $(dirname ${AddParts.File1});
+	);
+	clear AddParts.Parts;
+	loop 7 $(clear AddParts.File$[ ${-1} + 1 ]);
+	ShellReload Select.Page.AddParts;
+)
+
+# 直前のパーツ追加を取り消し
+Select.Page.AddParts.Undo : (
+	$(set MenuBookmark Select.Page.AddParts)
+	${MenuHeader.AddParts}
+	${AddParts.UndoMain}
+	${DressNaviMenu}
+)
+
+AddParts.UndoMain : (
+	　直前のパーツ追加を取り消します。\n\n[half]
+	　よろしいですか？\n\n\n[half]
+	　$(IconQ yes $(TextArea 6 はい) addparts.undoyes)　$(IconQ no $(TextArea 6 いいえ) addparts.undono)\n
+	\n
+	${HR}\n\n[half]
+	■削除されるパーツ一覧\n\n[half]
+	$(
+		clear AddParts.ToDelete;
+		split @lastaddparts $(GetLastLog) "|";
+		foreach @part @lastaddparts $(
+			clear @element;
+			split @element ${@part} ".";
+			pushstr AddParts.ToDelete ${@part};
+			if $[ ${$@element[0].$@element[1]} == "1" ] $(
+				pushstr @script (
+					　"\f[color,255,0,0]\f[bold,true]※\f[bold,default]\f[color,default]"
+					"\__q[Page.Addparts.UndoPartsChoiceOff,"$@element[0]","$@element[1]"]"
+					$@element[0]／$(DeleteColorID $@element[1])
+					"\__q"
+					\n\n[half]
+				);
+				pushstr @usingparts ${@part};
+			) else $(
+				pushstr @script (
+					　　
+					$@element[0]／$(DeleteColorID $@element[1])
+					\n\n[half]
+				);
+			);
+		);
+		if $(size @usingparts) $(
+			echo (
+				"\f[color,160,160,160]"
+				　警告：使用中のパーツを取り外そうとしています！\n
+				　　　　パーツを外してから、追加を取り消してください。\n\n[half]
+				"\f[color,default]"
+			);
+		);
+	)
+	　（カテゴリ／パーツ）\n\n[half]
+	$(join @script)
+	\n\n[half]
+)
+
+# パーツ取り外し
+Select.Page.Addparts.UndoPartsChoiceOff : (
+	$(set MenuBookmark Select.Page.AddParts)
+	${MenuHeader.AddParts}
+	\0
+	$(PartsRemove ${ChoiceInfo.1} ${ChoiceInfo.2})
+	\p[2]
+	#パーツ追加取り消しメニューに戻る
+	${AddParts.UndoMain}
+	${DressNaviMenu}
+)
+
+Select.addparts.undoyes : $(
+	WaitMsg パーツ追加取り消し中です。 Select.addparts.undoyesmain;
+)
+
+Select.addparts.undoyesmain : $(
+	setstr @ret $(UndoSurfaceSetting);
+	if ${@ret} $(
+		# 実際にundoした
+		if $(size AddParts.ToDelete) $(
+			echo "\0";
+			while $(size AddParts.ToDelete) $(
+				setstr @entry $(pop AddParts.ToDelete);
+				clear @element;
+				split @element ${@entry} ".";
+				# パーツ管理用エントリへの登録を消す
+				clear $@element[0].$@element[1];
+				setstr @pos $(find CurrentKisekaeSet $@element[0].$@element[1]);
+				if $[ ${@pos} != "-1" ] $(clear CurrentKisekaeSet[${@pos}]);
+				# タグで取り外す
+				echo "\![bind,"$@element[0]","$@element[1]",0]";
+				# ファイルを消す
+				# @sidはサーフィスID、@dirはパーツファイルのディレクトリ
+				setstr @sid $(FindSurfaceID $@element[0] $@element[1]);
+				setstr @dir ${ColorsShellPath};
+				# @filelistは実際に消すファイル一覧
+				clear @filelist;
+				split @filelist $(MakePartsFileName ${@sid} $@element[2]) "|";
+				foreach @file @filelist $(
+					setstr @null $(remove_file $(cncpath ${@dir} ${@file}));
+  				);
+			);
+		);
+		echo "\![change,shell,"${System.Shell}"]";
+#		echo "\![reloadsurface]";
+		KTM.PostMail OverShellReload Select.Page.AddParts;
+		# OnNotifyDressupInfoのエントリツリーを一時的に消去
+		ClearPartsManagementInfo;
+	) else $(
+		echo ${Select.Page.AddParts};
+	);
+)
+
+Select.addparts.undono : ${Select.Page.AddParts}
+
+
+#----------------------------------------------------------------------------
+# パーツ管理
+
+Select.Page.AddParts.Manage : ${Select.Page.AddParts.Rename}
+
+# リネーム
+Select.Page.AddParts.Rename : (
+	$(setstr MenuBookmark Select.Page.AddParts)
+	${MenuHeader.AddParts}
+	# パーツのリネーム
+	${SMarker} パーツ名の変更\n\n[half]
+	　カテゴリー：$(IconTxBQ editfile 19 ${AddParts.RenameCategory} Page.AddParts.RenameCategory)\n\n[half]
+	　旧パーツ名：$(IconTxBQ editfile 19 $(DeleteColorID ${AddParts.OldParts}) Page.AddParts.RenameOldParts)\n\n[half]
+	　新パーツ名：$(IconTxBQ editfile 19 ${AddParts.NewParts} Page.AddParts.RenameNewParts)\n\n[half]
+	\n
+	${HR}
+	\n\n[half]
+	$(
+		if ${AddParts.RenameExecp}
+			$(IconQ go パーツ名変更を実行 Page.AddParts.RenameExec)
+		else
+			"\f[color,160,160,160]"　パーツ名変更を実行\f[default]
+	)
+	${DressNaviMenu}
+)
+
+# リネームするカテゴリー選択
+Select.Page.AddParts.RenameCategory : (
+	$(set MenuBookmark Select.Page.AddParts.Rename)
+	${MenuHeader.AddParts}
+	${SMarker}カテゴリー選択\n\n[half]
+	$(
+		# ページ設定
+		setstr @pagelength 13;
+		# パンくずリスト作成
+		TopicPath
+			AddParts.CategoryList
+			${@pagelength}
+			AddParts.RenameCategory.Page
+			Page.AddParts.RenameCategory
+		;
+		# ページ作成
+		setstr @i     $[ ${AddParts.RenameCategory.Page} * ${@pagelength} ];
+		setstr @limit $[ ( ${AddParts.RenameCategory.Page} + 1 ) * ${@pagelength} ];
+		while $[ ${@i} < ${@limit} && ${@i} < $(size AddParts.CategoryList) ] $(
+			setstr @C $AddParts.CategoryList[${@i}];
+			echo 　\![*]\q[$(FillSpc15 ${@C})","Page.AddParts.RenameCategorySelected","${@C}]\n\n[half];
+			inc @i;
+		);
+	)
+	${DressNaviMenu}
+)
+
+# 現在のページ
+AddParts.RenameCategory.Page : 0
+
+# カテゴリー選択結果
+Select.Page.AddParts.RenameCategorySelected : (
+	$(
+		if $[ $(match ${@ChoiceInfo.1} "眉") >= 0 ] $(
+			setstr AddParts.RenameCategory "眉";
+		) else $(
+			setstr AddParts.RenameCategory ${ChoiceInfo.1};
+		);
+	)
+	${Select.Page.AddParts.Rename}
+)
+
+# リネームするパーツ選択
+Select.Page.AddParts.RenameOldParts : $(
+	if $(size AddParts.RenameCategory)
+		# カテゴリー選択済みならばメニュー表示
+		${Select.Page.AddParts.RenameOldPartsMain}
+	else 
+		# カテゴリー未選択なら戻る
+		${Select.Page.AddParts.Rename}
+)
+Select.Page.AddParts.RenameOldPartsMain : (
+	$(set MenuBookmark Select.Page.AddParts.Rename)
+	${MenuHeader.AddParts}
+	【${AddParts.RenameCategory}-アイテム一覧】\n\n
+	$(
+		#「選択カテゴリ.」が頭に付くパーツリスト作成
+		clear PresentCategoryPartslist;
+		copy ${CPartsTable}.${AddParts.RenameCategory} PresentCategoryPartslist;
+		# ページ設定
+		setstr @pagelength 12;
+		# パンくずリスト作成
+		TopicPath
+			PresentCategoryPartslist
+			${@pagelength}
+			AddParts.RenameOldParts.Page
+			Page.AddParts.RenameOldParts
+		;
+		# @Pにパーツリストからパーツを取り出し
+		setstr @i     $[ ${AddParts.RenameOldParts.Page} * ${@pagelength} ];
+		setstr @limit $[ ( ${AddParts.RenameOldParts.Page} + 1 ) * ${@pagelength} ];
+		while $[ ${@i} < ${@limit} && ${@i} < $(size PresentCategoryPartslist) ] $(
+			setstr @PartsNameC $PresentCategoryPartslist[${@i}];
+			# @PartsNameに「.」以下のパーツ名から「_CCC」「_CCP」「_CCT」「_CC」「_skinC」を抜いた表示用パーツ名をセット
+			setstr @PartsName $(DeleteColorID ${@PartsNameC});
+			
+			# @P（カテゴリ.パーツ）が0（着せ替えオフ）ならパーツ名の選択肢表示
+			echo "　　";
+			echo \![*]\q[$(FillSpc 13 ${@PartsName})",Page.AddParts.OldPartsSelected,"${@PartsNameC}];
+			echo "\\n\\n[half]";
+			inc @i;
+		);
+	)
+	${DressNaviMenu}
+)
+
+# 現在のページ
+AddParts.RenameOldParts.Page : 0
+
+# パーツ選択結果
+Select.Page.AddParts.OldPartsSelected : (
+	$(setstr AddParts.OldParts ${ChoiceInfo.1})
+	${Select.Page.AddParts.Rename}
+)
+
+# 変更後のパーツ名入力
+Select.Page.AddParts.RenameNewParts : $(
+	if $[ $(size AddParts.RenameCategory) && $(size AddParts.OldParts) ]
+		# カテゴリー選択済みならばメニュー表示
+		${Select.Page.AddParts.RenameNewPartsMain}
+	else 
+		# カテゴリー未選択なら戻る
+		${Select.Page.AddParts.Rename}
+)
+Select.Page.AddParts.RenameNewPartsMain : (
+	$(set MenuBookmark Select.Page.AddParts.Rename)
+	${MenuHeader.AddParts}
+	パーツに新しい名前を付けて下さい。\n\n[half]
+	$(
+		if $(size AddParts.NewParts.covered) (
+			"\f[color,160,160,160]"
+			※その名前は既に使われています。\n\n[half]
+			　「${AddParts.NewParts}」ならば使用可能です。\n\n[half]
+			"\f[color,default]"
+		);
+	)
+	\!["open,inputbox,InputNewPartsName,-1"$(if $(size AddParts.NewParts) ","${AddParts.NewParts})]
+	\!["quicksession,false"]
+	\e
+)
+
+TalkInput.InputNewPartsName : $(
+	setstr @NewParts $(EntNamReference 1);
+	setstr @Candidate $(EncodePartsName ${AddParts.RenameCategory} ${@NewParts});
+	if $[ ${@NewParts} == ${@Candidate} ] $(
+		# 重複していない
+		clear AddParts.NewParts.covered;
+		setstr AddParts.NewParts ${@NewParts};
+		echo ${Select.Page.AddParts.Rename};
+	) else $(
+		setstr AddParts.NewParts.covered 1;
+		echo ${Select.Page.AddParts.RenameNewParts};
+	);
+)
+TalkInputCancel.InputNewPartsName :${Select.Page.AddParts.Rename}
+
+# リネームして大丈夫か？
+AddParts.RenameExecp : $[
+	   ${AddParts.RenameCategory} != ""
+	&& ${AddParts.OldParts} != ""
+	&& ${AddParts.NewParts} != ""
+	&& $(size AddParts.NewParts.covered) == 0
+]
+
+#リネーム実行
+Select.Page.AddParts.RenameExec : $(
+	WaitMsg パーツ名変更中です。 Select.Page.AddParts.RenameExecMain;
+)
+Select.Page.AddParts.RenameExecMain : $(
+	# リネーム実行
+	setstr @ret $(PartsRename ${AddParts.RenameCategory} ${AddParts.OldParts} ${AddParts.NewParts});
+	# エントリの後始末
+	clear AddParts.RenameCategory;
+	clear AddParts.OldParts;
+	clear AddParts.NewParts;
+	clear AddParts.NewParts.coverd;
+	# メニューへ
+	if $[ ${@ret} == 0 ] $(
+		# 失敗したようなので、とりあえずメニューに戻る
+		echo ${Select.Page.AddParts.Rename};
+	) else $(
+		# リネームは成功
+		# 出力すべきタグがあるようなら出力
+		if $[ ${@ret} == 2 ] ${PartsRename.log};
+		# リロード後メニューへ
+		ShellReload Select.Page.AddParts.Rename;
+	);
+)

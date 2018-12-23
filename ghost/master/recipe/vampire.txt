@@ -1,0 +1,37 @@
+declare	RECIPE/1.0	COLORS
+select	素体	肌_CC
+mayuselect	1
+paint	素体	肌_CC		255	228	196
+select	口	牙付き
+select	インナー２	シンプルブラウス_CC
+select	背景装飾	足元影_CC
+paint	背景装飾	足元影_CC		18	18	18
+select	靴	革靴_CC
+paint	靴	革靴_CC		30	30	30
+select	ズボン	シンプルロングパンツ_CC
+paint	ズボン	シンプルロングパンツ_CC		49	49	49
+select	ズボン装飾	ロングパンツ折り目ライン_CC
+paint	ズボン装飾	ロングパンツ折り目ライン_CC		10	10	10
+select	トップス１装飾	シャツ襟_CC
+paint	トップス１装飾	シャツ襟_CC		255	255	255
+select	ネクタイ・帯	蝶ネクタイ_CC
+paint	ネクタイ・帯	蝶ネクタイ_CC		30	30	30
+select	トップス２	シンプルベスト_CC
+paint	トップス２	シンプルベスト_CC		77	65	62
+select	トップス４	スーツジャケット_CC
+paint	トップス４	スーツジャケット_CC		49	49	49
+select	ケープ	マント前_CC
+paint	ケープ	マント前_CC		49	49	49
+select	眉１	低めつり眉_CC
+select	後髪	短髪逆毛_CC
+select	アクセサリー３	マント後ろコウモリ_CC
+paint	アクセサリー３	マント後ろコウモリ_CC		146	71	79
+select	耳	つりとがり耳小_SKIN
+select	瞳色	左右_CC
+paint	瞳色	左右_CC		169	58	69
+select	目の形	つり目シャープ
+select	前髪	オールバック_CCC
+select	アクセサリー５	襟元紐リボン_CC
+paint	アクセサリー５	襟元紐リボン_CC		115	40	48
+paint	眉	低めつり眉_CC		49	49	49
+paint	後髪	短髪逆毛_CC		64	64	64

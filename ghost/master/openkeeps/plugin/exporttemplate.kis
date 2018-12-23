@@ -1,0 +1,594 @@
+# ゴーストのエクスポート=======================================================
+
+# エクスポート仕様(*は必須エントリ)
+# UserExport.name* :		作品名(ゴースト名とシェル名で共用)
+# UserExport.sakura.name* :	キャラクター名
+# UserExport.directory* :	インストールフォルダ名
+# UserExport.networkurl:	ネットワーク更新URL
+
+# UserExport.FPP* :					一人称
+# UserExport.SPP* :					二人称
+# UserExport.username.default* :	ユーザ呼称
+# UserExport.SentenceFile* :		トークファイル名
+# UserExport.MouseFile* :			マウス反応トークファイル名
+# UserExport.BootendFile* :			起動／終了トークファイル名
+
+# UserExport.craftman* :	作者名(アルファベット)
+# UserExport.craftmanw* :	作者名(日本語)
+# UserExport.url :			作者サイトURL
+
+# テンプレートエクスポート仕様
+# UserExportTemplate.*.path : テンプレート出力先
+# UserExportTemplate.*      : テンプレート本体
+
+# シェル用エントリ部-----------------------------------------------------------
+
+UserExportShellTemplate.DescriptTxt (
+	"charset,Shift_JIS",
+	"",
+	"//ファイルセット種別",
+	"type,shell",
+	"",
+	"//シェルの名前",
+	"name,"$[ ${UserExport.name} || "ColoredShell" ],
+	"",
+	"//シェルのID名。半角英数のみ。",
+	"id,COLORS_"$(date %y%m%d%H%M%S)"_"$(FillZero $(rand 10000) 4),
+	"",
+	"//シェルの作者名。半角英数のみ。",
+	"craftman,"$[ ${UserExport.craftman} || "COLORS user" ],
+	"",
+	"//シェルの作者名",
+	"craftmanw,"$[ ${UserExport.craftmanw} || "COLORSユーザー" ],
+	"",
+	"//作者のURL",
+	$(if $[ ${UserExport.url} == "" ] "//")"craftmanurl,"${UserExport.url},
+	"",
+	"",
+	"//透過PNGを使うための設定。透過PNGを使わずにPNAを使う場合は削除して下さい。",
+	"seriko.use_self_alpha,1",
+	"",
+	"//シェルの自由移動設定。固定したい場合は削除して下さい。",
+	"seriko.alignmenttodesktop,free"
+)
+UserExportShellTemplate.DescriptTxt.path : descript.txt
+
+UserExportShellTemplate.InstallTxt (
+	"charset, Shift_JIS",
+	"type,shell",
+	"name,"$[ ${UserExport.name} || "ColoredShell"],
+	"directory,"$[ ${UserExport.directory} || "coloredshell"]
+)
+UserExportShellTemplate.InstallTxt.path : install.txt
+
+# ゴースト用エントリ部---------------------------------------------------------
+
+# 必須エントリ
+UserExportElementEntry (
+	UserExport.name,
+	UserExport.sakura.name,
+	UserExport.directory,
+	UserExport.craftman,
+	UserExport.craftmanw
+)
+
+# ghost install.txtテンプレート
+UserExportTemplate.GhostInstallTxt (
+	"charset, Shift_JIS",
+	"type,ghost",
+	"name,"${UserExport.name},
+	"directory,"${UserExport.directory},
+	"refresh,true",
+	"refreshundeletemask,ghost-savedata.txt"
+)
+UserExportTemplate.GhostInstallTxt.path : "install.txt"
+
+# shell install.txtテンプレート
+UserExportTemplate.ShellInstallTxt (
+	"charset, Shift_JIS",
+	"type,shell",
+	"name,"${UserExport.name},
+	"directory,"${UserExport.directory}
+)
+UserExportTemplate.ShellInstallTxt.path : "shell/master/install.txt"
+
+# ghost側descript.txtテンプレート
+UserExportTemplate.GhostDescriptTxt (
+	"charset,Shift_JIS",
+	"",
+	"//ファイルセット種別",
+	"type,ghost",
+	"",
+	"//作者情報",
+	"craftman,"${UserExport.craftman},
+	"craftmanw,"${UserExport.craftmanw},
+	"",
+	"//作品名",
+	"name,"${UserExport.name},
+	"",
+	"//キャラクタ名",
+	"sakura.name,"${UserExport.sakura.name},
+	"kero.name,none",
+	"",
+	"sstp.allowunspecifiedsend,1",
+	"sstp.allowcommunicate,1",
+	"sstp.alwaystranslate,0",
+	"",
+	"shiori,shiori.dll",
+	"shiori.cache,0",
+	"shiori.encoding,0",
+	"",
+	"//デフォルトのサーフィス番号",
+	"sakura.seriko.defaultsurface,0",
+	"kero.seriko.defaultsurface,10",
+	"",
+	"//全体のサーフィスのデフォルト表示位置情報",
+	"seriko.alignmenttodesktop,free"
+)
+UserExportTemplate.GhostDescriptTxt.path : "ghost/master/descript.txt"
+
+# shell側descript.txtのテンプレート
+UserExportTemplate.ShellDescriptTxt (
+	"charset,Shift_JIS",
+	"",
+	"//ファイルセット種別",
+	"type,shell",
+	"",
+	"//シェルの名前",
+	"name,"${UserExport.name}"master",
+	"",
+	"//シェルのID名。半角英数のみ。",
+	"id,COLORS_"$(date %y%m%d%H%M%S)"_"$(FillZero $(rand 10000) 4),
+	"",
+	"//シェルの作者名。半角英数のみ。",
+	"craftman,"${UserExport.craftman},
+	"",
+	"//シェルの作者名",
+	"craftmanw,"${UserExport.craftmanw},
+	"",
+	"//作者のURL",
+	$(if $[ ${UserExport.url} == "" ] "//")"craftmanurl,"${UserExport.url},
+	"",
+	"",
+	"//透過PNGを使うための設定。透過PNGを使わずにPNAを使う場合は削除して下さい。",
+	"seriko.use_self_alpha,1",
+	"",
+	"//シェルの自由移動設定。固定したい場合は削除して下さい。",
+	"seriko.alignmenttodesktop,free"
+)
+UserExportTemplate.ShellDescriptTxt.path : "shell/master/descript.txt"
+
+
+# キャラクタ設定テンプレート
+UserExportTemplate.CharacterTxt (
+	"# キャラクタ設定",
+	"",
+	"# キャラクタの一人称",
+	"FPP : "${UserExport.FPP},
+	"# キャラクタの二人称",
+	"SPP : "${UserExport.SPP},
+	"# ユーザ呼称",
+	"username.default : "${UserExport.username.default},
+	"# トークファイル",
+	"SentenceFile : "${UserExport.SentenceFile},
+	"# 起動・終了反応ファイル",
+	"BootendFile : bootend_"${UserExport.BootendFile},
+	"# マウス反応ファイル",
+	"MouseFile : mouse_"${UserExport.MouseFile}
+)
+UserExportTemplate.CharacterTxt.path : "ghost/master/character.txt"
+
+# リソース設定テンプレート
+UserExportTemplate.GhostResourceTxt (
+	"# 各種リソース",
+	"",
+	"#resource.sakura.recommendsites : ",
+	"#resource.kero.recommendsites : ",
+	"#resource.sakura.portalsites : ",
+	"#resource.recommendrootbutton.caption : ",
+	"#resource.kero.recommendbuttoncaption : ",
+	"#resource.portalrootbutton.caption : ",
+	"#resource.updatebutton.caption : ",
+	"#resource.vanishbutton.caption : ",
+	"#resource.biffbutton.caption : ",
+	"#resource.headlinesenserootbutton.caption : ",
+	"#resource.sntpbutton.caption : ",
+	"#resource.recommendrootbutton.visible : ",
+	"#resource.portalrootbutton.visible : ",
+	"#resource.updatebutton.visible : ",
+	"#resource.vanishbutton.visible : ",
+	"#resource.biffbutton.visible : ",
+	"#resource.headlinesenserootbutton.visible : ",
+	"#resource.sntpbutton.visible : ",
+	"resource.username : ${username}",
+	"#resource.sakura.recommendbuttoncaption : ",
+	"#resource.sakura.portalbuttoncaption : ",
+	"#resource.updatebuttoncaption : ",
+	"#resource.vanishbuttoncaption : ",
+	"#resource.sakura.recommendsitesbuttonvisible : ",
+	"#resource.sakura.portalsitesbuttonvisible : ",
+	"#resource.updatebuttonvisible : ",
+	"#resource.vanishbuttonvisible : ",
+	"#resource.biffbuttonvisible : ",
+	"",
+	"# ネットワーク更新URL",
+	$(if $[ ${UserExport.networkurl} == "" ] "#")"resource.homeurl : "${UserExport.networkurl}
+)
+UserExportTemplate.GhostResourceTxt.path : "ghost/master/ghost-resource.txt"
+
+# コピー対象のファイル一式
+#  -パスは/区切り
+#  -"コピー元ファイル(ghost\master基準)|コピー先フォルダ(ゴーストのルート基準)"
+UserExportFileList (
+	"temp/shelltemplate/surface010.png|shell/master",
+	"temp/shelltemplate/surfacetable.txt|shell/master",
+	"exportcore/dict-system.txt|ghost/master",
+	"exportcore/ghost-base.txt|ghost/master",
+	"exportcore/ghost-bootend.txt|ghost/master",
+	"exportcore/ghost-communicate.txt|ghost/master",
+	"exportcore/ghost-menu.txt|ghost/master",
+	"exportcore/ghost-mouse.txt|ghost/master",
+	"exportcore/ghost-notify.txt|ghost/master",
+	"exportcore/ghost-state.txt|ghost/master",
+	"exportcore/ghost-time.txt|ghost/master",
+	"exportcore/ghost-translate.txt|ghost/master",
+	"exportcore/kawarirc.kis|ghost/master",
+	"usertalk/randomtalk/"${UserExport.SentenceFile}".txt|ghost/master",
+	"usertalk/bootend/bootend_"${UserExport.BootendFile}".txt|ghost/master",
+	"usertalk/mouse/mouse_"${UserExport.MouseFile}".txt|ghost/master",
+	"shiori.dll|ghost/master"
+)
+
+# Supplement install.txtテンプレート
+UserExportParts.InstallTxt (
+	"charset,Shift_JIS",
+	"type,supplement",
+	"name,COLORSパーツパック"$(if $(size UserExport.craftmanw) " by "${UserExport.craftmanw}),
+	"accept,COLORS"
+)
+
+# バックアップ install.txtテンプレート
+UserExportBackup.InstallTxt (
+	"charset,Shift_JIS",
+	"type,supplement",
+	"name,COLORSバックアップ"$(if $(size UserExport.craftmanw) " by "${UserExport.craftmanw}),
+	"accept,COLORS"
+)
+
+# 機能部-----------------------------------------------------------------------
+
+=kis
+# 機能: 指定ディレクトリ以下のファイルを再帰的に消去
+# 第1引数: 消去するディレクトリ(${System.DataPath}からの相対パス)
+# 備考: ${System.DataPath}以下のファイルしか消せない
+#       第1引数を省略すると、「temp/ghosttemplate」と見なす
+function ClearDirectoryAll $(
+	if $[ $(size @arg) != 2 ] $(
+		setstr @dir "temp/ghosttemplate";
+	) else $(
+		setstr @dir $@arg[1];
+	);
+	
+	readdir @nodes $(cncpath ${System.DataPath} ${@dir});
+	foreach @item @nodes $(
+		setstr @path $(cncpath ${System.DataPath} $(cncpath ${@dir} ${@item}));
+		if $(isdir ${@path}) $(
+			# ディレクトリなので再帰呼び出し
+			ClearDirectoryAll ${@dir}"/"${@item};
+		) else $(
+			# ファイルなので消去
+			pushstr @removefile ${@path};
+		);
+	);
+	# 実際にファイル消去
+	if $(size @removefile) $(
+		xargs @removefile remove_file_all;
+		silent;
+	);
+);
+
+# 機能: テンプレート類一式をコピー
+function CopyGhostTemplate $(
+	foreach @tuple UserExportFileList $(
+		clear @element;
+		split @element ${@tuple} "|";
+		setstr @src $(cncpath ${System.DataPath} $@element[0]);
+		setstr @dst $(cncpath ${System.DataPath} "temp/ghosttemplate/"$@element[1]);
+		setstr @nul $(copy_file ${@src} ${@dst});
+	);
+);
+
+# 機能: シェル画像一式をコピー
+function CopyShellSurface $(
+	foreach @index ${SurfaceNumbers} $(
+		pushstr @f $(cncpath ${System.DataPath} "temp/shelltemplate/surface"${@index}".png");
+		pushstr @f $(cncpath ${System.DataPath} "temp/shelltemplate/surface1"${@index}".png");
+	);
+	pushstr @f $(cncpath ${System.DataPath} "temp/ghosttemplate/shell/master");
+	setstr @null $(xargs @f copy_file_all);
+);
+
+
+# 機能: シェル用生成ファイル類を出力
+function CreateShellTemplate $(
+	listsub @ExportTemplate UserExportShellTemplate;
+	foreach @template @ExportTemplate $(
+		textsave $(cncpath "temp/shelltemplate" ${${@template}.path}) ${@template};
+	);
+	# surfaces.txtを生成する
+	copy UserExportSurfacesTxt @text;
+	loop $(size ColorsActiveMouseArea.${ColorsCurrentShellName}) $(
+		setstr @pos ${-1};
+		setstr @name $ColorsActiveMouseArea.${ColorsCurrentShellName}[${@pos}];
+		setstr @num $(join ColorsMouseArea.${ColorsCurrentShellName}.${@name} ",");
+		pushstr @text "	collision"${@pos}","${@num}","${@name};
+	);
+	pushstr @text "}";
+	textsave $(cncpath "temp/shelltemplate" "surfaces.txt") @text;
+);
+
+# 機能: ゴースト用生成ファイル類を出力
+function CreateGhostTemplate $(
+	# surfaces.txtを生成する
+	copy UserExportSurfacesTxt @text;
+	loop $(size ColorsActiveMouseArea.${ColorsCurrentShellName}) $(
+		setstr @pos ${-1};
+		setstr @name $ColorsActiveMouseArea.${ColorsCurrentShellName}[${@pos}];
+		setstr @num $(join ColorsMouseArea.${ColorsCurrentShellName}.${@name} ",");
+		pushstr @text "	collision"${@pos}","${@num}","${@name};
+	);
+	pushstr @text "}";
+	textsave $(cncpath "temp/ghosttemplate/shell/master" "surfaces.txt") @text;
+	# その他のテンプレートを生成する
+	listsub @ExportTemplate UserExportTemplate;
+	foreach @template @ExportTemplate $(
+		textsave $(cncpath "temp/ghosttemplate" ${${@template}.path}) ${@template};
+	);
+);
+
+# 機能: ゴーストをエクスポートするために必要な情報がすべてあるか否か
+# 戻り値: ある=true、ない=false
+function isExportReady $(
+	# エクスポート用エントリに転記
+	setstr UserExport.FPP ${FPP};
+	setstr UserExport.SPP ${SPP};
+	setstr UserExport.username.default ${username};
+	setstr UserExport.SentenceFile ${SentenceFile};
+	# 必須エントリがすべて揃っているかチェック
+	setstr @datacount 0;
+	foreach @entry UserExportElementEntry $(
+		if $[ ${${@entry}} != "" ] $(inc @datacount);
+	);
+	if $[ ${@datacount} == $(size UserExportElementEntry) ] $(
+		# 最小限のエントリが揃っている
+		return "true";
+	) else $(
+		# まだ足りない内容がある
+		return "false";
+	);
+);
+
+# パスを読み込み、再帰的にmd5を作成する
+# ExportMD5エントリに内容を出力する
+# 第1引数: 読み込むフォルダ名(makepathエントリからの相対パス)
+function OutputMD5 $(
+	setstr @makepath $(cncpath ${System.DataPath} "temp/ghosttemplate");
+	setstr @path $(
+		if $[ $@arg[1] != "" ] $(
+			cncpath ${@makepath} $@arg[1];
+		) else $(
+			cncpath ${@makepath};
+		);
+	);
+	readdir @entries ${@path};
+	foreach @file @entries $(
+		if $(isdir $(cncpath ${@path} ${@file})) $(
+			# フォルダだった
+			pushstr @dirs ${@file};
+			continue;
+		);
+		# ファイルだったので@filesエントリに
+		pushstr @files ${@file};
+	);
+	# フォルダを再帰呼び出し
+	foreach @file @dirs $(
+		OutputMD5 $(if $[ $@arg[1] != "" ] $@arg[1]/)${@file};
+	);
+	# ファイルのMD5作成
+	foreach @file @files $(
+		setstr @md5 $(tolower $(md5file $(cncpath ${@path} ${@file})));
+		setstr @displayfile $(if $[ $@arg[1] != "" ] $@arg[1]/)${@file};
+		pushstr ExportMD5 $(tr ${@displayfile} "\\" "/")$(chr 1)${@md5}$(chr 1);
+	);
+);
+
+# 機能: パーツパックをtemp/supplementtemplate以下に作成する
+function CreatePartsPack $(
+	# 作業パス
+	setstr @dir $(cncpath "temp/supplementtemplate/ghost/master/temp/tempsupplement");
+	setstr @abdir $(cncpath ${System.DataPath} ${@dir});
+	# temp/supplementtemplate以下を再帰的にクリア
+	ClearDirectoryAll "temp/supplementtemplate";
+	# パーツ抽出の初期化
+	listtree @list ExportablePartsList;
+	setstr @delpos $(find @list "ExportablePartsList");
+	if $[ ${@delpos} != -1 ] $(clear @list[${@delpos}]);
+	setstr @readme "■追加パーツ一覧"$(
+		if $(size UserExport.craftmanw) "　(作成者："${UserExport.craftmanw}")"
+	);
+	# 選択されたパーツ抽出しバケットソート
+	setstr @lbound $[ $EditSurfaces.Num[-1] + 1000 ];
+	setstr @ubound $[ $EditSurfaces.Num[0]  - 1000 ];
+	setstr @partscount 0;
+	foreach @parts @list $(
+		if ${${@parts}} $(
+			inc @partscount;
+			clear @element;
+			split @element $(sub ${@parts} "ExportablePartsList." "") ".";
+			# バケットツリーに保存
+			setstr @sid $(FindSurfaceID $@element[0] $@element[1]);
+			setstr @stree.${@sid} 1;
+			setstr @stree.${@sid}.c $@element[0];
+			setstr @stree.${@sid}.p $@element[1];
+			# 上限・下限検出
+			setstr @categorysid $EditSurfaces.Num[$(find EditSurfaces.Item $@element[0])];
+			if $[ ${@categorysid} < ${@lbound} ] $(
+				setstr @lbound ${@categorysid};
+			);
+			if $[ ${@categorysid} >= ${@ubound} ] $(
+				setstr @ubound $[ ${@categorysid} + 1000 ];
+			);
+		);
+	);
+	#logprint "＠＠＠ lower bound="${@lbound}"/ upper bound="${@ubound};
+	# ソートしてパーツ抽出
+	setstr @sid ${@lbound};
+	setstr @recipe "declare	RECIPE/1.0	"${ColorsCurrentShellName};
+	while $[ ${@sid} < ${@ubound} && ${@partscount} > 0 ] $(
+		if ${@stree.${@sid}} $(
+			# パーツファイルのコピーとレシピ生成
+			pushstr @recipe $(gsub $(ExportPartsFile ${@stree.${@sid}.c} ${@stree.${@sid}.p} ${@abdir}) "|" "	");
+			# 説明書きファイルの生成
+			pushstr @readme "　・カテゴリー： "${@stree.${@sid}.c}" / パーツ名： "$(DeleteColorID ${@stree.${@sid}.p});
+			dec @partscount 1 0;
+		);
+		inc @sid;
+	);
+	# レシピの保存
+	textsave $(cncpath ${@dir} "recipe.txt") @recipe;
+	# 説明書き保存	
+	textsave $(cncpath ${@dir} "parts_readme.txt") @readme;
+	# install.txt生成
+	textsave $(cncpath "temp/supplementtemplate/install.txt") UserExportParts.InstallTxt;
+);
+
+# 機能: バックアップをtemp/supplementtemplate以下に作成する
+function CreateBackup $(
+	# パーツパック作成
+	CreatePartsPack;
+	
+	# 作業パス
+	setstr @dir $(cncpath "temp/supplementtemplate/ghost/master/temp/tempsupplement");
+	setstr @abdir $(cncpath ${System.DataPath} ${@dir});
+	# バックアップファイル用ツリー初期化
+	cleartree ColorsBackup;
+	# @savelist: セーブするエントリが入ったエントリ
+	
+	# 各種設定のコピー
+	copytree UserExport ColorsBackup.UserExport;
+	listtree @savelist ColorsBackup.UserExport;
+	# パレット履歴のコピー
+	#   -ColorsBackup.HistoryColor
+	copy HistoryColor ColorsBackup.HistoryColor;
+	pushstr @savelist ColorsBackup.HistoryColor;
+	# マウス反応エリアのコピー
+	#   -ColorsBackup.MouseAreaツリー
+	#   -ColorsBackup.ActiveMouseAreaツリー
+	copytree ColorsMouseArea ColorsBackup.MouseArea;
+	copytree ColorsActiveMouseArea ColorsBackup.ActiveMouseArea;
+	listtree @savelist ColorsBackup.MouseArea;
+	listtree @savelist ColorsBackup.ActiveMouseArea;
+	# 着せ替えレシピ・パッケージのリスト作成
+	#   -ファイルはrecipeフォルダにある
+	#   -ColorsBackup.recipe
+	split ColorsBackup.recipe $(EnumRecipeDir) "|";
+	pushstr @savelist ColorsBackup.recipe;
+	foreach @item ColorsBackup.recipe $(
+		setstr @path $(cncpath ${@item});
+		setstr @dstdir $(cncpath $(cncpath ${@abdir} "recipe") $(dirname ${@path}));
+		if $[ ! $(isexist ${@dstdir}) ] $(
+			setstr @null $(create_directory ${@dstdir});
+		);
+		setstr @null $(copy_file $(cncpath ${LoadRecipeDir} ${@path}) ${@dstdir});
+	);
+	# トークのリスト作成
+	#   -ファイルはtalkフォルダにまとめてある
+	#   -ColorsBackup.sentence
+	setstr @base $(cncpath ${System.DataPath} ${ColorsRandomtalkPath});
+	readdir @sentencefiles ${@base};
+	if $(size @sentencefiles) $(
+		foreach @f @sentencefiles $(
+			setstr @lf $(tolower ${@f});
+			setstr @path $(cncpath ${@base} ${@f});
+			if $[ $(match_at $(reverse ${@lf}) "txt.") && $(isfile ${@path}) ] $(
+				pushstr ColorsBackup.sentence ${@f};
+				pushstr @copylist ${@path};
+			);
+		);
+	);
+	#   -ColorsBackup.mouse
+	setstr @base $(cncpath ${System.DataPath} ${ColorsMouseAreaPath});
+	readdir @mousefiles ${@base};
+	if $(size @mousefiles) $(
+		foreach @f @mousefiles $(
+			setstr @lf $(tolower ${@f});
+			setstr @path $(cncpath ${@base} ${@f});
+			if $[ $(match_at $(reverse ${@lf}) "txt.") && $(isfile ${@path}) ] $(
+				pushstr ColorsBackup.mouse ${@f};
+				pushstr @copylist ${@path};
+			);
+		);
+	);
+	#   -ColorsBackup.bootend
+	setstr @base $(cncpath ${System.DataPath} ${ColorsBootEndPath});
+	readdir @bootendfiles ${@base};
+	if $(size @bootendfiles) $(
+		foreach @f @bootendfiles $(
+			setstr @lf $(tolower ${@f});
+			setstr @path $(cncpath ${@base} ${@f});
+			if $[ $(match_at $(reverse ${@lf}) "txt.") && $(isfile ${@path}) ] $(
+				pushstr ColorsBackup.bootend ${@f};
+				pushstr @copylist ${@path};
+			);
+		);
+	);
+	# コピーファイルがあればまとめてコピー
+	if $(size @copylist) $(
+		pushstr @copylist $(cncpath ${@abdir} "talk");
+		setstr @null $(xargs @copylist copy_file_all);
+	);
+	if $(size ColorsBackup.sentence) $(pushstr @savelist ColorsBackup.sentence);
+	if $(size ColorsBackup.mouse) $(pushstr @savelist ColorsBackup.mouse);
+	if $(size ColorsBackup.bootend) $(pushstr @savelist ColorsBackup.bootend);
+	# backup.txt保存
+	xargs @savelist save $(cncpath ${@dir} "backup.txt");
+	# install.txt生成
+	textsave $(cncpath "temp/supplementtemplate/install.txt") UserExportBackup.InstallTxt;
+);
+
+# 機能: レシピフォルダ以下を再帰的に検索し、ファイルを列挙して返す
+# 第1引数: 検索するレシピフォルダからの相対パス、"/"区切り
+# 戻り値: "|"区切りのレシピ・パッケージファイル群（レシピフォルダ基準）
+function EnumRecipeDir $(
+	if $[ $@arg[1] != "" ] $(
+		setstr @dir $(cncpath ${LoadRecipeDir} $@arg[1]);
+	) else $(
+		setstr @dir ${LoadRecipeDir};
+	);
+	readdir @list ${@dir};
+	if $(size @list) $(
+		foreach @item @list $(
+			if $(isdir $(cncpath ${@dir} ${@item})) $(
+				# ディレクトリだった
+				setstr @subdir $(if $[ $@arg[1] != "" ] $@arg[1]"/")${@item};
+				setstr @subret $(EnumRecipeDir ${@subdir});
+				if $[ ${@subret} != "" ] $(
+					pushstr @files ${@subret};
+				);
+			) else $(
+				# ファイルだった
+				setstr @ext $(tolower $(substr ${@item} -4));
+				if $[ ${@ext} == ".txt" || ${@ext} == ".pkg" ] $(
+					# レシピかパッケージ
+					pushstr @temp $(if $[ $@arg[1] != "" ] $@arg[1]"/")${@item};
+				);
+			);
+		);
+		move @temp @files;
+	);
+	return $(join @files "|");
+);
+
+=end
+
+#==============================================================================

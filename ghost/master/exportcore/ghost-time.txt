@@ -1,0 +1,22 @@
+=kis
+function TalkSometime $(
+	# ランダムトーク許可がないか、cantalkフラグが立ってなければ何もせず帰る
+	if $[ ! ${System.talkswitch} || $(Reference 3) == 0 ] $(
+		return;
+	);
+
+	# トークカウンタをダウンカウント(0でカウントストップ)
+	# 0でトークする
+	dec System.talkcount 1 0;
+
+	# トークするタイミングでかつ、話中で無ければ話す
+	# 同時にカウンタをリセットする
+	if $[ ${System.talkcount} == 0 && $(match ${System.Request.Status} "talking") < 0 ] $(
+		setstr System.talkcount ${System.interval};
+		return ${sentence};
+	);
+);
+=end
+
+event.OnSecondChange : $(TalkSometime)
+#event.OnMinuteChange : 

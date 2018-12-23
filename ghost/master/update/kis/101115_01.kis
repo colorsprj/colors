@@ -1,0 +1,51 @@
+=kis
+# 後髪をマルチセレクト可能にする
+if $[ ${ColorsUpdate.vars.behindhairmultiselect} != "1" ] $(
+	# 後髪をマルチセレクトにする文を挿入する
+	function ColorsUpdate.BehindHairPatch $(
+		setstr @shellpath $(
+			split @datapath $(cncpath ${System.DataPath}) $(cncpath "\\");
+			clear @datapath[-2..-1];
+			pushstr @datapath "shell";
+			pushstr @datapath "colors";
+			join @datapath $(cncpath "\\");
+		);
+		setstr @path $(cncpath ${@shellpath} $@arg[1]);
+		
+		if $[ ! $(isexist ${@path}) ] $(return);
+		logprint "＠＠＠ behindhairpatch: exist!:/"${@path}"/";
+		
+		# 該当行抽出
+		textload @text ${@path};
+		
+		setstr @matchptn "sakura.bindoption55.group,前景,multiple";
+		setstr @insert   "sakura.bindoption56.group,後髪,multiple";
+		loop $(size @text) $(
+			setstr @i ${-1};
+			if $[ $(match $@text[${@i}] ${@matchptn}) >= 0 ] $(
+				# 該当行があったのでパッチ当て
+				insertstr @text[$[ ${@i} + 1 ]] ${@insert};
+				setstr @matched 1;
+				break;
+			);
+		);
+		# 該当なければ帰る
+		if $[ ! ${@matched} ] $(return);
+		logprint "＠＠＠ behindhairpatch: matched!:/"${@i}" line/";
+		# 該当ありなのでファイル上書き
+		textsave $(cncpath "../../shell/colors" $@arg[1]) @text;
+		return 1;
+	);
+	# パッチ実行
+	setstr @patched 0;
+	if $(ColorsUpdate.BehindHairPatch descript.txt) $(inc @patched);
+	if $(ColorsUpdate.BehindHairPatch descript_backup.txt) $(inc @patched);
+	# 影響を最小限に抑えるため、必要なくなった関数自体も削除
+	rmfunc ColorsUpdate. BehindHairPatch;
+	
+	# 後始末
+	if $[ ${@patched} == 2 ] $(
+		setstr ColorsUpdate.vars..behindhairmultiselect 1;
+	);
+);
+=end

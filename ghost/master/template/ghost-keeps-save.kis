@@ -1,0 +1,626 @@
+#########################################################################
+#セーブ関連
+#########################################################################
+
+
+#-------------------------------------------------------------------------------
+# 	メニュー入り口
+
+Select.Page.Save : (
+	${MenuHeader.Save}
+	$(set MenuBookmark Select.Page.Save)
+	${SMarker}レシピ\n\n[half]
+	　　$(IconQ disk $(FillSpc 20 現在の着せ替えを保存する) Page.KisekaeSave)\n\n
+	　　$(IconQ fopen $(FillSpc 20 着せ替えレシピを読み込む) Page.KisekaeLoad)\n\n
+	\n\n
+	${SMarker}パッケージ\n\n[half]
+	　　$(IconQ disk $(FillSpc 20 現在のキャラクタ設定を保存する) Page.PackageSave)\n\n
+	　　$(IconQ fopen $(FillSpc 20 キャラクタ設定パッケージを読み込む) Page.PackageLoad)\n\n
+	\n\n
+	$(IconQ folder $(FillSpc 22 レシピ・パッケージ保存フォルダを開く) Page.OpenSaveFolder)\n\n
+	\n\n
+	${DressNaviMenu}
+)
+
+Select.Page.OpenSaveFolder : (
+	"\C"
+	"\![quicksession,true]"
+	"\0\c\b[-1]\1\c\b[-1]\p[2]\c"
+	"\![open,file,recipe\\\\]"
+	${Select.Page.Save}
+)
+
+#-------------------------------------------------------------------------------
+# 着せ替えのセーブ・ロード
+
+
+#------------------------
+# 着せ替えのセーブ
+#------------------------
+
+Select.Page.KisekaeSave : (
+	${MenuHeader.Save}
+	$(set MenuBookmark Select.Page.Save)
+	保存する着せ替えレシピに名前を付けて下さい。\n
+	\!["open,dialog,save,--title=着せ替えレシピ選択,--filter="${KisekaeLoad.Filter}",--ext=txt,--dir=\""${LoadRecipeDir}"\",--name=Current-"$(date %y%m%d-%H%M%S)".txt,--id=KisekaeSave.Selected"]
+	\n
+	\n
+	${DressNaviMenu}
+)
+:rem
+TalkInput.InputKisekaeName : (
+	${MenuHeader.Save}
+	$(
+		split @filename $(cncpath $(Reference 1)) $(cncpath "\\");
+		setstr @filename $@filename[-1];
+		if $[ ${@filename} !~ "." ] $(
+			#拡張子がないようなので「.txt」を補完
+			setstr @filename ${@filename}".txt";
+		);
+		PartsSave ${@filename};
+	)
+	着せ替えレシピを「${@filename}」に保存しました。\n
+	\n
+	\n
+	${DressNaviMenu}
+)
+:endrem
+
+Dialog.KisekaeSave.Selected : (
+	${MenuHeader.Save}
+	$(
+		setstr @filename $(filename $(Reference 2));
+		setstr @dirname  $(dirname  $(Reference 2));
+		if $[ ${@filename} !~ "." ] $(
+			#拡張子がないようなので「.txt」を補完
+			setstr @filename ${@filename}".txt";
+		);
+		PartsSave $(cncpath ${@dirname} ${@filename});
+	)
+	着せ替えレシピを「${@filename}」に保存しました。\n
+	\n\n
+	${DressNaviMenu}
+)
+
+#------------------------
+# 着せ替えレシピのロード
+#------------------------
+
+Select.Page.KisekaeLoad : (
+	${MenuHeader.Save}
+	$(set MenuBookmark Select.Page.Save)
+	$(clear KisekaeLoad.Recipe)
+	読み込む着せ替えレシピを選んで下さい。\n
+	\!["open,dialog,open,--title=着せ替えレシピ選択,--filter="${KisekaeLoad.Filter}",--ext=txt,--dir=\""${LoadRecipeDir}"\",--id=KisekaeLoad.Selected"]
+	\n\n
+	※レシピのロードには時間がかかります。\n\n
+	${DressNaviMenu}
+)
+
+KisekaeLoad.Filter : "テキスト|*.txt|すべて|*.*"
+
+# 着せ替えレシピが選択された
+# フロントエンドの「お待ち下さい」表示
+Dialog.KisekaeLoad.Selected : $(
+	setstr KisekaeLoad.Recipe $(cncpath $(Reference 2));
+	setstr @error $(VerifyKisekaeRecipe ${KisekaeLoad.Recipe});
+	if ${@error} $(
+		# 着せ替えに不足しているパーツがある
+		split @list ${@error} "|";
+		echo (
+			${MenuHeader.Save}
+			${SMarker} 警告：\n\n[half]
+			この着せ替えレシピを使うには、下記のパーツが足りません。\n\n[half]
+			パーツをお探しですか？「$(IconQ earth 追加データカタログ Page.Save.AddDataCatalog)」へどうぞ。\n
+			\n
+			${HR}\n\n[half]
+			　（カテゴリ／パーツ）\n\n[half]
+		);
+		foreach @item @list $(
+			clear @element;
+			split @element ${@item} ".";
+			echo 　　$@element[0]"／"$(DeleteColorID $@element[1])\n\n[half];
+		);
+		echo ${DressNaviMenu};
+	) else $(
+		# 着せ替えに不足しているパーツはない
+		WaitMsg レシピ読み込み中です。 KisekaeLoad.Selected;
+	);
+)
+
+Select.Page.Save.AddDataCatalog : "\![open,browser,http://keno.es.land.to/]"${Select.Page.Save}
+
+# 着せ替えレシピ読み込み
+KisekaeLoad.Selected : (
+	# 一度全部剥ぐのでキャラクタを非表示に
+	\0\s[-1]
+	$(
+		PartsRemoveAll;
+		# レシピ解釈
+		ExecRecipe ${KisekaeLoad.Recipe};
+		clear KisekaeLoad.Recipe;
+		# タグ列があれば実行
+		if $(size ExecRecipe.log) $(get ExecRecipe.log);
+		# 必ずシェルリロードする
+		ShellReload Select.Page.Save;
+	)
+)
+
+# キャンセル時はセーブ・ロード入り口へ
+DialogCancel.KisekaeLoad.Selected : ${${MenuBookmark}}
+
+
+#-------------------------------------------------------------------------------
+# パッケージのセーブ・ロード
+
+#------------------------
+# パッケージのセーブ
+#------------------------
+
+Select.Page.PackageSave : (
+	${MenuHeader.Save}
+	$(set MenuBookmark Select.Page.Save)
+#	　使用レシピ：\q[$(FillSpc15 $(IfAny $(filename ${PackageSave.Recipe})))",Page.PackageSave.Recipe"]\n\n
+#	$(if ${PackageSave.Recipe} \![*]\q["パッケージ保存,Page.PackageSave.Package"] else パッケージ保存)\n
+	　使用レシピ：$(IconTxBQ fopen 19 $(escape $(filename ${PackageSave.Recipe})) Page.PackageSave.Recipe)\n\n[half]
+	$(
+		if ${PackageSave.Recipe}
+			　$(IconQ go パッケージ保存 Page.PackageSave.Package)
+		else
+			"\f[color,160,160,160]"　　パッケージ保存\f[default]
+	)
+	
+	
+	\n\n
+	${DressNaviMenu}
+)
+
+# レシピ名選択
+# 既存のレシピ名ではなかった場合、今の設定を保存して使用する
+Select.Page.PackageSave.Recipe :(
+	${MenuHeader.Save}
+	$(set MenuBookmark Select.Page.PackageSave)
+	使用する着せ替えレシピを選んで下さい。\n
+	\!["open,dialog,open,--title=着せ替えレシピ選択,--filter="${KisekaeLoad.Filter}",--ext=txt,--dir=\""${LoadRecipeDir}"\",--id=PackageSave.RecipeSelected"]
+	\n\n
+	${DressNaviMenu}
+)
+
+Dialog.PackageSave.RecipeSelected : (
+	$(
+		setstr @filename $(filename $(Reference 2));
+		setstr @dirname  $(dirname  $(Reference 2));
+		if $[ ${@filename} !~ "." ] $(
+			#拡張子がないようなので「.txt」を補完
+			setstr @filename ${@filename}".txt";
+		);
+		if $[ ! $(isexist $(cncpath ${@dirname} ${@filename})) ] $(
+			# 存在しないレシピ名
+			PartsSave $(cncpath ${@dirname} ${@filename});
+		);
+		setstr PackageSave.Recipe $(cncpath ${@dirname} ${@filename});
+	)
+	${Select.Page.PackageSave}
+)
+
+DialogCancel.PackageSave.RecipeSelected : ${${MenuBookmark}}
+
+
+# パッケージ保存
+Select.Page.PackageSave.Package :(
+	${MenuHeader.Save}
+	$(set MenuBookmark Select.Page.PackageSave)
+	保存するキャラクタ設定パッケージの名前を選んで下さい。\n
+	\!["open,dialog,save,--title=パッケージ保存,--filter="${PackageLoad.Filter}",--ext=pkg,--dir=\""${LoadRecipeDir}"\",--id=PackageSave.PackageSelected"]
+	\n\n
+	${DressNaviMenu}
+)
+
+Dialog.PackageSave.PackageSelected :(
+	${MenuHeader.Save}
+	$(
+		setstr @filename $(filename $(Reference 2));
+		setstr @dirname  $(dirname  $(Reference 2));
+		if $[ ${@filename} !~ "." ] $(
+			#拡張子がないようなので「.pkg」を補完
+			setstr @filename ${@filename}".pkg";
+		);
+		SaveCharacterPackage $(cncpath ${@dirname} ${@filename}) ${PackageSave.Recipe};
+		clear PackageSave.Recipe;
+	)
+	キャラクタ設定パッケージを「${@filename}」に保存しました。\n
+	\n\n
+	${DressNaviMenu}
+)
+
+DialogCancel.PackageSave.PackageSelected : ${${MenuBookmark}}
+
+
+#------------------------
+# パッケージのロード
+#------------------------
+
+Select.Page.PackageLoad : (
+	${MenuHeader.Save}
+	$(set MenuBookmark Select.Page.Save)
+	$(clear PackageLoad.Package)
+	読み込むキャラクタ設定パッケージを選んで下さい。\n
+	\!["open,dialog,open,--title=パッケージ選択,--filter="${PackageLoad.Filter}",--ext=pkg,--dir=\""${LoadRecipeDir}"\",--id=PackageLoad.Selected"]
+	\n\n
+	※パッケージのロードには時間がかかります。\n\n
+	${DressNaviMenu}
+)
+
+PackageLoad.Filter : "パッケージ|*.pkg|すべて|*.*"
+
+# パッケージが選択された
+# フロントエンドの「お待ち下さい」表示
+Dialog.PackageLoad.Selected : $(
+	setstr PackageLoad.Package $(cncpath $(Reference 2));
+	# パッケージを検査
+	setstr @error $(VerifyCharacterPackage ${PackageLoad.Package});
+	if $[ ${@error} == 0 ] $(
+		# 健全なパッケージファイル
+		WaitMsg パッケージ読み込み中です。 PackageLoad.Selected;
+	) else if $[ ${@error} == -3 ] $(
+		# 持ってないパーツを使っていた
+		split @list ${VerifyCharacterPackage.log} "|";
+		echo (
+			${MenuHeader.Save}
+			${SMarker} 警告：\n\n[half]
+			このパッケージを使うには、下記のパーツが足りません。\n\n[half]
+			パーツをお探しですか？「$(IconQ earth 追加データカタログ Page.Save.AddDataCatalog)」へどうぞ。\n
+			\n
+			${HR}\n\n[half]
+			　（カテゴリ／パーツ）\n\n[half]
+		);
+		foreach @item @list $(
+			clear @element;
+			split @element ${@item} ".";
+			echo 　　$@element[0]"／"$(DeleteColorID $@element[1])\n\n[half];
+		);
+		echo ${DressNaviMenu};
+	) else $(
+		echo (
+			# パッケージが壊れている
+			${MenuHeader.Save}
+			${SMarker} 警告：\n\n[half]
+			このパッケージファイルは壊れています。\n\n[half]
+			適用を中止します。\n\n[half]
+			${DressNavimenu}
+		);
+	);
+)
+
+# パッケージ読み込み
+PackageLoad.Selected : (
+	# 一度全部剥ぐのでキャラクタを非表示に
+	\0\s[-1]
+	$(
+		PartsRemoveAll;
+		# パッケージ解釈
+		setstr @tag $(LoadCharacterPackage ${PackageLoad.Package});
+		# タグ列があれば実行
+		if $(size @tag) $(get @tag);
+		# 必ずシェルリロードする
+		ShellReload Select.Page.Save;
+		clear PackageLoad.Package;
+	)
+)
+
+# キャンセル時はセーブ・ロード入り口へ
+DialogCancel.PackageLoad.Selected : ${${MenuBookmark}}
+
+#------------------------
+# 関数群
+#------------------------
+
+=kis
+# 機能: キャラクタ設定をパッケージファイルに保存する
+# 第1引数: パッケージファイル名
+# 第2引数: パッケージに使用するレシピファイル名(省略時は現在のレシピから)
+function SaveCharacterPackage $(
+	# トークファイルを読み込み
+	setstr @talkfile    ${SentenceFile}".txt";
+	setstr @mousefile   "mouse_"${MouseFile}".txt";
+	setstr @bootendfile "bootend_"${BootendFile}".txt";
+	textload @talk    $(cncpath "usertalk\\randomtalk" ${@talkfile});
+	textload @mouse   $(cncpath "usertalk\\mouse" ${@mousefile});
+	textload @bootend $(cncpath "usertalk\\bootend" ${@bootendfile});
+	# マウス領域
+	foreach @area ColorsActiveMouseArea.${ColorsCurrentShellName} $(
+		pushstr @mouseareastack ${@area}"|"$(join ColorsMouseArea.${ColorsCurrentShellName}.${@area} "|");
+	);
+	# レシピファイルを読み込み
+	if $[ $@arg[2] != "" && $(isexist $(cncpath $@arg[2])) ] $(
+		# レシピファイルが指定されており実在
+		textload @recipe $(cncpath $@arg[2]);
+		# 念のためパス部分を排除
+		setstr @recipefile $(filename $(cncpath $@arg[2]));
+	) else $(
+		# レシピファイルが指定されていない
+		# SaveCharacterPackage.temporaryを中継し@recipeにレシピを保存
+		move SaveCharacterPackage.temporary @temp;
+		PartsEntrySave SaveCharacterPackage.temporary;
+		move SaveCharacterPackage.temporary @recipe;
+		move @temp SaveCharacterPackage.temporary;
+		# 現在時刻を使いレシピファイル名を生成
+		setstr @recipefile "Current-"$(date %y%m%d-%H%M%S)".txt";
+		レシピ生成
+		textsave $(cncpath ${SaveRecipeDir} ${@recipefile}) @recipe;
+	);
+	# パッケージファイル内容生成
+	pushstr @stream "#PACKAGE/1.0";
+	pushstr @stream "COLORS.Package.talk: "$(getcode @talkfile);
+	pushstr @stream "COLORS.Package.talksize: "$(size @talk);
+	pushstr @stream "COLORS.Package.mouse: "$(getcode @mousefile);
+	pushstr @stream "COLORS.Package.mousesize: "$(size @mouse);
+	pushstr @stream "COLORS.Package.mousearea: "$(join @mouseareastack ", ");
+	pushstr @stream "COLORS.Package.bootend: "$(getcode @bootendfile);
+	pushstr @stream "COLORS.Package.bootendsize: "$(size @bootend);
+	pushstr @stream "COLORS.Package.recipe: "$(getcode @recipefile);
+	pushstr @stream "COLORS.Package.recipesize: "$(size @recipe);
+	pushstr @stream "COLORS.Package.FPP: "$(getcode FPP);
+	pushstr @stream "COLORS.Package.SPP: "$(getcode SPP);
+	pushstr @stream "COLORS.Package.username: "$(getcode username);
+	
+	# トークファイルの内容を出力
+	pushstr @stream $(loop 70 "#");
+	copy @talk @stream;
+	pushstr @stream $(loop 70 "#");
+	copy @mouse @stream;
+	pushstr @stream $(loop 70 "#");
+	copy @bootend @stream;
+	
+	# レシピファイルの内容を出力
+	pushstr @stream $(loop 70 "#");
+	pushstr @stream "COLORS.Package.recipebody (";
+	while $(size @recipe) $(
+		pushstr @stream "	"$(shiftcode @recipe;if $(size @recipe) ",");
+	);
+	pushstr @stream ")";
+	
+	# ファイルに出力
+	setstr @dirname $(dirname $@arg[1]);
+	if $[ ${@dirname} == "" ] $(setstr @dirname $(cncpath ${System.DataPath} ${SaveRecipeDir}));
+	# 一旦テンポラリにセーブし、あとで移動させる(textsaveの制約回避)
+	textsave $(cncpath "temp\\temprecipe" $(filename $@arg[1])) @stream;
+	# 上書き時には既にあるファイルを消す
+	if $(isexist $@arg[1]) $(
+		remove_file $(cncpath $@arg[1]);
+	);
+	move_file $(cncpath ${System.DataPath}"temp\\temprecipe" $(filename $@arg[1])) ${@dirname};
+	silent;
+);
+
+# 機能:キャラクタ設定パッケージファイルを読み込む
+# 第1引数: パッケージファイル名
+# 備考:必ずリロードすること
+function LoadCharacterPackage $(
+	textload @package $@arg[1];
+	if $[ $@package[0] != "#PACKAGE/1.0" ] $(return);
+	
+	# キャラクタ設定ヘッダ読み込み
+	clear @package[0];
+	loop $(size LoadCharacterPackage.Property) $(
+		if $[ ! $(match_at $@package[0] "COLORS.Package.") ] $(break);
+		setstr @line $(sub $(shift @package) "COLORS.Package." "");
+		clear @token;
+		split @token ${@line} ": ";
+		if $[ $(find LoadCharacterPackage.Property $@token[0]) < 0 ] $(
+			# 無効なプロパティの場合は無視する
+			continue;
+		);
+		# 有効なプロパティ
+		setstr @property $(shift @token);
+		set @entry $(join @token ": ");
+		setstr @package.${@property} ${@entry};
+		inc @propertycount;
+	);
+	#十分なプロパティ情報が手に入らない場合は中止
+	if $[ $(size LoadCharacterPackage.Property) != ${@propertycount} ] $(
+		if $[
+			   ${@package.mouse} != ""
+			&& ${@package.mousesize} != ""
+			&& ${@package.mousearea} != ""
+			&& ${@package.bootend} != ""
+			&& ${@package.bootendsize} != ""
+		] $(
+			# マウス反応ファイル、起動終了ファイルは歴史的事情でない場合がある
+			# これらはあるのに不足のプロパティがあるのは異常なので中止
+			return;
+		);
+	);
+	
+	# トークファイル
+	clear @package[0];
+	loop ${@package.talksize} $(pushstr @talk $(shift @package));
+	if $[ ${@package.mouse} != "" ] $(
+		clear @package[0];
+		loop ${@package.mousesize} $(pushstr @mouse $(shift @package));
+	);
+	if $[ ${@package.bootend} != "" ] $(
+		clear @package[0];
+		loop ${@package.bootendsize} $(pushstr @bootend $(shift @package));
+	);
+	# レシピファイル
+	clear @package[0..1];
+	clear @package[-1];
+	loop ${@package.recipesize} $(
+		setstr @line $(substr $(shift @package) 1);
+		set @cmd $(if $(size @package) $(rsub ${@line} "," "") else ${@line});
+		pushstr @recipe ${@cmd};
+	);
+	# レシピが使用可能かチェックする
+	clear LoadCharacterPackage.temporary;
+	clear LoadCharacterPackage.log;
+	copy @recipe LoadCharacterPackage.temporary;
+	setstr @error $(VerifyKisekaeRecipeEntry LoadCharacterPackage.temporary);
+	# 持っていないパーツがある場合は帰る
+	if ${@error} $(return);
+	# 以下、レシピは健全なので現設定を上書きしていく
+	
+	# マウス反応エリア
+	split @mouseareatmp ${@package.mousearea} ", ";
+	if $(size @mouseareatmp) $(
+		clear ColorsActiveMouseArea.${ColorsCurrentShellName};
+		foreach @item @mouseareatmp $(
+			clear @element;
+			split @element ${@item} "|";
+			# @areaname=マウス反応エリア名
+			setstr @areaname $(shift @element);
+			# アクティブエリアに追加
+			pushstr ColorsActiveMouseArea.${ColorsCurrentShellName} ${@areaname};
+			if $[ $(find ColorsMouseArea.${ColorsCurrentShellName} ${@areaname}) < 0 ] $(
+				# まだ知らないマウス反応エリアだったので追加
+				pushstr ColorsMouseArea.${ColorsCurrentShellName} ${@areaname};
+			);
+			# マウス反応座標を更新
+			clear ColorsMouseArea.${ColorsCurrentShellName}.${@areaname};
+			copy @element ColorsMouseArea.${ColorsCurrentShellName}.${@areaname};
+		);
+		# マウス反応をsurfaces.txtに反映
+		EditMouseArea;
+	);
+	# キャラクタ設定本体読み込み
+	setstr FPP ${@package.FPP};
+	setstr SPP ${@package.SPP};
+	setstr username ${@package.username};
+	
+	# トーク辞書存在チェック
+	readdir @talkfiles "usertalk\\randomtalk";
+	if $[ $(find @talkfiles ${@package.talk}) < 0 ] $(
+		# まだ存在しないトークファイルだった
+		textsave $(cncpath "usertalk\\randomtalk\\"${@package.talk}) @talk;
+		# 辞書読み込み
+		ReloadRandomtalkDictionaries;
+	);
+	readdir @mousefiles "usertalk\\mouse";
+	if $[ $(find @mousefiles ${@package.mouse}) < 0 ] $(
+		# まだ存在しないトークファイルだった
+		textsave $(cncpath "usertalk\\mouse\\"${@package.mouse}) @mouse;
+		# 辞書読み込み
+		ReloadMouseDictionaries;
+	);
+	readdir @bootendfiles "usertalk\\bootend";
+	if $[ $(find @bootendfiles ${@package.bootend}) < 0 ] $(
+		# まだ存在しないトークファイルだった
+		textsave $(cncpath "usertalk\\bootend\\"${@package.bootend}) @bootend;
+		# 辞書読み込み
+		ReloadBootendDictionaries;
+	);
+	## トーク選択
+	# *ランダムトーク
+	setstr SentenceFile $(rsub ${@package.talk} ".txt" "");
+	setstr UserExport.SentenceFile ${SentenceFile};
+	# *マウストーク
+	if $[ ${@package.mouse} != "" ] $(
+		setstr MouseFile $(rsub $(substr ${@package.mouse} 6) ".txt" "");
+		setstr UserExport.MouseFile ${MouseFile};
+		ReloadMouseDictionaries;
+	);
+	# *起動終了トーク
+	if $[ ${@package.bootend} != "" ] $(
+		setstr BootendFile $(rsub $(substr ${@package.bootend} 8) ".txt" "");
+		setstr UserExport.BootendFile ${BootendFile};
+		ReloadBootendDictionaries;
+	);
+	# レシピ選択
+	ExecRecipeEntry LoadCharacterPackage.temporary;
+	clear LoadCharacterPackage.temporary;
+	
+	return $(get ExecRecipe.log);
+);
+
+# 機能:キャラクタ設定パッケージファイルを検査する
+# 第1引数: パッケージファイル名
+# 戻り値:  0...正常
+#         -1...パッケージ宣言がそもそもない
+#         -2...不足しているプロパティがある
+#         -3...レシピに不足しているパーツがある
+# 備考: 戻り値=-3のとき、VerifyCharacterPackage.logエントリに不足パーツ情報
+function VerifyCharacterPackage $(
+	textload @package $@arg[1];
+	if $[ $@package[0] != "#PACKAGE/1.0" ] $(return -1);
+	
+	# キャラクタ設定ヘッダ読み込み
+	clear @package[0];
+	loop $(size LoadCharacterPackage.Property) $(
+		if $[ ! $(match_at $@package[0] "COLORS.Package.") ] $(break);
+		setstr @line $(sub $(shift @package) "COLORS.Package." "");
+		clear @token;
+		split @token ${@line} ": ";
+		if $[ $(find LoadCharacterPackage.Property $@token[0]) < 0 ] $(
+			# 無効なプロパティの場合は無視する
+			continue;
+		);
+		# 有効なプロパティ
+		setstr @property $(shift @token);
+		set @entry $(join @token ": ");
+		setstr @package.${@property} ${@entry};
+		inc @propertycount;
+	);
+	#十分なプロパティ情報が手に入らない場合は中止
+	if $[ $(size LoadCharacterPackage.Property) != ${@propertycount} ] $(
+		if $[
+			   ${@package.mouse} != ""
+			&& ${@package.mousesize} != ""
+			&& ${@package.mousearea} != ""
+			&& ${@package.bootend} != ""
+			&& ${@package.bootendsize} != ""
+		] $(
+			# マウス反応ファイル、起動終了ファイルは歴史的事情でない場合がある
+			# これらはあるのに不足のプロパティがあるのは異常なので中止
+			return -2;
+		);
+	);
+	
+	# トークファイル部分を読み飛ばす
+	clear @package[0];
+	loop ${@package.talksize} $(clear @package[0]);
+	if $[ ${@package.mouse} != "" ] $(
+		clear @package[0];
+		loop ${@package.mousesize} $(clear @package[0]);
+	);
+	if $[ ${@package.bootend} != "" ] $(
+		clear @package[0];
+		loop ${@package.bootendsize} $(clear @package[0]);
+	);
+	# レシピファイル
+	clear @package[0..1];
+	clear @package[-1];
+	loop ${@package.recipesize} $(
+		setstr @line $(substr $(shift @package) 1);
+		set @cmd $(if $(size @package) $(rsub ${@line} "," "") else ${@line});
+		pushstr @recipe ${@cmd};
+	);
+	# レシピが使用可能かチェックする
+	clear LoadCharacterPackage.temporary;
+	clear VerifyCharacterPackage.log;
+	copy @recipe LoadCharacterPackage.temporary;
+	setstr @error $(VerifyKisekaeRecipeEntry LoadCharacterPackage.temporary);
+	# 持っていないパーツがある場合はLoadCharacterPackage.logに出力して帰る
+	if ${@error} $(
+		setstr VerifyCharacterPackage.log ${@error};
+		return -3;
+	);
+	# ここまでくるのは正常な場合
+	return 0;
+);
+=end
+
+# 意味のあるプロパティ一覧
+LoadCharacterPackage.Property (
+	talk,
+	talksize,
+	mouse,
+	mousesize,
+	mousearea,
+	bootend,
+	bootendsize,
+	recipe,
+	recipesize,
+	FPP,
+	SPP,
+	username
+)

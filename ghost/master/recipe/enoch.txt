@@ -1,0 +1,34 @@
+declare	RECIPE/1.0	COLORS
+select	素体	肌_CC
+mayuselect	1
+paint	素体	肌_CC		236	186	111
+select	インナー３	パフスリーブ_CC
+paint	インナー３	パフスリーブ_CC		231	241	239
+select	インナー３	指なしロンググローブ_CC
+paint	インナー３	指なしロンググローブ_CC		231	241	239
+select	靴	革靴_CC
+paint	靴	革靴_CC		255	255	255
+select	ズボン	スリムパンツ_CC
+paint	ズボン	スリムパンツ_CC		83	104	121
+select	トップス１	変形キャミ_CC
+paint	トップス１	変形キャミ_CC		230	230	230
+select	オーバースカート	チャップスハーフ丈左_CC
+paint	オーバースカート	チャップスハーフ丈左_CC		230	230	230
+select	オーバースカート	チャップス股下タイプ右_CC
+paint	オーバースカート	チャップス股下タイプ右_CC		230	230	230
+select	オーバースカート	ブーツチャップス左_CC
+paint	オーバースカート	ブーツチャップス左_CC		230	230	230
+select	眉１	中太低め_CC
+select	横髪	ウエーブセミロング_CC
+select	前髪	オールバック_CCC
+select	髪オプション	前髪ほつれ左_CC
+select	髪オプション	前髪ほつれ中央寄り_CC
+select	後髪	ウエーブゆるめセミロング_CC
+select	耳	デフォルト_SKIN
+select	瞳色	左右_CC
+paint	瞳色	左右_CC		92	148	154
+select	目の形	細目普通
+select	瞳ハイライト	細目用
+select	口	デフォルト
+paint	眉	中太低め_CC		96	82	55
+paint	結髪	ウエーブセミロング_CC		247	221	134

@@ -1,0 +1,17 @@
+declare	RECIPE/1.0	COLORS
+cc	アクセサリー３	マント後ろ	mantusiro.png
+cc	ケープ	マント前	mantmae.png
+cc	アクセサリー３	マント後ろコウモリ	mantusirobat.png
+cc	アクセサリー３	マント後ろギザギザ	mantusirogiza.png
+cc	ズボン装飾	ロングパンツ折り目ライン	zubonsen.png
+cct	素体オプション背後	狐しっぽ	kitunesippo1.png	kitunesippo2.png
+cct	素体オプション背後	狐しっぽ左	kitunesippo3.png	kitunesippo4.png
+cc	アクセサリー３	ミニマント後ろ	mantusiroshort.png
+cc	ケープ	ミニマント前	mantmaeshort.png
+cct	帽子・ヘッドドレス２	魔女帽子	majohat1.png	majohat2.png
+mouth	口	牙付き	kibao.png	kiba.png	kibasmileo.png	kibasmile.png	kibamask.png
+cc	トップス２	シンプルベスト	vest.png
+skin	耳	つりとがり耳小	togarimimi.png
+skin	耳	つりとがり耳大	togarimimi2.png
+cc	ネクタイ・帯	蝶ネクタイ	tyounekutai.png
+cc	トップス４	スーツジャケット	jake.png

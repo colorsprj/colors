@@ -1,0 +1,27 @@
+declare	RECIPE/1.0	COLORS
+select	素体	肌_CC
+mayuselect	1
+paint	素体	肌_CC		254	235	203
+select	前髪	ナチュラル＃2_CCC
+select	後髪	結髪用シンプル_CC
+select	耳	デフォルト_SKIN
+select	素体オプション	デフォルト
+select	瞳色	左右_CC
+paint	瞳色	左右_CC		109	142	160
+select	目の形	デフォルト
+select	瞳ハイライト	左下
+select	口	デフォルト
+select	眼鏡	角丸_CCT
+paint	眼鏡	角丸_CCT	2toneCC2	67	94	137	255	255	255
+select	インナー２	シンプルブラウス_CC
+select	靴	ストラップシューズ_CC
+paint	靴	ストラップシューズ_CC		132	99	152
+select	ズボン	シンプルロングパンツ_CC
+select	トップス１装飾	シャツ襟_CC
+paint	トップス１装飾	シャツ襟_CC		255	255	255
+select	ネクタイ・帯	ネクタイ_CC
+paint	ネクタイ・帯	ネクタイ_CC		109	142	160
+select	タイピン・帯締め	ネクタイピン_CC
+paint	タイピン・帯締め	ネクタイピン_CC		96	77	66
+select	眉１	デフォルト
+paint	横髪	ナチュラル＃2_CCC		218	211	203

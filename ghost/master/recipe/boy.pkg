@@ -1,0 +1,98 @@
+#PACKAGE/1.0
+COLORS.Package.talk: "boy.txt"
+COLORS.Package.talksize: 13
+COLORS.Package.mouse: "mouse_default.txt"
+COLORS.Package.mousesize: 14
+COLORS.Package.mousearea: head|82|50|213|117, face|119|121|178|167, bust|129|175|172|199
+COLORS.Package.bootend: "bootend_default.txt"
+COLORS.Package.bootendsize: 25
+COLORS.Package.recipe: "boy.txt"
+COLORS.Package.recipesize: 27
+COLORS.Package.FPP: "私"
+COLORS.Package.SPP: "あなた"
+COLORS.Package.username: "ユーザさん"
+######################################################################
+##############################################################
+#
+#トークのサンプルです。
+#
+##############################################################
+
+sentence : \0\s[103]$(? あめちゃん チョコレート ハーゲンダッツ たこ焼き)ください。\e
+
+sentence : \0\s[4]${わたし}はいつだって眠いです。\w8\w8${ユーザー}は？\e
+
+sentence : \0\s[103]人はパンのみで生きるにあらず。\w8\w8\s[5]当然です、\w8ケーキがなくちゃ。\e
+
+sentence : \0\s[103]${あなた}がいて、\w8${わたし}がいる。\e
+######################################################################
+#Mouse.DoubleClick.0.＜マウス反応領域＞ : ある領域をダブルクリックした時の反応
+#Mouse.DoubleClick.0                    : 領域外をダブルクリックした時の反応
+#Mouse.Click.0.＜マウス反応領域＞       : ある領域をクリックした時の反応
+#Mouse.Click.0                          : 領域外をクリックした時の反応
+#Mouse.Stroke.0.＜マウス反応領域＞      : ある領域を撫でた時の反応
+
+Mouse.DoubleClick.0.head : \0\s[4]痛いです。\e
+
+Mouse.Stroke.0.head : \0\s[5]にゃあ。\e
+
+Mouse.Stroke.0.face : \0\s[4]困ります。\e
+
+Mouse.Stroke.0.bust : \0\s[4]やめて下さい。\e
+
+######################################################################
+# 起動・終了トーク
+#
+# Boot.＜時間（2桁）＞.＜日付4桁＞  :  ＜起動トーク＞
+# Boot.date.＜日付（4桁）＞         :  ＜起動トーク＞
+# Boot.＜時間（2桁）＞              :  ＜起動トーク＞
+# Boot                              :  ＜起動トーク＞
+
+# Close.＜時間（2桁）＞.＜日付4桁＞ :  ＜起動トーク＞
+# Close.date.＜日付（4桁）＞        :  ＜起動トーク＞
+# Close.＜時間（2桁）＞             :  ＜起動トーク＞
+# Close                             : ＜終了トーク＞
+
+# 日付・時間指定サンプル
+#Boot.18.1224, Boot.19.1224, Boot.20.1224, Boot.21.1224, Boot.22.1224, Boot.23.1224 : \0\s[5]クリスマスイブの夜です。\e
+
+# 日付サンプル
+Boot.date.1031 : \0\s[5]Happy Halloween!\e
+
+# 時間サンプル
+Boot.18, Boot.19, Boot.20, Boot.21, Boot.22, Boot.23, Boot.00, Boot.01, Boot.02, Boot.03, Boot.04 : \0\s[5]こんばんは。
+Boot.05, Boot.06, Boot.07, Boot.08, Boot.09, Boot.10 : \0\s[5]おはようございます。\e
+Boot.11, Boot.12, Boot.13, Boot.14, Boot.15, Boot.16, Boot.17 : \0\s[5]こんにちは。\e
+
+Close : \0\s[5]さようなら。
+
+######################################################################
+COLORS.Package.recipebody (
+	"declare	RECIPE/1.0	COLORS",
+	"select	素体	肌_CC",
+	"mayuselect	1",
+	"paint	素体	肌_CC		254	235	203",
+	"select	前髪	ナチュラル＃2_CCC",
+	"select	後髪	結髪用シンプル_CC",
+	"select	耳	デフォルト_SKIN",
+	"select	素体オプション	デフォルト",
+	"select	瞳色	左右_CC",
+	"paint	瞳色	左右_CC		109	142	160",
+	"select	目の形	デフォルト",
+	"select	瞳ハイライト	左下",
+	"select	口	デフォルト",
+	"select	眼鏡	角丸_CCT",
+	"paint	眼鏡	角丸_CCT	2toneCC2	67	94	137	255	255	255",
+	"select	インナー２	シンプルブラウス_CC",
+	"select	靴	ストラップシューズ_CC",
+	"paint	靴	ストラップシューズ_CC		132	99	152",
+	"select	ズボン	シンプルロングパンツ_CC",
+	"select	トップス１装飾	シャツ襟_CC",
+	"paint	トップス１装飾	シャツ襟_CC		255	255	255",
+	"select	ネクタイ・帯	ネクタイ_CC",
+	"paint	ネクタイ・帯	ネクタイ_CC		109	142	160",
+	"select	タイピン・帯締め	ネクタイピン_CC",
+	"paint	タイピン・帯締め	ネクタイピン_CC		96	77	66",
+	"select	眉１	デフォルト",
+	"paint	横髪	ナチュラル＃2_CCC		218	211	203"
+)

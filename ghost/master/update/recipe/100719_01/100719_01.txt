@@ -1,0 +1,2 @@
+declare	RECIPE/1.0	COLORS
+mayuc	”û‚P	‘¾”û	mayusu.png	mayuodoroki.png	mayukomari.png	mayuikari.png

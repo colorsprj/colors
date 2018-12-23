@@ -1,0 +1,29 @@
+declare	RECIPE/1.0	COLORS
+select	素体	肌_CC
+mayuselect	2
+paint	素体	肌_CC		254	235	203
+select	結髪	ポニーテール_CCC
+select	アクセサリー２	ポニテ用リボン_CC
+paint	アクセサリー２	ポニテ用リボン_CC		255	191	223
+select	耳	ねこ耳_CCC
+paint	耳	ねこ耳_CCC		188	149	120
+select	素体オプション	デフォルト
+select	瞳色	左右_CC
+paint	瞳色	左右_CC		136	136	255
+select	目の形	デフォルト
+select	瞳ハイライト	左下
+select	口	デフォルト
+select	スカート	多スリットスカート_CC
+paint	スカート	多スリットスカート_CC		105	105	105
+select	スカート装飾	多スリットスカート模様すそポイント_CC
+paint	スカート装飾	多スリットスカート模様すそポイント_CC		233	48	48
+select	トップス１	タートルネックスリットチュニック_CC
+paint	トップス１	タートルネックスリットチュニック_CC		255	255	255
+select	トップス１装飾	袖折り返し_CC
+paint	トップス１装飾	袖折り返し_CC		233	48	48
+select	後髪	結髪用シンプル_CC
+select	横髪	ナチュラル_CC
+select	前髪	ナチュラル_CCC
+select	眉２	デフォルト
+select	アクセサリー５	ＳＳＰ
+paint	結髪	ポニーテール_CCC		188	149	120

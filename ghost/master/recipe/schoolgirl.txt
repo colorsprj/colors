@@ -1,0 +1,33 @@
+declare	RECIPE/1.0	COLORS
+select	素体	肌_CC
+mayuselect	1
+paint	素体	肌_CC		254	235	203
+select	耳	デフォルト_SKIN
+select	素体オプション	デフォルト
+select	瞳色	左右_CC
+paint	瞳色	左右_CC		51	0	0
+select	目の形	デフォルト
+select	瞳ハイライト	右上
+select	口	デフォルト
+select	靴下	ニーソックス_CC
+paint	靴下	ニーソックス_CC		23	29	72
+select	靴	厚底ストラップシューズ_CCC
+paint	靴	厚底ストラップシューズ_CCC		79	52	43
+select	スカート	プリーツスカート_CC
+paint	スカート	プリーツスカート_CC		15	48	123
+select	スカート装飾	プリーツスカート裾ライン_CC
+paint	スカート装飾	プリーツスカート裾ライン_CC		108	124	238
+select	トップス１	シンプルブラウス_CC
+paint	トップス１	シンプルブラウス_CC		255	255	255
+select	トップス１装飾	シャツ襟_CC
+paint	トップス１装飾	シャツ襟_CC		15	48	123
+select	ネクタイ・帯	ネクタイ_CC
+paint	ネクタイ・帯	ネクタイ_CC		31	180	172
+select	タイピン・帯締め	ネクタイピン_CC
+paint	タイピン・帯締め	ネクタイピン_CC		244	186	77
+select	後髪	結髪用シンプル_CC
+select	横髪	二段ストレート_CC
+select	横髪	内巻き_CC
+select	前髪	ナチュラル_CCC
+select	眉２	デフォルト
+paint	結髪	結髪用シンプル_CC		79	42	53

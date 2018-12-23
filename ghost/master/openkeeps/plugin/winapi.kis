@@ -1,0 +1,37 @@
+# Windows APIを呼ぶ関数群
+# call_func.dll関数群をバインドしてあることが前提
+# 前提関数:
+#  -add_func
+#  -call_func
+#  -remove_func
+#  -alloc_mem
+#  -get_mem
+#  -set_mem
+#  -free_mem
+
+=kis
+# 機能  : 現在起動しているプロセスのファイルパスを返す
+# 戻り値: 現在起動しているプロセスのファイルパス
+# 備考  : 失敗した場合はnull文字列が返る
+function GetModuleFileName $(
+	setstr @fname "GetModuleFileNameA";
+	# GetModuleFileNameA登録
+	add_func kernel32.dll ${@fname} "u32" "ptr" "ptr" "u32";
+	# 260文字のバッファ確保
+	setstr @len 260;
+	setstr @buff $(alloc_mem "ptr" ${@len});
+	# 現在のプロセスのパス取得
+	setstr @ret $(call_func ${@fname} 0 ${@buff} ${@len});
+	# 失敗していないなければバッファからパスをコピー
+	if $[ ${@ret} != 0 ] $(
+		setstr @path $(get_mem ${@buff} "str");
+	);
+	# バッファメモリ解放
+	free_mem ${@buff} "ptr";
+	# GetModuleFileNameA開放
+	remove_func ${@fname};
+	
+	# パスを返す
+	return ${@path};
+);
+=end

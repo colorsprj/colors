@@ -1,0 +1,53 @@
+=kis
+#==============================================================================
+#
+# 華和梨 Phase 8.2.8 起動時読み込み辞書
+#
+#==============================================================================
+
+#デバッグ用設定================================================================
+# ログファイル作成設定
+#loglevel error warning info baseevents rscevents mouseevents;
+#logfile kawari-$(date %H%M%S).log;
+
+# デバッガON/OFF
+#debugger on;
+
+# セキュリティレベル設定
+securitylevel middle;
+
+# エラーメッセージを日本語(Shift_JIS)に設定
+rccharset Shift_JIS;
+
+#==============================================================================
+
+
+#辞書読み込み==================================================================
+
+# システム辞書読み込み（変更不可）
+load dict-system.txt;
+
+# テンプレート辞書
+load ghost-base.txt;
+load ghost-bootend.txt;
+load ghost-communicate.txt;
+load ghost-menu.txt;
+load ghost-mouse.txt;
+load ghost-notify.txt;
+load ghost-resource.txt;
+load ghost-state.txt;
+load ghost-time.txt;
+load ghost-translate.txt;
+
+# キャラクタ設定
+load character.txt;
+
+#==============================================================================
+
+
+#辞書読み込み後処理============================================================
+
+KawariSystemBoot;
+
+#==============================================================================
+=end

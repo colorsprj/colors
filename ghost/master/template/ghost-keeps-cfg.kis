@@ -1,0 +1,200 @@
+# 設定メニュー=================================================================
+
+# メニュー本体-----------------------------------------------------------------
+Select.Page.Cfg : (
+	${MenuHeader.Cfg}
+	${SMarker}お喋り設定\n\n[half]
+	$(
+		loop 4 $(
+			setstr @i ${-1};
+			echo (
+				　　$(RadioQ
+					$[ ${interval} == ${TalkRate.${@i}.rate} ]
+					$(FillSpc 26 ${TalkRate.${@i}}"("${TalkRate.${@i}.rate}"秒)")
+					TalkRateChoice
+					${@i}
+				)
+				\n\n[half]
+			);
+		);
+	)
+	\n[half]
+	(
+		　　$(CheckQ
+			$[ ${RandomtalkStatus} == "true" ]
+			$(FillSpc 26 お喋りする)
+			TalkSwitch
+			$(if $[ ${RandomtalkStatus} == "true" ] "false" else "true")
+		)
+		\n\n[half]
+	)
+:rem
+	${SMarker}キャラクター設定\n\n[half]
+	　　■一人称　　　　：$(IconTxBQ editfile 16 ${FPP} Page.Cfg.ChangeFPP)\n
+	　　■二人称　　　　：$(IconTxBQ editfile 16 ${SPP} Page.Cfg.ChangeSPP)\n
+	　　■ユーザー呼称　：$(IconTxBQ editfile 16 ${username} Page.Cfg.ChangeUsername)\n
+:endrem
+	\n[half]
+	$(setstr MenuBookmark Select.Page.Cfg)
+	$(setstr CfgMenuBookmark Select.Page.Cfg)
+	$(MenuThread Zip Page.Cfg)
+	"\_l[0,395]"
+	$(IconTxQ go 18 更新履歴 Page.Cfg.Revision)\n
+	${DressNaviMenu2}
+)
+
+# お喋り設定-------------------------------------------------------------------
+
+# 頻度
+Select.TalkRateChoice : (
+	$(setstr interval ${TalkRate.${ChoiceInfo.1}.rate})
+	${Select.Page.Cfg}
+)
+
+# On/Off
+Select.TalkSwitch : (
+	$(setstr RandomtalkStatus ${ChoiceInfo.1})
+	${Select.Page.Cfg}
+)
+
+# 喋る頻度設定
+TalkRate.0      : 頻繁に喋る
+TalkRate.0.rate : 28
+TalkRate.1      : 普通に喋る
+TalkRate.1.rate : 57
+TalkRate.2      : 控え目に喋る
+TalkRate.2.rate : 84
+TalkRate.3.     : 時々喋る
+TalkRate.3.rate : 116
+
+
+# キャラクター設定-------------------------------------------------------------
+
+# 一人称を変更する
+Select.Page.Cfg.ChangeFPP : (
+	${MenuHeader.Cfg}
+	新しい一人称を入力してください。
+	\!["open,inputbox,InputFPP,-1,"${FPP}]
+	\!["quicksession,false"]
+	\e
+)
+
+TalkInput.InputFPP : (
+	$(setstr FPP $(SReference 1))
+	$(setstr UserExport.FPP ${FPP})
+	${Select.Page.Cfg}
+)
+TalkInputCancel.InputFPP : ${Select.Page.Cfg}
+
+# 二人称を変更する
+Select.Page.Cfg.ChangeSPP : (
+	${MenuHeader.Cfg}
+	新しい二人称を入力してください。
+	\!["open,inputbox,InputSPP,-1,"${SPP}]
+	\!["quicksession,false"]
+	\e
+)
+
+TalkInput.InputSPP : (
+	$(setstr SPP $(SReference 1))
+	$(setstr UserExport.SPP ${SPP})
+	${Select.Page.Cfg}
+)
+TalkInputCancel.InputSPP : ${Select.Page.Cfg}
+
+# ユーザ名を変更する
+Select.Page.Cfg.ChangeUsername : (
+	${MenuHeader.Cfg}
+	新しいユーザー呼称を入力してください。
+	\!["open,inputbox,InputUsername,-1,"${username}]
+	\!["quicksession,false"]
+	\e
+)
+
+TalkInput.InputUsername : (
+	$(setstr username $(SReference 1))
+	$(setstr UserExport.username.default ${username})
+	${Select.Page.Cfg}
+)
+TalkInputCancel.InputUsername : ${Select.Page.Cfg}
+
+
+# システム設定----------------------------------------------------------------
+
+# 現在は暫定的に更新履歴を割り振っている
+Select.Page.Cfg.Revision : (
+	$(setstr MenuBookmark Select.Page.Cfg)
+	${MenuHeader.Cfg}
+	${SMarker}更新履歴\n\n[half]
+	$(
+		# ページ設定
+		setstr @pagelength 1;
+		# パンくずリスト作成
+		TopicPath
+			ColorsRevision
+			${@pagelength}
+			Cfg.Revision.Page
+			Page.Cfg.Revision
+		;
+		# @Pにパーツリストからパーツを取り出し
+		setstr @i     $[ ${Cfg.Revision.Page} * ${@pagelength} ];
+		setstr @limit $[ ( ${Cfg.Revision.Page} + 1 ) * ${@pagelength} ];
+		while $[ ${@i} < ${@limit} && ${@i} < $(size ColorsRevision) ] $(
+			echo 　${SMarker} $ColorsRevision[${@i}]\n\n[half];
+			foreach @line ColorsRevision.${@i} $(
+				clear @sline;
+				setstr @count 0;
+				while $[ $(length ${@line}) != 0 ] $(
+					setstr @sline $(SubstrBytes ${@line} 52);
+					setstr @line $(substr ${@line} $(length ${@sline}));
+					echo 　　$(if ${@count} 　 else "* ")${@sline}\n;
+					inc @count;
+				);
+			);
+			inc @i;
+		);
+	)
+	${DressNaviMenu}
+)
+
+# ページ管理用エントリ
+Cfg.Revision.Page : 0
+
+# ネットワーク更新自動チェックのON/OFF
+# 宣言はghost-keeps-shellmake.kisで定義済み
+#MenuThread.Zip : System
+MenuThread.Zip.System.title : "システム設定"
+MenuThread.Zip.System.contents (
+	$(CheckQ
+			$[ ${ColorsUpdate.UpdateCheck} == 1 ]
+			$(FillSpc 26 自動でアップデート確認する)
+			UpdateCheckSwitch
+			$(if $[ ${ColorsUpdate.UpdateCheck} == 1 ] 0 else 1)
+	),
+	$(CheckQ
+			$[ ${PreviewMode} == 1 ]
+			$(FillSpc 26 着せ替えパーツプレビューを表示する)
+			PreviewModeSwitch
+			$(if $[ ${PreviewMode} == 1 ] 0 else 1)
+	)
+)
+
+# 自動更新チェックOn/Off
+Select.UpdateCheckSwitch : (
+	$(setstr ColorsUpdate.UpdateCheck ${ChoiceInfo.1})
+	${Select.Page.Cfg}
+)
+
+# 着せ替えパーツプレビューOn/Off
+Select.PreviewModeSwitch : (
+	$(setstr PreviewMode ${ChoiceInfo.1})
+	${Select.Page.Cfg}
+)
+
+# タスクトレーバルーン---------------------------------------------------------
+
+# 自動更新があることを通知する
+TrayBalloonClick.COLORSのアップデートがあります : "\![updatebymyself]"
+
+
+#==============================================================================

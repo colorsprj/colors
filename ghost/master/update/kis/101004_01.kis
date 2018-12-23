@@ -1,0 +1,18 @@
+=kis
+# フェイリスパーツ群が当たってない場合当てなおす
+if $[ ${ColorsUpdate.vars.farisrepatch} != "1" ] $(
+	# パッチあて状況の確認
+	PushCurrentShellName "COLORS";
+	if $[ $(find ColorsUpdate.recipe "100914_01") >= 0 && $(FindSurfaceID "前髪" "中寄りナチュラル") == "" ] $(
+		# フェイリスのパッチが当たってない
+		logprint "＠＠＠ Unexecuted 'Faris' recipe found!";
+		setstr @path $(cncpath ${System.DataPath} "update/recipe/100914_01/100914_01.txt");
+		setstr @dir $(dirname ${@path});
+		ExecRecipe ${@path} ${@dir};
+	);
+	PopCurrentShellName;
+	
+	# 後始末
+	setstr ColorsUpdate.vars.farisrepatch 1;
+);
+=end

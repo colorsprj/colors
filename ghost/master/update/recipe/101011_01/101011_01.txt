@@ -1,0 +1,39 @@
+declare	RECIPE/1.0	COLORS
+ccc	前髪	アシンメトリー右	maegamiasime1.png	maegamiasime2.png
+cc	後髪	ショート	usiroshort.png
+ccc	前髪	アシンメトリー左	maegamiasime3.png	maegamiasime4.png
+ccc	靴	ローファー	kutu1.png	kutu2.png
+cc	靴下	クルーソックス	kutusita.png
+cc	トップス１	半袖Ｔシャツ	tshirt.png
+cc	トップス１装飾	半袖Ｔシャツ袖口	tshirtsode.png
+cc	ネクタイ・帯	セーラー襟スカーフ	eriribon.png
+cct	アクセサリー４	セーラー襟	sailer1.png	sailer2.png
+cc	スカート	プリーツスカート膝上	skirt.png
+cc	スカート装飾	プリーツスカート膝上裾ライン	skirt2.png
+ccc	前髪	斜め分け横はね右	maegamihane1.png	maegamihane2.png
+cc	横髪	ストレート肩ライン超え	yokokamihitotaba.png
+cc	結髪	ポニーテール肩ライン超え	ponite.png
+cc	アクセサリー２	ポニテ用リボン下垂れあり	poniteribon.png
+ccc	前髪	重めナチュラル	maegamisara1.png	maegamisara2.png
+cc	後髪	ミディアムボブ	usirokamibob.png
+cc	肌オプション	泣きぼくろ左	nakihokuro.png
+cc	後髪	ミディアムボブストレート	usirokamibobston.png
+cc	後髪	あごラインボブ丸め	usirokamibobago.png
+eye	目の形	たれ目普通	tareme1.png	tareme2.png	tareme3.png	tareme4.png	tareme5.png	tareme6.png	tareme7.png
+mayuc	眉１	微アーチ	mayunsu.png	mayuniodoroki.png	mayunkomari.png	mayunikari.png
+eye	目の形	普通目	mehutuu1.png	mehutuu2.png	mehutuu3.png	mehutuu4.png	mehutuu5.png	mehutuu6.png	mehutuu7.png
+mayuc	眉１	中太眉	mayuhutosu.png	mayuhutoodoroki.png	mayuhutokomari.png	mayuhutoikari.png
+eye	目の形	微つり目	turime1.png	turime2.png	turime3.png	turime4.png	turime5.png	turime6.png	turime7.png
+mayuc	眉１	下がり微アーチ２	sagarimayusu.png	sagarimayuodoroki.png	sagarimayukomari.png	sagarimayuikari.png
+ccc	前髪	斜め分け横はね左	maegamihane3.png	maegamihane4.png
+norm	肌オプション	泣きぼくろ右	nakihokuro2.png
+cc	スカート	プリーツスカート膝下丈	skirtnagame.png
+cc	インナー１	パンツ	pantu.png
+cc	スカート装飾	プリーツスカート膝上チェック	check.png
+cc	スカート装飾	プリーツスカート膝下丈チェック	check2.png
+cc	ズボン装飾	シンプルロングパンツチェック	check3.png
+cc	アクセサリー５	犬耳垂れ長	taremimilong.png
+cc	アクセサリー５	犬耳垂れ短	taremimishort.png
+cc	素体オプション背後	犬しっぽ上	inusippoue.png
+cc	素体オプション背後	犬しっぽ下	inusipposita.png
+ccc	耳	犬耳立ち	inumimitati1.png	inumimitati2.png

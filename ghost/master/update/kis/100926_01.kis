@@ -1,0 +1,28 @@
+=kis
+# フェイリス用パーツの一部を差し替える
+if $[ ${ColorsUpdate.vars.farispartsupdate} != "1" ] $(
+	PushCurrentShellName "COLORS";
+	# フェイリスパーツ追加後なら実施
+	# 今回のネットワーク更新で、追加パーツは正常なものに差し替わったため
+	if $[ $(FindSurfaceID "前髪" "中寄りナチュラル") != "" ] $(
+		# @dir=差し替え画像データのパス
+		setstr @dir $(cncpath ${System.DataPath} "update/kis/100926_01");
+		# @sid1=前髪・中寄りナチュラルのSurface ID
+		setstr @sid1 $(FindSurfaceID "前髪" "中寄りナチュラル");
+		# @sid2=インナー３・パフスリーブブラウス（ベース）のSurface ID
+		setstr @sid2 $(FindSurfaceID "インナー３" "パフスリーブブラウス");
+
+		# 画像ファイル差し替え
+		# @sid1群
+		PNGCopy $(cncpath ${@dir} "maegami1.png") ${@sid1}"_CCC_1";
+		HairColorCopy $(cncpath ${@dir} "maegami1.png") ${@sid1}"_CCC_2";
+		PNGCopy $(cncpath ${@dir} "maegami2.png") ${@sid1}"_CCC";
+		# @sid2群
+		PNGCopy $(cncpath ${@dir} "inner3.png") ${@sid2}"_CCT_1";
+		PNGCopy $(cncpath ${@dir} "inner3.png") ${@sid2}"_CCT_2";
+	);
+	# 後始末
+	PopCurrentShellName;
+	setstr ColorsUpdate.vars.farispartsupdate 1;
+);
+=end

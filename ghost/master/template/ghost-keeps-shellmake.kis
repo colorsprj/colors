@@ -1,0 +1,745 @@
+# シェル・ゴースト作成=========================================================
+
+# 初期アーカイブ名
+ZipFile.Shell : coloredshell.nar
+ZipFile.Ghost : coloredghost.nar
+ZipFile.Supplement : coloredparts.nar
+ZipFile.Backup : coloredbackup.nar
+
+# narアーカイブのフィルタ
+ZipFile.Filter : "narアーカイブ|*.nar|zipアーカイブ|*.zip|すべて|*.*"
+
+# メニュー入り口
+Select.Page.Zip : (
+	${MenuHeader.Zip}
+	※処理に少し時間がかかり、COLORSの表示が消えることがあります。
+	\n\n\n
+	　$(IconOnlyQ makeshellbutton Page.Zip.ShellEntrance)\n\n
+	　$(IconOnlyQ makeghostbutton Page.Zip.GhostEntrance)\n\n
+	　$(IconOnlyQ makepartspackbutton Page.Zip.SupplementEntrance)\n\n
+	　$(IconOnlyQ makebackupbutton Page.Zip.BackupEntrance)\n\n
+	\n\n
+	${DressNaviMenu}
+)
+
+# メニューのツールチップ
+balloon_tooltip.Page.Zip.ShellEntrance : (
+	現在のきせかえ状態で追加シェルを作成します。
+)
+balloon_tooltip.Page.Zip.GhostEntrance : (
+	現在のキャラクター状態でゴーストを作成します。\n
+	きせかえ・トーク・キャラクター設定を反映します。
+)
+balloon_tooltip.Page.Zip.SupplementEntrance : (
+	追加したパーツをパックしたファイルを作成します。\n
+	パーツパックはドラッグ＆ドロップでインストールできます。
+)
+balloon_tooltip.Page.Zip.BackupEntrance : (
+	追加パーツ・トーク辞書・マウス反応設定・レシピ・パッケージをパックします。\n
+	バックアップはドラック＆ドロップでインストールできます。
+)
+
+
+# シェル作成完了
+Select.Page.Zip.ShellMakeEnd : (
+	${MenuHeader.Zip}
+	\n\n
+	シェル作成が完了しました。
+	\n\n
+	${DressNaviMenu}
+)
+
+# ゴースト作成完了
+Select.Page.Zip.GhostMakeEnd : (
+	${MenuHeader.Zip}
+	\n\n
+	ゴースト作成が完了しました。
+	\n\n
+	${DressNaviMenu}
+)
+
+# パーツパック作成完了
+Select.Page.Zip.SupplementMakeEnd : (
+	${MenuHeader.Zip}
+	\n\n
+	パーツパック作成が完了しました。
+	\n\n
+	${DressNaviMenu}
+)
+
+# バックアップ作成完了
+Select.Page.Zip.BackupMakeEnd : (
+	${MenuHeader.Zip}
+	\n\n
+	バックアップ作成が完了しました。
+	\n\n
+	${DressNaviMenu}
+)
+
+# メニュースレッド-------------------------------------------------------------
+
+# キャラクター設定
+MenuThread.Zip : Character
+MenuThread.Zip.Character.title : "キャラクター設定"
+MenuThread.Zip.Character.contents (
+	■一人称　　　　：$(IconTxBQ editfile 16 ${FPP} Page.Cfg.ChangeFPP),
+	■二人称　　　　：$(IconTxBQ editfile 16 ${SPP} Page.Cfg.ChangeSPP),
+	■ユーザー呼称　：$(IconTxBQ editfile 16 ${username} Page.Cfg.ChangeUsername)
+)
+
+# アーカイブ設定
+MenuThread.Zip : Archive
+MenuThread.Zip.Archive.title : "アーカイブ設定"
+MenuThread.Zip.Archive..contents (
+	■作品／シェル名：$(IconTxBQ editfile 16 ${UserExport.name} Page.Zip.ChangeName),
+	■キャラクター名：$(IconTxBQ editfile 16 ${UserExport.sakura.name} Page.Zip.ChangeSakuraName),
+	■インストール先：$(IconQ editfile "["$(FillSpc 12 $(IfAny ${UserExport.directory}))"]フォルダ" Page.Zip.ChangeDirectory),
+	"\f[color,160,160,160]"■"\f[default]"Network更新URL：$(IconTxBQ editfile 16 $(escape ${UserExport.networkurl}) Page.Zip.ChangeNetworkUrl),
+	"\f[color,160,160,160]"※Network更新URLは未確定でもアーカイブ作成できます。"\f[default]"
+)
+
+# 作者情報
+MenuThread.Zip : Author
+MenuThread.Zip.Author.title : "作者情報"
+MenuThread.Zip.Author.contents (
+	■作者名　　　　：$(IconTxBQ editfile 16 ${UserExport.craftmanw} Page.Zip.ChangeCraftmanw),
+	■作者名"(英数字)"：$(IconTxBQ editfile 16 ${UserExport.craftman} Page.Zip.ChangeCraftman),
+	"\f[color,160,160,160]"■"\f[default]"作者サイトURL ：$(IconTxBQ editfile 16 $(escape ${UserExport.url}) Page.Zip.ChangeUrl),
+	"\f[color,160,160,160]"※作者サイトURLは未確定でもアーカイブ作成できます。"\f[default]"
+)
+
+# システム設定
+# 実体はghost-keeps-cfg.kisにあるが、メニュー順序のためここで宣言
+MenuThread.Zip : System
+
+
+# アーカイブ設定---------------------------------------------------------------
+
+# 作品／シェル名
+Select.Page.Zip.ChangeName : (
+	$(split @header ${CfgMenuBookmark} ".")
+	${MenuHeader.$@header[2]}
+	新しい作品名／シェル名を入力してください。
+	\!["open,inputbox,InputName,-1,"${UserExport.name}]
+	\!["quicksession,false"]
+	\e
+)
+
+TalkInput.InputName : (
+	$(setstr UserExport.name $(SReference 1))
+	${${CfgMenuBookmark}}
+)
+
+TalkInputCancel.InputName : ${${CfgMenuBookmark}}
+
+
+# キャラクター名
+Select.Page.Zip.ChangeSakuraName : (
+	$(split @header ${CfgMenuBookmark} ".")
+	${MenuHeader.$@header[2]}
+	新しいキャラクター名を入力してください。
+	\!["open,inputbox,InputSakuraName,-1,"${UserExport.sakura.name}]
+	\!["quicksession,false"]
+	\e
+)
+
+TalkInput.InputSakuraName : (
+	$(setstr UserExport.sakura.name $(SReference 1))
+	${${CfgMenuBookmark}}
+)
+
+TalkInputCancel.InputSakuraName : ${${CfgMenuBookmark}}
+
+
+# インストール先
+Select.Page.Zip.ChangeDirectory : (
+	$(split @header ${CfgMenuBookmark} ".")
+	${MenuHeader.$@header[2]}
+	新しいインストール先フォルダ名を入力してください。\n
+	$(
+		if ${Error.Page.Zip.ChangeDirectory} (
+			\n[half]※フォルダ名は英数字のみ有効です。\n
+		)
+	)
+	\!["open,inputbox,InputDirectory,-1,"${UserExport.directory}]
+	\!["quicksession,false"]
+	\e
+)
+
+TalkInput.InputDirectory : $(
+	setstr UserExport.directory $(SReference 1);
+	# 正当性チェック
+	if $[ ${UserExport.directory} != "" && $(isalnum ${UserExport.directory}) ] (
+		# 英数字のみなので問題なし
+		$(clear Error.Page.Zip.ChangeDirectory)
+		${${CfgMenuBookmark}}
+	) else (
+		# 無効な文字列を含んでいる
+		$(setstr Error.Page.Zip.ChangeDirectory "true")
+		${Select.Page.Zip.ChangeDirectory}
+	);
+)
+
+TalkInputCancel.InputDirectory : ${${CfgMenuBookmark}}
+
+
+# Network更新URL
+Select.Page.Zip.ChangeNetworkUrl : (
+	$(split @header ${CfgMenuBookmark} ".")
+	${MenuHeader.$@header[2]}
+	新しいネットワーク更新URLを入力してください。\n
+	$(
+		if ${Error.Page.Zip.ChangeNetworkUrl} (
+			\n[half]※URLとして無効です。\n
+		)
+	)
+	\!["open,inputbox,InputNetworkUrl,-1,"${UserExport.networkurl}]
+	\!["quicksession,false"]
+	\e
+)
+
+TalkInput.InputNetworkUrl : $(
+	setstr UserExport.networkurl $(SReference 1);
+	# 正当性チェック
+	if $(isValidURL ${UserExport.networkurl})  (
+		$(clear Error.Zip.ChangeNetworkUrl)
+		${${CfgMenuBookmark}}
+	) else (
+		$(setstr Error.Zip.ChangeNetworkUrl "true")
+		${Select.Page.Zip.ChangeNetworkUrl}
+	);
+)
+
+TalkInputCancel.InputNetworkUrl : ${${CfgMenuBookmark}}
+
+
+# 作者情報---------------------------------------------------------------------
+
+# 作者名
+Select.Page.Zip.ChangeCraftmanw : (
+	$(split @header ${CfgMenuBookmark} ".")
+	${MenuHeader.$@header[2]}
+	新しい作者名を入力してください。\n
+	$(
+		if ${Error.Page.Zip.ChangeCraftmanw} (
+			\n[half]※空白以外を入力してください。\n
+		)
+	)
+	\!["open,inputbox,InputCraftmanw,-1,"${UserExport.craftmanw}]
+	\!["quicksession,false"]
+	\e
+)
+
+TalkInput.InputCraftmanw : $(
+	setstr UserExport.craftmanw $(SReference 1);
+	# 正当性チェック
+	if $[ ${UserExport.craftmanw} != "" ] (
+		# 空白文字以外なので問題なし
+		$(clear Error.Page.Zip.ChangeCraftmanw)
+		${${CfgMenuBookmark}}
+	) else (
+		# 無効な文字列を含んでいる
+		$(setstr Error.Page.Zip.ChangeCraftmanw "true")
+		${Select.Page.Zip.ChangeCraftmanw}
+	);
+)
+
+TalkInputCancel.InputCraftmanw : ${${CfgMenuBookmark}}
+
+
+# 作者名(英数字)
+Select.Page.Zip.ChangeCraftman : (
+	$(split @header ${CfgMenuBookmark} ".")
+	${MenuHeader.$@header[2]}
+	新しい作者名（英数字表記）を入力してください。\n
+	$(
+		if ${Error.Page.Zip.ChangeCraftman} (
+			\n[half]※英数字のみ有効です。\n
+		)
+	)
+	\!["open,inputbox,InputCraftman,-1,"${UserExport.craftman}]
+	\!["quicksession,false"]
+	\e
+)
+
+TalkInput.InputCraftman : $(
+	setstr UserExport.craftman $(SReference 1);
+	# 正当性チェック
+	if $[ ${UserExport.craftman} != "" && $(isalnum ${UserExport.craftman}) ] (
+		# 英数字のみなので問題なし
+		$(clear Error.Page.Zip.ChangeCraftman)
+		${${CfgMenuBookmark}}
+	) else (
+		# 無効な文字列を含んでいる
+		$(setstr Error.Page.Zip.ChangeCraftman "true")
+		${Select.Page.Zip.ChangeCraftman}
+	);
+)
+
+TalkInputCancel.InputCraftman : ${${CfgMenuBookmark}}
+
+
+# 作者サイトURL
+Select.Page.Zip.ChangeUrl : (
+	$(split @header ${CfgMenuBookmark} ".")
+	${MenuHeader.$@header[2]}
+	新しい作者サイトURLを入力してください。\n
+	$(
+		if ${Error.Page.Zip.ChangeUrl} (
+			\n[half]※URLとして無効です。\n
+		)
+	)
+	\!["open,inputbox,InputUrl,-1,"${UserExport.url}]
+	\!["quicksession,false"]
+	\e
+)
+
+TalkInput.InputUrl : $(
+	setstr UserExport.url $(SReference 1);
+	# 正当性チェック
+	if $(isValidURL ${UserExport.url})  (
+		$(clear Error.Zip.ChangeUrl)
+		${${CfgMenuBookmark}}
+	) else (
+		$(setstr Error.Zip.ChangeUrl "true")
+		${Select.Page.Zip.ChangeUrl}
+	);
+)
+
+TalkInputCancel.InputUrl : ${${CfgMenuBookmark}}
+
+
+:rem
+#テンプレート
+Select.Page.Zip.Change＠＠＠ : (
+	$(split @header ${CfgMenuBookmark} ".")
+	${MenuHeader.$@header[2]}
+	新しい＊＊＊を入力してください。
+	\!["open,inputbox,Input＠＠＠,-1,"${UserExport.＃＃＃}]
+	\!["quicksession,false"]
+	\e
+)
+
+TalkInput.Input＠＠＠ : (
+	$(setstr UserExport.＃＃＃ $(SReference 1))
+	${${CfgMenuBookmark}}
+)
+
+TalkInputCancel.Input＠＠＠ : ${${CfgMenuBookmark}}
+
+:endrem
+
+# アーカイブ作成入り口=========================================================
+
+# シェルアーカイブ名決定-------------------------------------------------------
+Select.Page.Zip.ShellEntrance : (
+	${MenuHeader.Zip}
+	$(set MenuBookmark Select.Page.Zip)
+	作成する追加シェルファイルに名前を付けてください。\n
+	\![
+		"open,dialog,save,"
+		"--title=シェルファイル名選択,"
+		"--filter="${ZipFile.Filter}","
+		"--ext=nar,"
+		"--dir=\""${System.DataPath}"usershell\","
+		"--name="${ZipFile.Shell}","
+		"--id=Zip.Shell.Selected"
+	]
+	\n
+	\n
+	${DressNaviMenu}
+)
+
+# ファイル名を決定し「お待ちください」を出す
+Dialog.Zip.Shell.Selected : $(
+	# 戻り値からファイル名を抽出してZipFile.Shellに格納
+	setstr @filename $(cncpath $(Reference 2));
+	if $[ $(filename ${@filename}) !~ "." ] $(
+		#拡張子がないようなので「.nar」を補完
+		setstr @filename ${@filename}".nar";
+	);
+	setstr ZipFile.Shell ${@filename};
+	
+	WaitMsg 追加シェル作成中です。 Select.Page.Zip.ZipShell;
+)
+# キャンセル時はZip作成入り口へ
+DialogCancel.Zip.Shell.Selected : ${${MenuBookmark}}
+
+
+# ゴーストアーカイブ名決定-----------------------------------------------------
+Select.Page.Zip.GhostEntrance : $(
+	if $(isExportReady) (
+		# 既に十分情報が揃っている
+		${Select.Page.Zip.GhostEntrance.ExportReady}
+	) else (
+		# 不足している情報がある
+		${Select.Page.Zip.GhostEntrance.ExportNotReady}
+	)
+)
+# ゴーストアーカイブ作成に不足情報がある
+Select.Page.Zip.GhostEntrance.ExportNotReady : (
+	${MenuHeader.Zip}
+	　"\f[color,160,160,160]"※ゴーストを作る上で不足している情報があります。"\f[default]"\n\n
+	■キャラクター設定してください。\n\n[half]
+	$(setstr MenuBookmark Select.Page.Zip)
+	$(setstr CfgMenuBookmark Select.Page.Zip.GhostEntrance)
+	$(MenuThread Zip Page.Zip.GhostEntrance)
+	\n
+	\n
+	${DressNaviMenu}
+)
+
+# 本当のゴーストアーカイブ名作成
+Select.Page.Zip.GhostEntrance.ExportReady : (
+	${MenuHeader.Zip}
+	$(set MenuBookmark Select.Page.Zip)
+	作成するゴーストファイルに名前を付けてください。\n
+	\![
+		"open,dialog,save,"
+		"--title=ゴーストファイル名選択,"
+		"--filter="${ZipFile.Filter}","
+		"--ext=nar,"
+		"--dir=\""${System.DataPath}"usershell\","
+		"--name="${ZipFile.Ghost}","
+		"--id=Zip.Ghost.Selected"
+	]
+	\n
+	\n
+	${DressNaviMenu}
+)
+
+# ファイル名を決定し「お待ちください」を出す
+Dialog.Zip.Ghost.Selected : $(
+	# 戻り値からファイル名を抽出してZipFile.Shellに格納
+	setstr @filename $(cncpath $(Reference 2));
+	if $[ $(filename ${@filename}) !~ "." ] $(
+		#拡張子がないようなので「.nar」を補完
+		setstr @filename ${@filename}".nar";
+	);
+	setstr ZipFile.Ghost ${@filename};
+	
+	WaitMsg ゴースト作成中です。 Select.Page.Zip.ZipGhost;
+)
+# キャンセル時はZip作成入り口へ
+DialogCancel.Zip.Ghost.Selected : ${${MenuBookmark}}
+
+
+# パーツ選択共通UI-------------------------------------------------------------
+
+# パーツ選択ページ
+Page.Zip.Supplement : 0
+
+# パーツ選択UI
+Select.Page.Zip.PartsSelectEntrance : (
+	${MenuHeader.Zip}
+	${Page.Zip.PartsSelect.Title}\n\n[half]
+	$(
+		# ページ設定
+		setstr @pagelength 10;
+		# パンくずリスト作成
+		TopicPath
+			ExportablePartsList
+			${@pagelength}
+			Page.Zip.Supplement
+			Page.Zip.SupplementEntrance
+		;
+		# @Pにパーツリストからパーツを取り出し
+		setstr @i     $[ ${Page.Zip.Supplement} * ${@pagelength} ];
+		setstr @limit $[ ( ${Page.Zip.Supplement} + 1 ) * ${@pagelength} ];
+		while $[ ${@i} < ${@limit} && ${@i} < $(size ExportablePartsList) ] $(
+			setstr @parts $ExportablePartsList[${@i}];
+			setstr @displayparts $(sub $(DeleteColorID ${@parts}) "." " / ");
+			echo "　";
+			CheckQ ${ExportablePartsList.${@parts}} $(TextArea 27 ${@displayparts}) Page.Zip.SupplementPartsSelected ${@parts};
+			echo "\\n\\n[half]";
+			inc @i;
+		);
+	)
+	\n[half]
+	　$(IconTxQ yes 27 パーツをすべて選択する Page.Zip.SupplementAllSet)\n\n[half]
+	　$(IconTxQ reset 27 パーツ選択をすべて取り消す Page.Zip.SupplementAllReset)\n\n[half]
+	　$(IconTxQ go 27 ${Page.Zip.PartsSelect.ExecTitle} ${Page.Zip.PartsSelect.Execute})\n\n[half]
+	${DressNaviMenu}
+)
+
+# パーツ選択を全セット
+Select.Page.Zip.SupplementAllSet : (
+	# すべて1をセット
+	$(foreach @item ExportablePartsList $(setstr ExportablePartsList.${@item} 1))
+	${Select.Page.Zip.PartsSelectEntrance}
+)
+
+# パーツ選択をリセット
+Select.Page.Zip.SupplementAllReset : (
+	# ツリーを初期化
+	$(UpdateCurrentExportablePartsList)
+	${Select.Page.Zip.PartsSelectEntrance}
+)
+
+# パーツが選択された
+Select.Page.Zip.SupplementPartsSelected : $(
+	# ChoiceInfo.1にパーツが入っている
+	setstr ExportablePartsList.${ChoiceInfo.1} $[ -( ${ExportablePartsList.${ChoiceInfo.1}} - 1 ) ];
+	# メニューへ
+	setstr ChoiceInfo.1 ${Page.Zip.Supplement};
+	echo ${Select.Page.Zip.PartsSelectEntrance};
+)
+
+# パーツパック選択中のパーツのツールチップ
+balloon_tooltip.Page.Zip.SupplementPartsSelected : $(
+	split @element $(Reference 2) ".";
+	setstr @category $@element[0];
+	setstr @parts $(DeleteColorID $@element[1]);
+	echo "カテゴリー名: "${@category}" / パーツ名: "${@parts};
+)
+
+
+# パーツパック名決定-----------------------------------------------------------
+
+Select.Page.Zip.SupplementEntrance : (
+	$(
+		setstr MenuBookmark "Select.Page.Zip.SupplementEntrance";
+		setstr Page.Zip.PartsSelect.Title "【パック化可能アイテム一覧】";
+		setstr Page.Zip.PartsSelect.MenuTop "Page.Zip.SupplementEntrance";
+		setstr Page.Zip.PartsSelect.ExecTitle "パーツパック作成";
+		setstr Page.Zip.PartsSelect.Execute "Page.Zip.SupplementZipExecute";
+	)
+	${Select.Page.Zip.PartsSelectEntrance}
+)
+
+# パーツパックファイル名
+Select.Page.Zip.SupplementZipExecute : (
+	${MenuHeader.Zip}
+	$(set MenuBookmark Select.Page.Zip)
+	作成するパーツパックに名前を付けてください。\n
+	\![
+		"open,dialog,save,"
+		"--title=パーツパック名選択,"
+		"--filter="${ZipFile.Filter}","
+		"--ext=nar,"
+		"--dir=\""${System.DataPath}"usershell\","
+		"--name="${ZipFile.Supplement}","
+		"--id=Zip.Supplement.Selected"
+	]
+	\n
+	\n
+	${DressNaviMenu}
+)
+
+# パーツパック名決定
+Dialog.Zip.Supplement.Selected : $(
+	# 戻り値からファイル名を抽出してZipFile.Shellに格納
+	setstr @filename $(cncpath $(Reference 2));
+	if $[ $(filename ${@filename}) !~ "." ] $(
+		#拡張子がないようなので「.nar」を補完
+		setstr @filename ${@filename}".nar";
+	);
+	setstr ZipFile.Supplement ${@filename};
+	WaitMsg
+		パーツパック作成中です。
+		Select.Page.Zip.ZipSupplement
+	;
+)
+
+# キャンセル時
+DialogCancel.Zip.Supplement.Selected : ${${MenuBookmark}}
+
+
+# バックアップ名決定-----------------------------------------------------------
+
+Select.Page.Zip.BackupEntrance : (
+	$(
+		setstr MenuBookmark "Select.Page.Zip.BackupEntrance";
+		setstr Page.Zip.PartsSelect.Title "【バックアップ可能アイテム一覧】";
+		setstr Page.Zip.PartsSelect.MenuTop "Page.Zip.BackupEntrance";
+		setstr Page.Zip.PartsSelect.ExecTitle "バックアップ作成";
+		setstr Page.Zip.PartsSelect.Execute "Page.Zip.BackupZipExecute";
+	)
+	${Select.Page.Zip.PartsSelectEntrance}
+)
+
+# バックアップファイル名
+Select.Page.Zip.BackupZipExecute : (
+	${MenuHeader.Zip}
+	$(set MenuBookmark Select.Page.Zip)
+	作成するバックアップに名前を付けてください。\n
+	\![
+		"open,dialog,save,"
+		"--title=バックアップ名選択,"
+		"--filter="${ZipFile.Filter}","
+		"--ext=nar,"
+		"--dir=\""${System.DataPath}"usershell\","
+		"--name="${ZipFile.Backup}","
+		"--id=Zip.Backup.Selected"
+	]
+	\n
+	\n
+	${DressNaviMenu}
+)
+
+# バックアップ名決定
+Dialog.Zip.Backup.Selected : $(
+	# 戻り値からファイル名を抽出してZipFile.Shellに格納
+	setstr @filename $(cncpath $(Reference 2));
+	if $[ $(filename ${@filename}) !~ "." ] $(
+		#拡張子がないようなので「.nar」を補完
+		setstr @filename ${@filename}".nar";
+	);
+	setstr ZipFile.Backup ${@filename};
+	WaitMsg
+		バックアップ作成中です。
+		Select.Page.Zip.ZipBackup
+	;
+)
+
+# キャンセル時
+DialogCancel.Zip.Backup.Selected : ${${MenuBookmark}}
+
+
+# シェル作成===================================================================
+
+Select.Page.Zip.ZipShell : (
+	$(set ZipMode ZipShell)
+	# シェル画像一式作成
+	$(MakeShellSurfaceIMG)
+	# 設定ファイル生成
+	$(CreateShellTemplate)
+	# アーカイブ作成
+	$(setstr @file ${ZipFile.Shell})
+	$(setstr @tmp $(cncpath ${System.DataPath} "temp/"$(filename ${ZipFile.Shell})))
+	$(
+		remove_file ${@file};
+		remove_file ${@tmp};
+		silent;
+	)
+	"\!["
+		"execute,compressarchive,"
+		${@tmp}","
+		${System.DataPath}"temp\\shelltemplate"
+	"]"
+	"\![raise,OnChoiceSelect,Page.Zip.ZipShellPostprocess]"
+)
+
+Select.Page.Zip.ZipShellPostprocess : (
+	$(
+		setstr @file $(cncpath ${System.DataPath} "temp/"$(filename ${ZipFile.Shell}));
+		move_file ${@file} $(dirname ${ZipFile.Shell});
+		silent;
+	)
+	"\![open,folder,"$(dirname ${ZipFile.Shell})"]"
+	"\![raise,OnDelayDisplayExecute,Select.Page.Zip.ShellMakeEnd]"
+)
+
+
+# ゴースト作成=================================================================
+
+Select.Page.Zip.ZipGhost : (
+	$(set ZipMode ZipGhost)
+	# シェル画像一式作成
+	$(MakeShellSurfaceIMG)
+	# ghosttemplateフォルダ内を掃除
+	$(ClearDirectoryAll)
+	# テンプレート類一式をコピー
+	$(CopyGhostTemplate)
+	# シェル画像一式をコピー
+	$(CopyShellSurface)
+	# 生成ファイル類を出力
+	$(CreateGhostTemplate)
+	# アーカイブ作成
+	$(setstr @file ${ZipFile.Ghost})
+	$(setstr @tmp $(cncpath ${System.DataPath} "temp/"$(filename ${ZipFile.Ghost})))
+	$(
+		remove_file ${@file};
+		remove_file ${@tmp};
+		silent;
+		clear ExportMD5;
+		if $[ ${UserExport.networkurl} != "" ] $(
+			# ネットワーク更新アドレスがある場合だけMD5生成
+			OutputMD5;
+			textsave $(cncpath "temp/ghosttemplate" "updates2.dau") ExportMD5;
+		);
+	)
+	"\!["
+		"execute,compressarchive,"
+		${@tmp}","
+		${System.DataPath}"temp\\ghosttemplate"
+	"]"
+	"\![raise,OnChoiceSelect,Page.Zip.ZipGhostPostprocess]"
+)
+
+Select.Page.Zip.ZipGhostPostprocess : (
+	$(
+		setstr @file $(cncpath ${System.DataPath} "temp/"$(filename ${ZipFile.Ghost}));
+		move_file ${@file} $(dirname ${ZipFile.Ghost});
+		silent;
+	)
+	"\![open,folder,"$(dirname ${ZipFile.Ghost})"]"
+	"\![raise,OnDelayDisplayExecute,Select.Page.Zip.GhostMakeEnd]"
+)
+
+
+# パーツパック作成=============================================================
+
+Select.Page.Zip.ZipSupplement : (
+	# パーツパックサプリメント作成
+	$(CreatePartsPack)
+	# アーカイブ作成
+	$(
+		setstr @file ${ZipFile.Supplement};
+		setstr @tmp $(cncpath ${System.DataPath} "temp/"$(filename ${ZipFile.Supplement}));
+		remove_file ${@file};
+		remove_file ${@tmp};
+		silent;
+	)
+	"\!["
+		"execute,compressarchive,"
+		${@tmp}","
+		${System.DataPath}"temp\\supplementtemplate"
+	"]"
+	"\![raise,OnChoiceSelect,Page.Zip.ZipSupplementPostprocess]"
+)
+
+Select.Page.Zip.ZipSupplementPostprocess : (
+	$(
+		setstr @file $(cncpath ${System.DataPath} "temp/"$(filename ${ZipFile.Supplement}));
+		move_file ${@file} $(dirname ${ZipFile.Supplement});
+		silent;
+		# ツリーを初期化
+		UpdateCurrentExportablePartsList;
+	)
+	"\![open,folder,"$(dirname ${ZipFile.Supplement})"]"
+	"\![raise,OnDelayDisplayExecute,Select.Page.Zip.SupplementMakeEnd]"
+)
+
+# バックアップ作成=============================================================
+
+Select.Page.Zip.ZipBackup : (
+	# バックアップサプリメント作成
+	$(CreateBackup)
+	# アーカイブ作成
+	$(
+		setstr @file ${ZipFile.Backup};
+		setstr @tmp $(cncpath ${System.DataPath} "temp/"$(filename ${ZipFile.Backup}));
+		remove_file ${@file};
+		remove_file ${@tmp};
+		silent;
+	)
+	"\!["
+		"execute,compressarchive,"
+		${@tmp}","
+		${System.DataPath}"temp\\supplementtemplate"
+	"]"
+	"\![raise,OnChoiceSelect,Page.Zip.ZipBackupPostprocess]"
+)
+
+Select.Page.Zip.ZipBackupPostprocess : (
+	$(
+		setstr @file $(cncpath ${System.DataPath} "temp/"$(filename ${ZipFile.Backup}));
+		move_file ${@file} $(dirname ${ZipFile.Backup});
+		silent;
+		# ツリーを初期化
+		UpdateCurrentExportablePartsList;
+	)
+	"\![open,folder,"$(dirname ${ZipFile.Backup})"]"
+	"\![raise,OnDelayDisplayExecute,Select.Page.Zip.BackupMakeEnd]"
+)

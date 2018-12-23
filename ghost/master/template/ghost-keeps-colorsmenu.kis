@@ -1,0 +1,1043 @@
+:crypt
+
+#COLORSメニュー=================================================================
+:rem
+メニュー関係のマウス反応処理もここ。
+
+検索用目次
+
+#ツールボックス周り
+#メニュー表示・メニュー用部品
+#各メニューヘッダ
+#着せ替えメニュー
+:endrem
+
+#########################################################################
+#ツールボックス周り
+#########################################################################
+
+#オンマウスでツールボックス開閉
+#OnMouseEnterAll.2 : \C\p[2]\s[31]\e
+
+#OnMouseLeaveAll.2 : \C\p[2]\s[30]\e
+
+#OnMouseHover.2.anchor : \C\p[2]\s[31]\e
+
+#ボタンオンマウス反応
+#OnMouseEnter.2.kisekae : ${C2Single.kisekae}
+#OnMouseLeave.2.kisekae : \C\p[2]\s[31]\e
+
+#OnMouseEnter.2.addparts : ${C2Single.addparts}
+#OnMouseLeave.2.addparts : \C\p[2]\s[31]\e
+
+#OnMouseEnter.2.zip : ${C2Single.zip}
+#OnMouseLeave.2.zip : \C\p[2]\s[31]\e
+
+#OnMouseEnter.2.snap : ${C2Single.snap}
+#OnMouseLeave.2.snap : \C\p[2]\s[31]\e
+
+#OnMouseEnter.2.dic : ${C2Single.dic}
+#OnMouseLeave.2.dic : \C\p[2]\s[31]\e
+
+#OnMouseEnter.2.save : ${C2Single.save}
+#OnMouseLeave.2.save : \C\p[2]\s[31]\e
+
+#OnMouseEnter.2.cfg : ${C2Single.cfg}
+#OnMouseLeave.2.cfg : \C\p[2]\s[31]\e
+
+#ボタンダウン反応
+OnMouseDown.2.kisekae : \C\p[2]\s[31]\i[1]\0\s[0]"\![leave,selectmode]"\e
+#OnMouseUp.2.kisekae : \p[2]\s[31]\i[0]
+
+OnMouseDown.2.addparts : \p[2]\s[31]\i[3]\0\s[0]"\![leave,selectmode]"\e
+#OnMouseUp.2.addparts : \p[2]\s[31]\i[2]
+
+OnMouseDown.2.zip : \p[2]\s[31]\i[5]\0\s[0]"\![leave,selectmode]"\e
+#OnMouseUp.2.zip : \p[2]\s[31]\i[4]
+
+OnMouseDown.2.snap : \p[2]\s[31]\i[7]\0\s[0]"\![leave,selectmode]"\e
+
+OnMouseDown.2.dic : \p[2]\s[31]\i[9]\0\s[0]"\![leave,selectmode]"\e
+
+OnMouseDown.2.save : \p[2]\s[31]\i[11]\0\s[0]"\![leave,selectmode]"\e
+
+OnMouseDown.2.cfg : \p[2]\s[31]\i[13]\0\s[0]"\![leave,selectmode]"\e
+
+
+
+
+#アンカーからツールボックスへ
+C2Single.anchor : ${C2Single.kisekae}
+
+#ツールボックスからアンカーへ
+C2Single.anchor2 : ${Select.PageClose}
+
+#ツールボックスからメニュー選択
+C2Single.kisekae : ${Select.Page.KisekaeTop}$( unshift HistoryPage Page.KisekaeTop; if $[$(size HistoryPage) > 2] $( clear HistoryPage[-1] ))
+C2Single.addparts : ${Select.Page.AddParts}$( unshift HistoryPage Page.AddParts; if $[$(size HistoryPage) > 2] $( clear HistoryPage[-1] ))
+C2Single.zip : ${Select.Page.Zip}$( unshift HistoryPage Page.Zip; if $[$(size HistoryPage) > 2] $( clear HistoryPage[-1] ))
+C2Single.snap : ${Select.Page.Snap}$( unshift HistoryPage Page.Snap; if $[$(size HistoryPage) > 2] $( clear HistoryPage[-1] ))
+C2Single.dic : ${Select.Page.Dic}$( unshift HistoryPage Page.Dic; if $[$(size HistoryPage) > 2] $( clear HistoryPage[-1] ))
+C2Single.save : ${Select.Page.Save}$( unshift HistoryPage Page.Save; if $[$(size HistoryPage) > 2] $( clear HistoryPage[-1] ))
+C2Single.cfg : ${Select.Page.Cfg}$( unshift HistoryPage Page.Cfg; if $[$(size HistoryPage) > 2] $( clear HistoryPage[-1] ))
+
+
+
+#########################################################################
+#ツールチップ
+#########################################################################
+
+#anchor,クリックでツールボックスを開きます
+#anchor2,クリックでツールボックスを閉じます
+tooltip.2.kisekae : きせかえメニュー
+tooltip.2.addparts : きせかえパーツ追加
+tooltip.2.zip : アーカイブ作成
+tooltip.2.snap : スナップショット
+tooltip.2.dic : トーク管理
+tooltip.2.save : セーブ＆ロード
+tooltip.2.cfg : 設定
+tooltip.2.anchor2 : クリックでメニューを閉じます
+tooltip.2.anchor : クリックでメニューを開きます
+
+balloon_tooltip.Page.KisekaeTop : "きせかえトップ"
+balloon_tooltip.addparts : "きせかえパーツ追加"
+balloon_tooltip.Page.Zip : "アーカイブ作成"
+balloon_tooltip.Page.Snap : "スナップショット"
+balloon_tooltip.Page.Dic : "トーク管理"
+balloon_tooltip.Page.Save : "セーブ＆ロード"
+balloon_tooltip.Page.Cfg : "設定"
+balloon_tooltip.PageBack2 : "ひとつ前のページ"
+balloon_tooltip.PageBack : "ひとつ前のページ"
+balloon_tooltip.PageClose : "閉じる"
+
+balloon_tooltip.Page.Kisekae.Body : "顔・体"
+balloon_tooltip.Page.Kisekae.Hair : "髪"
+balloon_tooltip.Page.Kisekae.Clothes : "服"
+balloon_tooltip.Page.Kisekae.Shoes : "靴"
+balloon_tooltip.Page.Kisekae.Hat : "帽子・ヘッドドレス"
+balloon_tooltip.Page.Kisekae.Accessories : "アクセサリー"
+balloon_tooltip.Page.Kisekae.BGFG : "背景・前景"
+balloon_tooltip.Page.Kisekae.States : "現在の状態"
+
+balloon_tooltip.SurfaceReset : "表情リセット"
+balloon_tooltip.SurfaceCopy : "表情タグをクリップボードにコピー"
+
+
+
+#########################################################################
+#メニュー表示・メニュー用部品
+#########################################################################
+
+
+:rem
+Mainmenu : (
+${MenuFocus}
+	　\q["着せ替え,Kisekae"]\n\n
+	　\q[パーツ追加","addparts]\n\n
+	　\q[シェル作成テスト","shellmaketest]\n\n
+	　\q[画像作成","]\n\n
+#	　\q["着せ替えセーブ,SaveMenu"]\n\n
+#	　\q[draw","colorstest]\n
+#	　\q[getpixel&repaint","colorstest2]\n
+#	　\q[cut","cut]\n
+#	　\q[resize","resize]\n
+	　\q[resizecolors","resizecolors]\n\n
+	　\q[resizecolors2","resizecolors2]\n\n
+	　\q[resizecolors3","resizecolors3]\n\n
+
+	　\q["閉じる,PageClose"]\e
+	)
+
+
+
+Select.Kisekae :(
+	$(set MenuBookmark Mainmenu)
+	${MenuFocus}
+	${DressupMenu}
+	${DressNaviMenu}
+)
+
+#メニュー表示時のフォーカスとか。ヘッダー的な。
+MenuFocus:"\![set,choicetimeout,-1]\![quicksession,true]\![set,autoscroll,disable]\0\s[0]\p[2]\s[31]\b[10]"
+:endrem
+
+#collisionmode解除
+ResetCollisionMode : $(
+	if ${MouseCollisionMode} (
+		"\![leave,collisionmode]"
+		$(clear MouseCollisionMode)
+	);
+)
+
+#着せ替えメニューナビ。フッター的な。
+#戻り先で現在のカテゴリ等の情報がいるときはBookmarkMemo1・2に入れて
+#ChoiceInfo.で受け取る。
+DressNaviMenu: (
+#	\n
+	"\_l[0,415]"
+	$(IconQ back13p $(TextArea 12 戻る) PageBack ${BookmarkMemo1} ${BookmarkMemo2})　
+	$(IconQ close13p $(TextArea 12 閉じる) PageClose)
+	\![quicksession","false]\e
+)
+
+DressNaviMenu2: (
+#	\n
+	"\_l[0,415]"
+	$(IconQ back13p $(TextArea 12 戻る) PageBack2)　
+	$(IconQ close13p $(TextArea 12 閉じる) PageClose)
+	\![quicksession","false]\e
+)
+
+#メニュー閉じ
+Select.PageClose:(
+	$(clear HistoryPage)
+	$(clear SelectMode)
+	$(
+		if $[ ${RandomtalkStatus} == "true" ] $(
+			RandomtalkOn;
+		);
+	)
+	${ResetCollisionMode}
+	\p[2]\s[30]"\![leave,selectmode]"\0\s[0]"\![leave,selectmode]"\e
+)
+
+# バルーンを閉じた場合もメニュー
+event.OnBalloonClose : $(
+	# メニューバルーンでなければ帰る
+	if $[ $(match $(Reference 0) \b[10]) < 0 ] $(return);
+	# バルーンを閉じる前にランダムトークをしていたらランダムトーク再開
+	if $[ ${RandomtalkStatus} == "true" ] $(
+		RandomtalkOn;
+	);
+	echo ${ResetCollisionMode};
+)
+
+#メニュー戻る
+#各ページでMenuBookmarkに戻りたいページ名を仕込んでおく。
+Select.PageBack:${${MenuBookmark}}
+
+
+Select.PageBack2 : $(
+	# 履歴スタックを選択肢IDとヘッダーハンドルに分解
+	split @var $HistoryPage[0] "|";
+	if $[ $@var[1] != "" ] $(
+		# ヘッダ復帰
+		Sys.LoadHeader $@var[1];
+		# ChoiceInfoとRefMap復帰
+		ParseReference;
+	);
+	if $[ $@var[0] == "" ] $(
+		setstr @var[0] "Page.KisekaeTop";
+	);
+	clear HistoryPage[0];
+	setstr CurrentPage $@var[0]"|"$@var[1];
+	echo ${Select.$@var[0]};
+)
+
+:rem
+$(
+
+	if $[ $(size HistoryPage) > 1 ] $( set @Page $( shift HistoryPage) )
+	else $( set @Page $( get HistoryPage ) );
+	echo ${Select.${@Page}} ;
+)
+:endrem
+
+# ページ履歴フック
+#event.OnChoiceSelectEx : ${PageMemo}
+
+#ページ履歴
+#PageMemo : $(
+=kis
+# 機能:    ページ履歴をスタックする
+# 第1引数: 選択肢ID
+function SetHistoryPage $(
+	split @cvar ${CurrentPage} "|";
+	split @hvar $HistoryPage[0] "|";
+	if $[ $(match_at $@arg[1] "Page.") && $@arg[1] != $@cvar[0] ] $(
+		# 直前のCurrentPage処理
+		# HistoryPage[0]とCurrentPageの選択肢IDが違うなら、CurrentPageを積む
+		if $[ $@cvar[0] != $@hvar[0] ] $(
+			unshift HistoryPage ${CurrentPage};
+		) else $(
+			# 同じページならヘッダスタックは破棄
+			Sys.ReleaseHeaderHandle $@cvar[1];
+		);
+		# 今のページをCurrentPageに保存
+		setstr @handle $(Sys.CreateHeaderHandle);
+		Sys.SaveHeader ${@handle};
+		setstr CurrentPage $@arg[1]"|"${@handle};
+	);
+
+	#履歴が2個超えたら最後のを消す。
+	if $[ $(size HistoryPage) > 2 ] $(
+		split @delvar $HistoryPage[-1] "|";
+		if $[ $@delvar[1] != "" ] $(Sys.ReleaseHeaderHandle $@delvar[1]);
+		clear HistoryPage[-1];
+	);
+	#＠＠＠
+	foreach @entry HistoryPage $(
+		logprint "＠＠＠ History: "${@entry};
+	);
+);
+# HistoryPage[0]とCurrentPageの選択肢IDが違うなら、CurrentPageをHistoryPageに積む
+# CurrentPageに今のページ情報を格納
+# 今のページをCurrentPageに保存
+=end
+
+# 初期値を設定
+CurrentPage : Page.KisekaeTop
+
+event.OnChoiceSelectEx : $(SetHistoryPage $(Reference 1))
+#event.OnChoiceSelect :   $(SetHistoryPage $(Reference 0))
+
+#全メニュー共通ヘッダ
+CommonHeader : (
+	"\C"
+	"\![quicksession,true]"
+	"\0\c\b[-1]\1\c\b[-1]\p[2]\c"
+	${ResetCollisionMode}
+	"\![set,choicetimeout,-1]"
+	"\![set,autoscroll,disable]"
+	"\![set,balloontimeout,-1]"
+	$(
+		#setstr RandomtalkStatus $(isRandomtalkOn);
+		RandomtalkOff;
+	)
+)
+
+CommonHeader1 : "\_b[img/menubar1.png,inline]"
+
+CommonHeader2 : (
+	"\_b[img/menubar2.png,inline,opaque]"
+	"\_b[img/menubar2.png,inline,opaque]"
+	$(
+		if $[ $( size HistoryPage ) <= 1 ] (
+			"\_b[img/back2.png,inline,opaque]"
+		) else (
+			"\__q[PageBack2]\_b[img/back.png,inline,opaque]\__q"
+		);
+	)
+	"\__q[PageClose]\_b[img/close.png,inline,opaque]\__q"
+	"\_b[img/menubarend.png,inline]"
+	\n[half]
+)
+
+
+#########################################################################
+#各メニューヘッダ
+#########################################################################
+
+# 矩形選択モードから抜ける
+LeaveSelectMode : $(clear SelectMode)"\0\![leave,selectmode]\p[2]"
+
+# プレビュー表示状態から抜ける
+LeavePreviewStates : $(clear PreviewFlag)"\1\c\b[-1]\p[2]"
+
+# アイコンのないメッセージ通知用ヘッダ
+MenuHeader.None : (
+	${CommonHeader}
+	${LeaveSelectMode}
+	${LeavePreviewMode}
+	"\0\s[0]\p[2]\s[31]\i[2]\b[10]"
+	"\_b[img/menubardummy.png,inline,opaque]"
+	\n\n
+)
+
+MenuHeader.AddParts : (
+	${CommonHeader}
+	${LeaveSelectMode}
+	${LeavePreviewMode}
+	"\0\s[0]\p[2]\s[31]\i[2]\b[10]"
+	${CommonHeader1}
+	"\__q[Page.KisekaeTop]\_b[img/kisekae.png,inline,opaque]\__q"
+	"\_b[img/addparts2.png,inline,opaque]"
+	"\__q[Page.Zip]\_b[img/zip.png,inline,opaque]\__q"
+	"\__q[Page.Snap]\_b[img/snap.png,inline,opaque]\__q"
+	"\__q[Page.Dic]\_b[img/dic.png,inline,opaque]\__q"
+	"\__q[Page.Save]\_b[img/save.png,inline,opaque]\__q"
+	"\__q[Page.Cfg]\_b[img/cfg.png,inline,opaque]\__q"
+	${CommonHeader2}
+	"\f[color,169,255,11]■\f[color,default]きせかえパーツ追加"
+	\n\n
+)
+
+MenuHeader.Zip : (
+	${CommonHeader}
+	${LeaveSelectMode}
+	${LeavePreviewMode}
+	"\0\s[0]\p[2]\s[31]\i[4]\b[10]"
+	${CommonHeader1}
+	"\__q[Page.KisekaeTop]\_b[img/kisekae.png,inline,opaque]\__q"
+	"\__q[Page.AddParts]\_b[img/addparts.png,inline,opaque]\__q"
+	"\__q[Page.Zip]\_b[img/zip2.png,inline,opaque]\__q"
+	"\__q[Page.Snap]\_b[img/snap.png,inline,opaque]\__q"
+	"\__q[Page.Dic]\_b[img/dic.png,inline,opaque]\__q"
+	"\__q[Page.Save]\_b[img/save.png,inline,opaque]\__q"
+	"\__q[Page.Cfg]\_b[img/cfg.png,inline,opaque]\__q"
+	${CommonHeader2}
+	"\f[color,255,243,10]■\f[color,default]アーカイブ作成"
+	\n\n
+)
+
+MenuHeader.Snap : (
+	${CommonHeader}
+	${LeavePreviewMode}
+	"\p[2]\s[31]\i[6]\b[10]"
+	${CommonHeader1}
+	"\__q[Page.KisekaeTop]\_b[img/kisekae.png,inline,opaque]\__q"
+	"\__q[Page.AddParts]\_b[img/addparts.png,inline,opaque]\__q"
+	"\__q[Page.Zip]\_b[img/zip.png,inline,opaque]\__q"
+	"\__q[Page.Snap]\_b[img/snap2.png,inline,opaque]\__q"
+	"\__q[Page.Dic]\_b[img/dic.png,inline,opaque]\__q"
+	"\__q[Page.Save]\_b[img/save.png,inline,opaque]\__q"
+	"\__q[Page.Cfg]\_b[img/cfg.png,inline,opaque]\__q"
+	${CommonHeader2}
+	"\f[color,43,132,249]■\f[color,default]スナップショット"
+	\n\n
+)
+
+MenuHeader.Dic : (
+	${CommonHeader}
+	${LeavePreviewMode}
+	"\0\s[0]\p[2]\s[31]\i[8]\b[10]"
+	${CommonHeader1}
+	"\__q[Page.KisekaeTop]\_b[img/kisekae.png,inline,opaque]\__q"
+	"\__q[Page.AddParts]\_b[img/addparts.png,inline,opaque]\__q"
+	"\__q[Page.Zip]\_b[img/zip.png,inline,opaque]\__q"
+	"\__q[Page.Snap]\_b[img/snap.png,inline,opaque]\__q"
+	"\__q[Page.Dic]\_b[img/dic2.png,inline,opaque]\__q"
+	"\__q[Page.Save]\_b[img/save.png,inline,opaque]\__q"
+	"\__q[Page.Cfg]\_b[img/cfg.png,inline,opaque]\__q"
+	${CommonHeader2}
+	"\f[color,252,173,255]■\f[color,default]トーク管理"
+	\n\n
+)
+
+MenuHeader.Save : (
+	${CommonHeader}
+	${LeaveSelectMode}
+	${LeavePreviewMode}
+	"\0\s[0]\p[2]\s[31]\i[10]\b[10]"
+	${CommonHeader1}
+	"\__q[Page.KisekaeTop]\_b[img/kisekae.png,inline,opaque]\__q"
+	"\__q[Page.AddParts]\_b[img/addparts.png,inline,opaque]\__q"
+	"\__q[Page.Zip]\_b[img/zip.png,inline,opaque]\__q"
+	"\__q[Page.Snap]\_b[img/snap.png,inline,opaque]\__q"
+	"\__q[Page.Dic]\_b[img/dic.png,inline,opaque]\__q"
+	"\__q[Page.Save]\_b[img/save2.png,inline,opaque]\__q"
+	"\__q[Page.Cfg]\_b[img/cfg.png,inline,opaque]\__q"
+	${CommonHeader2}
+	"\f[color,115,249,204]■\f[color,default]セーブ"
+	\n\n
+)
+
+MenuHeader.Cfg : (
+	${CommonHeader}
+	${LeaveSelectMode}
+	${LeavePreviewMode}
+	"\0\s[0]\p[2]\s[31]\i[12]\b[10]"
+	${CommonHeader1}
+	"\__q[Page.KisekaeTop]\_b[img/kisekae.png,inline,opaque]\__q"
+	"\__q[Page.AddParts]\_b[img/addparts.png,inline,opaque]\__q"
+	"\__q[Page.Zip]\_b[img/zip.png,inline,opaque]\__q"
+	"\__q[Page.Snap]\_b[img/snap.png,inline,opaque]\__q"
+	"\__q[Page.Dic]\_b[img/dic.png,inline,opaque]\__q"
+	"\__q[Page.Save]\_b[img/save.png,inline,opaque]\__q"
+	"\__q[Page.Cfg]\_b[img/cfg2.png,inline,opaque]\__q"
+	${CommonHeader2}
+	"\f[color,175,175,175]■\f[color,default]設定"
+	\n\n
+)
+
+
+#########################################################################
+#着せ替えメニュー
+#########################################################################
+
+#####着せ替えトップメニュー#####
+
+Select.Page.KisekaeTop : ${Page.KisekaeTop}
+
+Page.KisekaeTop : (
+	${CommonHeader}
+	${LeavePreviewMode}
+	"\0\s[0]\p[2]\s[31]\i[0]\b[10]"
+	${CommonHeader1}
+	"\_b[img/kisekae2.png,inline,opaque]"
+	"\__q[Page.AddParts]\_b[img/addparts.png,inline,opaque]\__q"
+	"\__q[Page.Zip]\_b[img/zip.png,inline,opaque]\__q"
+	"\__q[Page.Snap]\_b[img/snap.png,inline,opaque]\__q"
+	"\__q[Page.Dic]\_b[img/dic.png,inline,opaque]\__q"
+	"\__q[Page.Save]\_b[img/save.png,inline,opaque]\__q"
+	"\__q[Page.Cfg]\_b[img/cfg.png,inline,opaque]\__q"
+	${CommonHeader2}
+	"\f[color,255,160,0]■\f[color,default]きせかえ"
+	\n\n
+	"\__q[Page.Kisekae.Body]\_b[img/body.png,inline,opaque]\__q"
+	"\__q[Page.Kisekae.Hair]\_b[img/hair.png,inline,opaque]\__q"
+	\n
+	"\__q[Page.Kisekae.Clothes]\_b[img/clothes.png,inline,opaque]\__q"
+	"\__q[Page.Kisekae.Shoes]\_b[img/shoes.png,inline,opaque]\__q"
+	\n
+	"\__q[Page.Kisekae.Hat]\_b[img/hat.png,inline,opaque]\__q"
+	"\__q[Page.Kisekae.Accessories]\_b[img/accessories.png,inline,opaque]\__q"
+	\n
+	"\__q[Page.Kisekae.BGFG]\_b[img/bgfg.png,inline,opaque]\__q"
+	"\__q[Page.Kisekae.States]\_b[img/states.png,inline,opaque]\__q"
+	\n
+	${DressNaviMenu2}
+)
+
+
+#####着せ替えメニューヘッダー#####
+
+
+MenuHeader.kisekae : (
+	${CommonHeader}
+	"\0\s[0]\p[2]\s[31]\i[0]\b[10]"
+	${CommonHeader1}
+	"\__q[Page.KisekaeTop]\_b[img/kisekae2.png,inline,opaque]\__q"
+	"\__q[Page.AddParts]\_b[img/addparts.png,inline,opaque]\__q"
+	"\__q[Page.Zip]\_b[img/zip.png,inline,opaque]\__q"
+	"\__q[Page.Snap]\_b[img/snap.png,inline,opaque]\__q"
+	"\__q[Page.Dic]\_b[img/dic.png,inline,opaque]\__q"
+	"\__q[Page.Save]\_b[img/save.png,inline,opaque]\__q"
+	"\__q[Page.Cfg]\_b[img/cfg.png,inline,opaque]\__q"
+	${CommonHeader2}
+	"\f[color,255,160,0]■\f[color,default]きせかえ"
+	　
+	"\__q[Page.Kisekae.Body]\_b[img/bodyico.png,inline,opaque]\__q"
+	" \__q[Page.Kisekae.Hair]\_b[img/hairico.png,inline,opaque]\__q"
+	" \__q[Page.Kisekae.Clothes]\_b[img/clothesico.png,inline,opaque]\__q"
+	" \__q[Page.Kisekae.Shoes]\_b[img/shoesico.png,inline,opaque]\__q"
+	" \__q[Page.Kisekae.Hat]\_b[img/hatico.png,inline,opaque]\__q"
+	" \__q[Page.Kisekae.Accessories]\_b[img/accessoriesico.png,inline,opaque]\__q"
+	" \__q[Page.Kisekae.BGFG]\_b[img/bgfgico.png,inline,opaque]\__q"
+	" \__q[Page.Kisekae.States]\_b[img/statesico.png,inline,opaque]\__q"
+	\n\n[half]
+)
+
+MenuHeader.kisekae2 : (
+	${CommonHeader}
+	"\0\s[0]\p[2]\s[31]\i[0]\b[10]"
+	${CommonHeader1}
+	"\__q[Page.KisekaeTop]\_b[img/kisekae2.png,inline,opaque]\__q"
+	"\__q[Page.AddParts]\_b[img/addparts.png,inline,opaque]\__q"
+	"\__q[Page.Zip]\_b[img/zip.png,inline,opaque]\__q"
+	"\__q[Page.Snap]\_b[img/snap.png,inline,opaque]\__q"
+	"\__q[Page.Dic]\_b[img/dic.png,inline,opaque]\__q"
+	"\__q[Page.Save]\_b[img/save.png,inline,opaque]\__q"
+	"\__q[Page.Cfg]\_b[img/cfg.png,inline,opaque]\__q"
+	"\_b[img/menubar2.png,inline,opaque]"
+	"\_b[img/menubar2.png,inline,opaque]"
+	"\__q[PageBack]\_b[img/back.png,inline,opaque]\__q"
+	"\__q[PageClose]\_b[img/close.png,inline,opaque]\__q"
+	"\_b[img/menubarend.png,inline]"
+	\n[half]
+	"\f[color,255,160,0]■\f[color,default]きせかえ"
+	　
+	"\__q[Page.Kisekae.Body,]\_b[img/bodyico.png,inline,opaque]\__q"
+	" \__q[Page.Kisekae.Hair]\_b[img/hairico.png,inline,opaque]\__q"
+	" \__q[Page.Kisekae.Clothes]\_b[img/clothesico.png,inline,opaque]\__q"
+	" \__q[Page.Kisekae.Shoes]\_b[img/shoesico.png,inline,opaque]\__q"
+	" \__q[Page.Kisekae.Hat]\_b[img/hatico.png,inline,opaque]\__q"
+	" \__q[Page.Kisekae.Accessories]\_b[img/accessoriesico.png,inline,opaque]\__q"
+	" \__q[Page.Kisekae.BGFG]\_b[img/bgfgico.png,inline,opaque]\__q"
+	" \__q[Page.Kisekae.States]\_b[img/statesico.png,inline,opaque]\__q"
+	\n\n[half]
+)
+
+=kis
+# 機能:メニュー生成部品
+# 第1引数以降: メニューを生成するカテゴリー名
+function CategoryMenuMaker $(
+	clear @arg[0];
+	foreach @categoryitem @arg $(
+		clear @category;
+		listsub @category ${@categoryitem};
+		setstr @size $(size @category);
+		setstr @sw $(if $[ $(find CategoryOn ${@categoryitem}) >= 0 ] "true" else "false");
+		pushstr @str (
+			"　\![*]"
+			"\__q[Page.Kisekae.Category,"${@categoryitem}"]"
+			$(if ${@sw} "\f[bold,true]")
+			$(TextArea 22 ${@categoryitem}（${@size}）$(if ${@sw} "*"))
+			$(if ${@sw} "\f[bold,default]")
+			"\__q"
+			"\n\n[half]"
+		);
+	);
+	return $(join @str);
+);
+
+# スーパーカテゴリのメニュー生成部品
+# 第1引数: カテゴリー群名
+# 第2引数: カテゴリー群を表すエントリツリー名
+# 備考: カテゴリー群を表すエントリツリー名は、メニュー名と共通にする
+function SuperCategoryMenuMaker $(
+	setstr @sw "false";
+	foreach @category CategoryClass.$@arg[2] $(
+		foreach @categoryitem @category $(
+			if $[ $(find CategoryOn ${@categoryitem}) >= 0 ] $(
+				setstr @sw "true"
+				break;
+			);
+		);
+		if ${@sw} $(break);
+	);
+	return (
+		"　\![*]"
+		"\__q[Page.Kisekae."$@arg[2]"]"
+		$(if ${@sw} "\f[bold,true]")
+		$(TextArea 22 $@arg[1]$(if ${@sw} " *"))
+		$(if ${@sw} "\f[bold,default]")
+		"\__q"
+		"\n\n[half]"
+	);
+);
+=end
+
+#####着せ替えメニュー顔・体#####
+
+#顔・体トップ
+
+Select.Page.Kisekae.Body : (
+	$(set MenuBookmark Select.Page.Kisekae.Body)
+	${MenuHeader.kisekae}
+	"\__q[Page.Kisekae.Body]\_b[img/bodyico.png,inline,opaque]\__q\n[35]　　　顔・体"
+	\n\n\n
+	顔\n
+	$(
+		if $[ ${EyebrowStates} == "眉２" ] $(
+			set EyebrowLayer "２";
+		) else $(
+			set EyebrowLayer "１";
+		);
+		listsub @mayuparts 眉${EyebrowLayer} ;
+		setstr @sw $(if $[ $(find CategoryOn 眉${EyebrowLayer}) >= 0 ] "true" else "false");
+		echo (
+			"　\![*]"
+			"\__q[Page.Kisekae.Category,"眉${EyebrowLayer}"]"
+			$(if ${@sw} "\f[bold,true]")
+			$(TextArea 15 "眉（"$(size @mayuparts)"）"$(if ${@sw} "*"))
+			$(if ${@sw} "\f[bold,default]")
+			"\__q"
+		);
+		echo "　";
+		echo $(CheckQ $[ ${EyebrowLayer} == "２" ] "眉を髪の上に出す" EyebrowSwitch $(if $[ ${EyebrowLayer} == "２" ] "1" else "2"));
+		echo "\n\n[half]";
+	)
+	$(SuperCategoryMenuMaker "目（色・形・ハイライト）" Body.Eyes)
+	$(CategoryMenuMaker 口 耳)
+	\n
+	体\n
+	$(CategoryMenuMaker 素体 素体オプション背後 素体オプション 肌オプション)
+	\n
+	${DressNaviMenu2}
+)
+
+Select.EyebrowSwitch : (
+	$(EyebrowSelect ${ChoiceInfo.1})
+	${Select.Page.Kisekae.Body}
+)
+
+
+#眉カテゴリ
+
+Select.Page.Kisekae.Body.Eyebrow : (
+	$(set MenuBookmark Select.Page.Kisekae.Body.Eyebrow)
+	${MenuHeader.kisekae}
+	"\__q[Page.Kisekae.Body]\_b[img/bodyico.png,inline,opaque]\__q\n[35]　　　顔・体－眉"
+	\n\n\n
+	" \__q[Page.Kisekae.Body.Eyebrow]\_b[img/checkon.png,inline,opaque] 眉を髪の上に出す\__q"　　" \__q[KisekaeMenu.Body.Eyebrow]\_b[img/checkoff.png,inline,opaque] 眉を髪の下にする\__q"
+	\n\n
+	${DressNaviMenu2}
+)
+
+
+#目カテゴリ
+
+Select.Page.Kisekae.Body.Eyes : (
+	$(set MenuBookmark Select.Page.Kisekae.Body.Eyes)
+	${MenuHeader.kisekae}
+	"\__q[Page.Kisekae.Body]\_b[img/bodyico.png,inline,opaque]\__q\n[35]　　　顔・体－目"
+	\n\n\n
+	$(xargs CategoryClass.Body.Eyes CategoryMenuMaker)
+	\n\n
+	${DressNaviMenu2}
+)
+CategoryClass.Body.Eyes (
+	瞳色,
+	目の形,
+	瞳ハイライト
+)
+
+#####着せ替えメニュー髪#####
+
+Select.Page.Kisekae.Hair : (
+	$(set MenuBookmark Select.Page.Kisekae.Hair)
+	${MenuHeader.kisekae}
+	"\__q[Page.Kisekae.Hair]\_b[img/hairico.png,inline,opaque]\__q\n[35]　　　髪"
+	\n\n\n
+	$(CategoryMenuMaker 前髪 横髪 後髪 結髪 髪オプション)
+	${DressNaviMenu2}
+)
+
+
+#####着せ替えメニュー服#####
+
+Select.Page.Kisekae.Clothes : (
+	$(set MenuBookmark Select.Page.Kisekae.Clothes)
+	${MenuHeader.kisekae}
+	" \__q[Page.Kisekae.Clothes]\_b[img/clothesico.png,inline,opaque]\__q\n[35]　　　服"
+	\n\n\n
+	$(SuperCategoryMenuMaker インナー             Clothes.Inner)
+	$(SuperCategoryMenuMaker トップス             Clothes.Tops)
+	$(SuperCategoryMenuMaker ボトムス             Clothes.Bottoms)
+	$(SuperCategoryMenuMaker エプロン・ワンピース Clothes.OnePiece)
+	$(SuperCategoryMenuMaker コート・ケープ       Clothes.Coat)
+	${DressNaviMenu2}
+)
+
+#インナー
+Select.Page.Kisekae.Clothes.Inner : (
+	$(set MenuBookmark Select.Page.Kisekae.Clothes.Inner)
+	${MenuHeader.kisekae}
+	"\__q[Page.Kisekae.Clothes]\_b[img/clothesico.png,inline,opaque]\__q\n[35]　　　服－インナー"
+	\n\n\n
+	$(xargs CategoryClass.Clothes.Inner CategoryMenuMaker)
+	${DressNaviMenu2}
+)
+# 該当するカテゴリー
+CategoryClass.Clothes.Inner (
+	インナー１,
+	インナー１装飾,
+	インナー２,
+	インナー２装飾,
+	インナー３,
+	インナー３装飾
+)
+
+#トップス
+Select.Page.Kisekae.Clothes.Tops: (
+	$(set MenuBookmark Select.Page.Kisekae.Clothes.Tops)
+	${MenuHeader.kisekae}
+	"\__q[Page.Kisekae.Clothes]\_b[img/clothesico.png,inline,opaque]\__q\n[35]　　　服－トップス"
+	\n\n\n
+	$(xargs CategoryClass.Clothes.Tops CategoryMenuMaker)
+	${DressNaviMenu2}
+)
+# 該当するカテゴリー
+CategoryClass.Clothes.Tops (
+	トップス１,
+	トップス１装飾,
+	トップス２,
+	トップス２装飾,
+	トップス３,
+	トップス３装飾,
+	トップス４,
+	トップス４装飾
+)
+
+#ボトムス
+Select.Page.Kisekae.Clothes.Bottoms: (
+	$(set MenuBookmark Select.Page.Kisekae.Clothes.Bottoms)
+	${MenuHeader.kisekae}
+	"\__q[Page.Kisekae.Clothes]\_b[img/clothesico.png,inline,opaque]\__q\n[35]　　　服－ボトムス"
+	\n\n\n
+	$(xargs CategoryClass.Clothes.Bottoms CategoryMenuMaker)
+	${DressNaviMenu2}
+)
+# 該当するカテゴリー
+CategoryClass.Clothes.Bottoms (
+	ズボン,
+	ズボン装飾,
+	スカート,
+	スカート装飾,
+	オーバースカート,
+	オーバースカート装飾
+)
+
+#エプロン・ワンピース
+Select.Page.Kisekae.Clothes.OnePiece: (
+	$(set MenuBookmark Select.Page.Kisekae.Clothes.OnePiece)
+	${MenuHeader.kisekae}
+	"\__q[Page.Kisekae.Clothes]\_b[img/clothesico.png,inline,opaque]\__q\n[35]　　　服－エプロン・ワンピース"
+	\n\n\n
+	$(xargs CategoryClass.Clothes.OnePiece CategoryMenuMaker)
+	${DressNaviMenu2}
+)
+# 該当するカテゴリー
+CategoryClass.Clothes.OnePiece (
+	服上下,
+	服上下装飾,
+	エプロン
+)
+
+#コート・ケープ
+Select.Page.Kisekae.Clothes.Coat: (
+	$(set MenuBookmark Select.Page.Kisekae.Clothes.Coat)
+	${MenuHeader.kisekae}
+	"\__q[Page.Kisekae.Clothes]\_b[img/clothesico.png,inline,opaque]\__q\n[35]　　　服－コート"
+	\n\n\n
+	$(xargs CategoryClass.Clothes.Coat CategoryMenuMaker)
+	${DressNaviMenu2}
+)
+# 該当するカテゴリー
+CategoryClass.Clothes.Coat (
+	コート,
+	コート装飾,
+	ケープ ,
+	ケープ装飾
+)
+
+
+#####着せ替えメニュー靴#####
+
+Select.Page.Kisekae.Shoes : (
+	$(set MenuBookmark Select.Page.Kisekae.Shoes)
+	${MenuHeader.kisekae}
+	"\__q[Page.Kisekae.Shoes]\_b[img/shoesico.png,inline,opaque]\__q\n[35]　　　靴"
+	\n\n\n
+	$(
+		CategoryMenuMaker
+		靴下
+		靴下装飾
+		靴
+		靴装飾
+	)
+	\n\n
+	${DressNaviMenu2}
+)
+
+#####着せ替えメニュー帽子・ヘッドドレス#####
+
+Select.Page.Kisekae.Hat : (
+	$(set MenuBookmark Select.Page.Kisekae.Hat)
+	${MenuHeader.kisekae}
+	"\__q[Page.Kisekae.Hat]\_b[img/hatico.png,inline,opaque]\__q\n[35]　　　帽子・ヘッドドレス"
+	\n\n\n
+	$(
+		CategoryMenuMaker
+		帽子・ヘッドドレス１
+		帽子・ヘッドドレス１装飾
+		帽子・ヘッドドレス２
+		帽子・ヘッドドレス２装飾
+	)
+	\n\n
+	${DressNaviMenu2}
+)
+
+#####着せ替えメニューアクセサリー#####
+
+Select.Page.Kisekae.Accessories : (
+	$(set MenuBookmark Select.Page.Kisekae.Accessories)
+	${MenuHeader.kisekae}
+	"\__q[Page.Kisekae.Accessories]\_b[img/accessoriesico.png,inline,opaque]\__q\n[35]　　　アクセサリー"
+	\n\n\n
+	$(
+		CategoryMenuMaker
+		眼鏡
+		ネクタイ・帯
+		タイピン・帯締め
+	)
+	$(SuperCategoryMenuMaker その他アクセサリー Accessories.Accessories)
+	\n\n
+	${DressNaviMenu2}
+)
+
+#その他アクセサリー
+
+Select.Page.Kisekae.Accessories.Accessories : (
+	$(set MenuBookmark Select.Page.Kisekae.Accessories.Accessories)
+	${MenuHeader.kisekae}
+	"\__q[Page.Kisekae.Accessories]\_b[img/accessoriesico.png,inline,opaque]\n[35]　　　アクセサリー－その他アクセサリー"
+	\n\n\n
+	$(xargs CategoryClass.Accessories.Accessories CategoryMenuMaker)
+	\n\n
+	${DressNaviMenu2}
+)
+# 該当するカテゴリー
+CategoryClass.Accessories.Accessories (
+	アクセサリー１,
+	アクセサリー２,
+	アクセサリー３,
+	アクセサリー４,
+	アクセサリー５
+)
+:rem
+MenuMaker.category2 : $(
+	foreach @categoryitem categorygroup $(
+		set PresentCategory ${@categoryitem} ;
+		entry PartsMenu ;
+	);
+)
+:endrem
+
+
+
+
+
+
+#####着せ替えメニュー背景・前景#####
+
+Select.Page.Kisekae.BGFG : (
+	$(set MenuBookmark Select.Page.Kisekae.BGFG)
+	${MenuHeader.kisekae}
+	"\__q[Page.Kisekae.BGFG]\_b[img/bgfgico.png,inline,opaque]\__q\n[35]　　　背景・前景"
+	\n\n\n
+	$(
+		CategoryMenuMaker
+		背景
+		背景装飾
+		前景
+	)
+	\n\n
+	${DressNaviMenu2}
+)
+
+#####着せ替えメニュー現在の状態#####
+
+Page.Kisekae.State.NowPage : 0
+
+Select.Page.Kisekae.States : (
+	${MenuHeader.kisekae}
+#	$(setstr MenuBookmark Select.Page.Kisekae.States)
+	$(DisplayKisekaeState Page.Kisekae.State.NowPage)
+	\n
+	${DressNaviMenu2}
+)
+
+# 現在の状態からのパーツの着せ替え解除
+Select.Page.Kisekae.StatePartsChoiceOff : (
+	${MenuHeader.kisekae}
+	\0
+	$(PartsRemove ${ChoiceInfo.1} ${ChoiceInfo.2})
+	\p[2]
+	#現在の状態メニューに戻る
+#	$(setstr MenuBookmark Select.Page.Kisekae.States)
+	$(setstr ChoiceInfo.1 ${Page.Kisekae.State.NowPage})
+	$(DisplayKisekaeState Page.Kisekae.State.NowPage)
+	\n
+	${DressNaviMenu2}
+)
+
+# 現在の状態からすべての取り外し可能なパーツの着せ替え解除
+Select.Page.Kisekae.StatePartsChoiceOffAll :(
+	${MenuHeader.kisekae}
+	\0
+	$(
+		foreach @part CurrentKisekaeSet $(
+			clear @element;
+			split @element ${@part} ".";
+			# 口パーツはmustselectではないが外さない
+			if $[ $@element[0] == "口" ] $(continue);
+			PartsRemove $@element[0] $@element[1];
+		);
+	)
+	\p[2]
+	#現在の状態メニューに戻る
+#	$(setstr MenuBookmark Select.Page.Kisekae.States)
+	$(setstr ChoiceInfo.1 ${Page.Kisekae.State.NowPage})
+	$(DisplayKisekaeState Page.Kisekae.State.NowPage)
+	\n
+	${DressNaviMenu2}
+)
+
+# 現在の状態からのパーツの着せ替え解除のツールチップ
+balloon_tooltip.Page.Kisekae.StatePartsChoiceOff : $(
+	DeleteColorID $(Reference 3);
+	echo " を取り外す";
+)
+
+=kis
+# 色替え情報付き一覧生成
+# 第1引数: ページ管理に使用するエントリ
+function DisplayKisekaeState $(
+	# @script1: パーツ情報
+	# @script2: 色情報
+	# @stream : ストリーム
+	setstr @pagelength 10;
+	# ヘッダ生成
+	setstr @stream (
+		"\__q[Page.Kisekae.States]\_b[img/statesico.png,inline,opaque]\__q\n[35]　　　現在の状態"
+		\n\n
+		　"\__q[Page.Kisekae.StatePartsChoiceOffAll]"
+		$(Icon castoff)
+		"\_l[@0,@9]"
+		" "素体状態にする
+		"\_l[@0,@-9]"
+		"\__q"
+		\n\n\n
+	);
+	# パンくずリスト作成
+	pushstr @stream $(
+		TopicPath
+		CurrentKisekaeSet
+		${@pagelength}
+		$@arg[1]
+		Page.Kisekae.States
+	);
+	
+	# パーツ一覧作成
+	split @white "255,255,255" ",";
+	setstr @i     $[ ${$@arg[1]} * ${@pagelength} ];
+	setstr @limit $[ ( ${$@arg[1]} + 1 ) * ${@pagelength} ];
+	while $[ ${@i} < ${@limit} && ${@i} < $(size CurrentKisekaeSet) ] $(
+		setstr @CategoryParts $CurrentKisekaeSet[${@i}];
+		# 一般情報の確定
+		clear @script1;
+		clear @script2;
+		clear @cp;
+		split @cp ${@CategoryParts} ".";
+		setstr @Category $(shift @cp);
+		setstr @Parts $(join @cp ".");
+		setstr @ColorChangeMode $(ExtractColorID ${@Parts});
+		setstr @sw $(
+			if $[ $(match ${DressupOption.${@Category}} "mustselect") >= 0 ] 0 else 1
+		);
+		setstr @script1 (
+			"\__q[Page.Kisekae.Category,"${@Category}"]"
+			$(TextArea 9 ${@Category})
+			"\__q"
+			". "
+			$(
+				if ${@sw} $(
+					IconQ delete $(TextArea 11 $(DeleteColorID ${@Parts})) Page.Kisekae.StatePartsChoiceOff ${@Category} ${@Parts}
+				) else $(
+					TextArea 11 $(DeleteColorID ${@Parts});
+					echo " \_l[@13,@0]";
+				)
+			)
+		);
+
+		# 色情報エントリの確定
+		clear @RGBbase;
+		split @RGBbase $(RGBEntryName ${@Category} ${@Parts}) "|";
+		if $[ $@RGBbase[0] == "" ] $(clear @RGBbase);
+		# 色情報確定
+		if $(size @RGBbase) $(
+			setstr @script2 $(ColorChoiceItem ${@Category} ${@Parts});
+		);
+		pushstr @stream "\![*]"${@script1}" "${@script2}"\n\n[half]";
+		inc @i;
+	);
+	return $(join @stream);
+);
+=end
+
+:rem
+$( clear @category ; listsub @category 瞳色 ; set categorysize $(size @category) )
+　\![*]\q[瞳の色（${categorysize}）　　　　　　　　　　　","Category,瞳色,Select.KisekaeMenu.Body.Eyes]\n\n[half]
+
+$(clear @category ; listsub @category 目の形 ; set categorysize $(size @category) )
+　\![*]\q[目の形（${categorysize}）　　　　　　　　　　　","Category,目の形,Select.KisekaeMenu.Body.Eyes]\n\n[half]
+
+$(clear @category ; listsub @category ハイライト ; set categorysize $(size @category) )
+　\![*]\q[ハイライト（${categorysize}）　　　　　　　　　","Category,ハイライト,Select.KisekaeMenu.Body.Eyes]\n\n[half]
+:endrem
+
+
+#==============================================================================
+:endcrypt

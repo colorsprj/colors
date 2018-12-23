@@ -1,0 +1,4 @@
+declare	RECIPE/1.0	COLORS
+ccc	結髪	細めツインテール腰下	13009_CCC_1_.png	13009_CCC_.png
+ccc	結髪	ツインドリル	13010_CCC_1_.png	13010_CCC_.png
+ccc	結髪	ツインテール肩丈	13011_CCC_1_.png	13011_CCC_.png

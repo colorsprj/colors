@@ -1,0 +1,75 @@
+#----------------------------------------------------------------------------
+# ColorsUpdate 初回起動用コールバック
+
+# 処理本体
+ColorsUpdateCallback.OnFirstBoot : $(
+	# 初期パッチリストを適用済みリストに挿入
+	readdir @kispatch $(cncpath "update/kis");
+	readdir @recipepatch $(cncpath "update/recipe");
+	foreach @kis @kispatch $(
+		if $[ $(find ColorsUpdate.kis ${@kis}) < 0 ] $(
+			if $[ $(isfile $(cncpath "update/kis" ${@kis})) && $(match_at ${@kis} ".kis" -4) ] $(
+				pushstr ColorsUpdate.kis ${@kis};
+			);
+		);
+	);
+	foreach @recipe @recipepatch $(
+		if $[ $(find ColorsUpdate.recipe ${@recipe}) < 0 ] $(
+			if $(isdir $(cncpath "update/recipe" ${@recipe})) $(
+				pushstr ColorsUpdate.recipe ${@recipe};
+			);
+		);
+	);
+)
+
+#----------------------------------------------------------------------------
+# ColorsUpdate ネットワーク更新成功用コールバック
+
+# 処理本体
+ColorsUpdateCallback.OnUpdateComplete : $(
+	# アップデート実行用エントリを初期化
+	clear ColorsUpdateScript;
+	# 作業対象を抽出
+	readdir @kispatch $(cncpath "update/kis");
+	readdir @recipepatch $(cncpath "update/recipe");
+	foreach @kis @kispatch $(
+		if $[ $(find ColorsUpdate.kis ${@kis}) < 0 ] $(
+			if $[ $(isfile $(cncpath "update/kis" ${@kis})) && $(match_at ${@kis} ".kis" -4) ] $(
+				#pushstr ColorsUpdate.kis ${@kis};
+				pushstr @KisList ${@kis}"|"$(cncpath "update/kis" ${@kis});
+			);
+		);
+	);
+	foreach @recipe @recipepatch $(
+		if $[ $(find ColorsUpdate.recipe ${@recipe}) < 0 ] $(
+			if $(isdir $(cncpath "update/recipe" ${@recipe})) $(
+				#pushstr ColorsUpdate.recipe ${@recipe};
+				pushstr @RecipeList ${@recipe}"|"$(cncpath ${System.DataPath} $(cncpath "update/recipe/"${@recipe} ${@recipe}".txt"));
+			);
+		);
+	);
+	# 実行すべきスクリプト・レシピがある場合
+	if $[ $(size @KisList) + $(size @RecipeList) ] $(
+		set ColorsUpdateScript (
+			"$("
+			$(
+				foreach @exekis @KisList $(
+					clear @kelement;
+					split @kelement ${@exekis} "|";
+					echo "load "$@kelement[1]";";
+					echo "pushstr ColorsUpdate.kis "$@kelement[0]";";
+				);
+				foreach @exerecipe @RecipeList $(
+					clear @relement;
+					split @relement ${@exerecipe} "|";
+					echo "ExecRecipe \""$@relement[1]"\" \""$(dirname $@relement[1])"\";";
+					echo "pushstr ColorsUpdate.recipe "$@relement[0]";";
+				);
+			)
+			"ShellReload ColorsUpdateComplete;"
+			"clear ColorsUpdateScript"
+			")"
+		);
+		logprint "＠＠＠ UpdateScript:/"$(getcode ColorsUpdateScript)"/";
+	);
+)

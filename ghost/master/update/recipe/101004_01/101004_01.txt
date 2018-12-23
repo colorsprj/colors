@@ -1,0 +1,42 @@
+declare	RECIPE/1.0	COLORS
+cct	アクセサリー１	蝶羽根左	tyouhidari1.png	tyoumigi2.png
+cct	アクセサリー１	蝶羽根右	tyoumigi1.png	tyoumigi2.png
+ccc	前髪	ざくざく	maegamizaku1.png	maegamizaku2.png
+cc	後髪	あごライン裾広がりざくざく	usirokamizaku.png
+cct	服上下	ハイウエストワンピ	wanpi1.png	wanpi2.png
+cc	ネクタイ・帯	ハイウエストリボンベルト	wanpibelt.png
+cc	靴	ハーフブーツ	boots.png
+cct	ズボン	スリムショートパンツ	pants1.png	pants2.png
+cc	インナー２	シンプルキャミ	kyami.png
+cc	インナー２	フリルキャミ	kyami2.png
+eye	目の形	たれ目まつ毛付き	tareme1.png	tareme2.png	tareme3.png	tareme4.png	tareme5.png	tareme6.png	tareme7.png
+mayuc	眉１	たれ太眉	taremayu1.png	taremayuodoroki.png	taremayukomnari.png	taremayuikari.png
+cc	横髪	あごラインざくざく	yokogamizaku.png
+cct	服上下	ハイウエストワンピ膝下丈	wanpilong.png	wanpi2.png
+cc	アクセサリー５	３連リボン左	clocheribon.png
+cc	アクセサリー５	３連リボン右	clocheribon2.png
+cc	帽子・ヘッドドレス２	クロッシェ	cloche1.png
+cc	帽子・ヘッドドレス２装飾	クロッシェ幅広ベルト	cloche2.png
+cc	前景	飾りフレーム	waku.png
+cc	背景装飾	足元影	kage.png
+eye	目の形	つり目シャープ	beye1.png	beye2.png	beye3.png	beye4.png	beye5.png	beye6.png	beye7.png
+mayuc	眉１	低め	bmayusu.png	bmayuodoroki.png	bmayukomari.png	bmayuikari.png
+cc	後髪	ショート襟足外はね	busirokami.png
+ccc	髪オプション	前髪無造作風レイヤー	bkaminagare.png	bkaminagare2.png
+cc	横髪	耳下ざくざく内巻き	byokokami.png
+ccc	前髪	斜めざっくり	bmaegami.png	bmaegami2.png
+cc	後髪	ショート襟足外はねボリューム減	busirokami2.png
+eye	目の形	細たれ目	hme1.png	hme2.png	hme3.png	hme4.png	hme5.png	hme6.png	hme7.png
+ccc	前髪	真ん中分けあご下丈	hmaegami1.png	hmaegami2.png
+norm	瞳ハイライト	細目用	mehikari.png
+cct	アクセサリー５	髪飾り花右	hana.png	hana2.png
+cc	結髪	ハーフアップロング	halfuplong.png
+cct	アクセサリー５	髪飾り花左	hana3.png	hana4.png
+cc	インナー２	襦袢風ノースリーブ	hinner.png
+cc	服上下	オリエンタルドレス	hdress.png
+cc	ネクタイ・帯	高め帯	hobi.png
+cct	タイピン・帯締め	玉飾り付き帯締め	hobijime.png	hobijime2.png
+mayuc	眉１	下がり微アーチ	hmayusu.png	hmayuodoroki.png	hmayukomari.png	hmayuikari.png
+skin	耳	とがり耳	elfmimi.png
+cc	髪オプション	あほ毛２本	ahoge2.png
+cc	髪オプション	あほ毛１本	ahoge1.png

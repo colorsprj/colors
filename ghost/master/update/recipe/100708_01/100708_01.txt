@@ -1,0 +1,2 @@
+declare	RECIPE/1.0	COLORS
+mouth	Œû	ƒVƒjƒJƒ‹	o.png	c.png	os.png	s.png	base.png

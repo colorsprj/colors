@@ -1,0 +1,28 @@
+declare	RECIPE/1.0	COLORS
+select	素体	肌_CC
+mayuselect	1
+paint	素体	肌_CC		252	224	209
+select	結髪	サイドテールロング左_CCC
+select	結髪	サイドテールロング右_CCC
+select	耳	デフォルト_SKIN
+select	素体オプション	デフォルト
+select	素体オプション	胸_SKIN
+select	瞳色	左右_CC
+paint	瞳色	左右_CC		132	99	152
+select	目の形	デフォルト
+select	瞳ハイライト	右上
+select	口	デフォルト
+select	眼鏡	角丸_CCT
+paint	眼鏡	角丸_CCT	2toneCC1	150	150	150
+select	靴下	レギンス７分丈_CC
+paint	靴下	レギンス７分丈_CC		36	36	36
+select	靴	ストラップシューズ_CC
+paint	靴	ストラップシューズ_CC		132	99	152
+select	服上下	ノースリーブワンピース_CC
+paint	服上下	ノースリーブワンピース_CC		132	99	152
+select	後髪	結髪用シンプル_CC
+select	横髪	二段ストレート_CC
+select	横髪	内巻き_CC
+select	前髪	斜めナチュラル_CCC
+select	眉２	デフォルト
+paint	結髪	サイドテールロング左_CCC		13	181	185

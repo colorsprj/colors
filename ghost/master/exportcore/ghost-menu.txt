@@ -1,0 +1,10 @@
+# メニュー用入出力イベント
+#event.OnRecommendsiteChoice : 
+#event.OnUserInput : 
+#event.OnChoiceSelect : 
+#event.OnChoiceTimeout : 
+#event.OnChoiceEnter : 
+#event.OnAnchorSelect : 
+
+# キー入力イベント
+#event.OnKeyPress : 

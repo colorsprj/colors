@@ -1,0 +1,29 @@
+declare	RECIPE/1.0	COLORS
+ccc	前髪	オールバック	allback1.png	allback2.png
+cc	髪オプション	前髪ほつれ左	hoture1.png
+cc	髪オプション	前髪ほつれ中央寄り	hoture2.png
+cc	インナー１	ブラジャー	bura.png
+cc	トップス１	変形キャミ	kyami.png
+cc	ズボン	スリムパンツ	slimpants.png
+cc	靴	革靴	slimpleshoes.png
+cc	インナー３	パフスリーブ	sode.png
+cc	インナー３	指なしロンググローブ	gloves.png
+cc	オーバースカート	チャップスロング丈左	chapeslong.png
+cc	オーバースカート	チャップスロング丈右	chapeslong2.png
+cc	オーバースカート	チャップスハーフ丈左	chapeshalf.png
+cc	オーバースカート	チャップスハーフ丈右	chapeshalf2.png
+cc	オーバースカート	チャップス股下タイプ左	chapeslongmatasita.png
+cc	オーバースカート	チャップス股下タイプ右	chapeslongmatasita2.png
+cc	オーバースカート	ブーツチャップス左	bootschapes.png
+cc	オーバースカート	ブーツチャップス右	bootschapes2.png
+cc	オーバースカート	ブーツチャップスルーズ左	bootschapeswide.png
+cc	オーバースカート	ブーツチャップスルーズ右	bootschapeswide2.png
+eye	目の形	細目普通	enoeyes1.png	enoeyes2.png	enoeyes3.png	enoeyes4.png	enoeyes5.png	enoeyes6.png	enoeyes7.png
+mayuc	眉１	中太低め	emayusu.png	emayuodoroki.png	emayukomari.png	emayuikari.png
+ccc	前髪	オールバックＭ字	lmaegami1.png	lmaegami2.png
+cc	後髪	短髪逆毛	lusirokami.png
+cc	トップス１	Yシャツはだけ	shirts.png
+mayuc	眉１	低めつり眉	lmayusu.png	lmayuodoroki.png	lmayukomari.png	lmayuikari.png
+cc	ケープ	ショール小さめフィット	shawlshort.png
+cc	ケープ	ショール大判フィット	shawllong.png
+cct	ズボン装飾	ベルト	belt1.png	belt2.png

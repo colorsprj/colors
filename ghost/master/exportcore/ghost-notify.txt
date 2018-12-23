@@ -1,0 +1,11 @@
+# ñ{ëÃÇ©ÇÁÇÃèÓïÒí ím
+
+#notify.ownerghostname : 
+#notify.hwnd : 
+#notify.installedghostname : 
+#notify.otherghostname : 
+#notify.installedshellname : 
+#notify.installedballoonname : 
+#notify.uniqueid : 
+#notify.OnNotifySelfInfo : 
+#notify.OnNotifyOSInfo : 

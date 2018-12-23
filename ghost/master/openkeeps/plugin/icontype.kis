@@ -1,0 +1,57 @@
+# アイコン画像の左上抜きなし、あり、アルファチャンネル使用テーブル
+
+# 書式:
+# 　　IconType.＜ファイル名(拡張子抜き)＞ : N/O/A
+# 　　　N... 左上抜きあり
+# 　　　O... 左上抜きなし
+# 　　　A... アルファチャンネルによる抜き
+#
+# 例:
+# 　　IconType.radioon : N
+#
+# 備考:
+# 　　該当エントリのないファイルは「N」扱いする
+
+
+IconType.sidetriangle : N
+IconType.downtriangle : N
+
+IconType.checkon  : O
+IconType.checkoff : O
+
+IconType.radioon  : A
+IconType.radiooff : A
+IconType.resize   : A
+IconType.disk     : A
+IconType.reset    : A
+IconType.copy     : A
+IconType.cut      : A
+IconType.cut2     : A
+IconType.folder   : A
+IconType.fopen    : A
+IconType.color    : A
+IconType.newfile  : A
+IconType.editfile : A
+IconType.wait     : A
+IconType.reload   : A
+IconType.go       : A
+IconType.earth    : A
+IconType.face     : A
+
+IconType.snapshotbutton  : A
+IconType.makeghostbutton : A
+IconType.makeshellbutton : A
+IconType.makepartspackbutton : A
+IconType.makebackupbutton : A
+
+IconType.eye      : A
+IconType.eyebrow  : A
+IconType.mouth    : A
+IconType.blush    : A
+
+IconType.yes      : A
+IconType.no       : A
+IconType.castoff  : A
+IconType.delete   : A
+IconType.back13p  : A
+IconType.close13p  : A

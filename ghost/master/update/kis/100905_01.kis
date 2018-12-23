@@ -1,0 +1,41 @@
+=kis
+# tempフォルダ以下を整備する
+if $[ ${ColorsUpdate.vars.maketempdirs} != "1" ] $(
+	function ColorsUpdate.Path $(
+		return $(cncpath ${System.DataPath} $(cncpath "temp" $@arg[1]));
+	);
+	function ColorsUpdate.Mkdir $(
+		if $[ ! $(isexist $(ColorsUpdate.Path $@arg[1])) ] $(
+			create_directory $(ColorsUpdate.Path $@arg[1]);
+			silent;
+		);
+	);
+	# 画像テンポラリ(既にあるかもしれないが念のため)
+	ColorsUpdate.Mkdir tempimg;
+	# レシピテンポラリ
+	ColorsUpdate.Mkdir temprecipe;
+	
+	# ゴーストテンポラリ
+	ColorsUpdate.Mkdir ghosttemplate;
+	ColorsUpdate.Mkdir ghosttemplate/ghost;
+	ColorsUpdate.Mkdir ghosttemplate/ghost/master;
+	ColorsUpdate.Mkdir ghosttemplate/shell;
+	ColorsUpdate.Mkdir ghosttemplate/shell/master;
+	
+	# サプリメントテンポラリ(展開先)
+	ColorsUpdate.Mkdir tempsupplement;
+	
+	# サプリメントテンポラリ(展開元)
+	ColorsUpdate.Mkdir supplementtemplate;
+	ColorsUpdate.Mkdir supplementtemplate/ghost;
+	ColorsUpdate.Mkdir supplementtemplate/ghost/master;
+	ColorsUpdate.Mkdir supplementtemplate/ghost/master/temp;
+	ColorsUpdate.Mkdir supplementtemplate/ghost/master/temp/tempsupplement;
+
+	# 後始末
+	rmfunc ColorsUpdate.Path;
+	rmfunc ColorsUpdate.Mkdir;	
+	setstr ColorsUpdate.vars.maketempdirs 1;
+);
+
+=end

@@ -1,0 +1,7 @@
+charset,Shift_JIS
+type,shell
+
+name,COLORSマスターシェル
+accept,COLORS
+directory,colors
+refresh,1

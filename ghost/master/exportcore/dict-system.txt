@@ -1,0 +1,554 @@
+#==============================================================================
+#
+#   華和梨制御辞書
+#
+#==============================================================================
+# 動作対象：「華和梨」Phase 8.2.8 及び上位互換版
+#           SSP 2.01.69以降
+#==============================================================================
+
+
+#設定エントリ==================================================================
+
+# 終了時にセーブしたいエントリ名
+System.savedata (
+	# トーク間隔
+	System.interval,
+	# ランダムトークOn/Off
+	System.talkswitch,
+	# ユーザ名
+	username
+)
+# セーブファイル名
+System.savefile : ghost-savedata.txt
+
+#==============================================================================
+
+
+#必須コールバック==============================================================
+
+# GET SHIORI/3.0 --------------------------------------------------------------
+System.Callback.OnGET : $(
+	.setstr @ID $(.encode_entryname ${System.Request.ID});
+	if $(.match_at ${@ID} On) $(
+		# イベント呼び出し
+		if $(.size event.${@ID}) $(
+			.get event.${@ID};
+		) else if $(.size System.Request.BaseID) $(
+			# 派生元イベント(イベントであることを仮定)
+			.split @IDs ${System.Request.BaseID} ",";
+			foreach @BaseID @IDs $(
+				.setstr @BaseID $(.encode_entryname ${@BaseID});
+				if $(.size event.${@BaseID}) $(
+					.get event.${@BaseID};
+					break;
+				);
+			);
+		);
+	) else if $(.size resource.${@ID}) $(
+		# リソース文字列
+		.entry resource.${@ID};
+	) else if $(.size notify.${@ID}) $(
+		# NOTIFYがGETで来ることもある
+		.get System.Callback.OnNOTIFY;
+		silent;
+	);
+)
+
+#------------------------------------------------------------------------------
+
+# NOTIFY SHIORI/3.0 -----------------------------------------------------------
+System.Callback.OnNOTIFY : $(
+	if $(.size notify.$(.encode_entryname ${System.Request.ID})) $(
+		# 手続き呼び出し
+		.get notify.$(.encode_entryname ${System.Request.ID});
+		return;
+	) else if $(.size System.Request.BaseID) $(
+		# 派生元イベント(イベントであることを仮定)
+		.split @IDs ${System.Request.BaseID} ",";
+		foreach @BaseID @IDs $(
+			.setstr @BaseID $(.encode_entryname ${@BaseID});
+			if $(.size event.${@BaseID}) $(
+				.get event.${@BaseID};
+				return;
+			);
+		);
+	);
+	# ここに来るのは未知のNOTIFY、あるいは通常はGETで来るものと推定
+	# 念の為、GETで該当がないか試す
+	.get System.Callback.OnGET;
+)
+
+#------------------------------------------------------------------------------
+
+
+# SHIORI Load -----------------------------------------------------------------
+# 実体は辞書読み込み完了時
+System.Callback.OnLoad : $(
+	# セーブファイルのロード
+	.load ${System.savefile};
+	.load ${SentenceFile}.txt;
+	.load ${BootendFile}.txt;
+	.load ${MouseFile}.txt;
+
+	# 初期化済みか否か判定の為、セーブするエントリにデータがあるか確認
+	foreach @entry System.savedata $(.inc @wc $(size ${@entry}));
+	if $[ ${@wc} == 0 ] $(
+		# もしデータが無いなら、まだ初期化していない
+		setstr System.interval 57;
+		setstr System.talkswitch 1;
+		setstr username ${username.default};
+	);
+	# 以後、通常の起動時毎に初期化するデータを書く
+	setstr System.talkcount ${System.interval};
+)
+
+#------------------------------------------------------------------------------
+
+# SHIORI UnLoad ---------------------------------------------------------------
+System.Callback.OnUnload : $(
+	foreach @entry System.savedata $(
+		if $(.match_at ${@entry} ".*" -2) $(
+			# ツリーのワイルドカードを展開
+			.clear @tree;
+			.listtree @tree $(.rsub ${@entry} ".*" "");
+			foreach @node @tree $(
+				if $(.size ${@node}) $(
+					.pushstr @list ${@node};
+				);
+			);
+		) else $(
+			# ワイルドカードのないエントリ
+			if $(.size ${@entry}) $(
+				.pushstr @list ${@entry};
+			);
+		);
+	);
+	# 重複エントリを削除
+	.setstr @i 0;
+	while $[ ${@i} < ( $(.size @list) - 1 ) ] $(
+		.setstr @pos $(.rfind @list $(.getcode @list[${@i}]));
+		if $[ ${@pos} != ${@i} ] $(.clear @list[${@pos}]) else $(.inc @i);
+	);
+	# セーブ実行
+	.xargs @list .save ${System.savefile};
+)
+
+#------------------------------------------------------------------------------
+
+#==============================================================================
+
+
+#必須関数群====================================================================
+=kis
+
+#kawarirc.kis読み込み終了時処理------------------------------------------------
+#・System.Callback.*
+#・event.*
+#・notify.*
+#・resource.*
+#のエントリを、起動中書き換え不可に設定する。
+#外部SSTPによる不正なスクリプトが侵入した場合の危険性を、多少軽減する。
+#kawarirc.kis最終行で実行のこと。
+
+function KawariSystemBoot $(
+	# Sytem.Callback.OnLoad発行、発行後エントリ消去
+	.get System.Callback.OnLoad;
+	.clear System.Callback.OnLoad;
+	# エントリ構造保護
+	.listtree @ToProtect System.Callback;
+	.listtree @ToProtect event;
+	.listtree @ToProtect notify;
+	.listtree @ToProtect resource;
+	foreach @i @ToProtect $(.writeprotect ${@i});
+);
+
+#------------------------------------------------------------------------------
+
+#==============================================================================
+
+
+#一部タグを無害化(KillDangerousTag)============================================
+#SSTP攻撃に対処する場合に使います
+
+# 外部SSTPに存在した場合、危険なタグを無害化
+# 第1引数: 文字列
+# 戻り値:  タグを無害化した文字列
+function KillDangerousTag $(
+	if $[ $(.size @arg) != 2 ] $(return);
+
+	.setstr @str $@arg[1];
+	loop $(.size System.dangeroustag) $(
+		.setstr @i ${-1};
+		if $[ $(.match ${@str} $System.dangeroustag[${@i}]) == -1 ] $(continue);
+		# 危険タグが存在したら、無害化したタグに置換
+		.setstr @str $(.gsub ${@str} $System.dangeroustag[${@i}] $System.securedtag[${@i}]);
+	);
+	return ${@str};
+);
+
+# KillDangerousTag内部で参照している危険なタグのリスト
+# 必ず2文字以上からなるタグを書くこと
+=dict
+System.dangeroustag (
+	"\\![updatebymyself]",
+	"\\![vanishbymyself]",
+	"\\![enter,passivemode]",
+	"\\![leave,passivemode]",
+	"\\![lock,repaint]",
+	"\\![unlock,repaint]",
+	"\\![biff]",
+	"\\![open,browser",
+	"\\![open,mailer",
+	"\\![raise",
+	"\\j["
+)
+=end
+
+# 安全化したタグ列の生成(System.securedtag)
+if $(.size System.securedtag) $(.clear System.securedtag);
+loop $(.size System.dangeroustag) $(
+	.setstr @i ${-1};
+	.pushstr System.securedtag " _"$(.substr $System.dangeroustag[${@i}] 2);
+);
+
+# タグリストが消されて無効化されないよう、エントリを保護
+.writeprotect System.dangeroustag;
+.writeprotect System.securedtag;
+
+#==============================================================================
+
+
+#文字列の数値化(Integer、NoNegative)===========================================
+#処理する文字を数字だけに限定したい場合に使います
+
+# 文字列から整数字だけ抜き出す
+# 第1引数: 文字列
+# 戻り値:  文字列中の0～9、先頭のマイナス記号だけを抜き出した結果
+#          抜き出しか結果が$(NULL)ならば0を返す
+function Integer $(.inc @arg[1] 0 ; return $@arg[1]);
+
+# 文字列から非負数字だけ抜き出す
+# 第1引数: 文字列
+# 戻り値:  文字列中の0～9だけを抜き出した結果
+#          抜き出しか結果が$(NULL)ならば0を返す
+#          文字列先頭にマイナス記号があった場合も0を返す
+function NonNegative $(.dec @arg[1] 0 0 ; return $@arg[1]);
+
+#==============================================================================
+
+
+#Reference参照(Reference、SReference、IntReference、NonNegReference)===========
+#Referenceを簡単に参照する場合に使用します。
+
+# Reference*参照
+# 第1引数: Reference番号
+# 戻り値:  Reference*の内容
+function Reference $(
+	if $(.size "System.Request.Reference"$@arg[1]) $(
+		.get "System.Request.Reference"$@arg[1][0];
+	)
+);
+
+# 危険なさくらスクリプトタグを無害化した上でReference*参照
+# 第1引数: Reference番号
+# 戻り値:  危険なさくらスクリプトタグをを無害化したReference*の内容
+function SReference $(KillDangerousTag $(Reference $@arg[1]));
+
+# 整数値としてReference*参照
+# 第1引数: Reference番号
+# 戻り値:  Referenceの内容が整数ならばその内容、それ以外なら0
+function IntReference $(Integer $(Reference $@arg[1]));
+
+# 非負整数としてReference*参照
+# 第1引数: Reference番号
+# 戻り値:  Referenceの内容が非負整数ならばその内容、それ以外なら0
+function NonNegReference $(NonNegative $(Reference $@arg[1]));
+
+# エントリ名に使える文字だけにしてReference*参照
+# 第1引数: Reference番号
+# 戻り値:  エントリ名に使える文字だけにしたReference*の内容
+function EntNamReference $(.encode_entryname $(Reference $@arg[1]));
+#==============================================================================
+
+
+# デバッグ用関数群=============================================================
+# 「debugger on」だった場合、これらの機能が有効になる
+
+#date ………… デバッグ用dateコマンドラッパー(引数はdateコマンドと同じ)
+#SetNowtime …… 「現在時刻」設定(第1引数:1970/1/1 0:00:00からの秒数)
+#ResetNowtime … 「現在時刻」の設定を解除
+#IncNowtime …… 「現在時刻」を1秒進める
+#DecNowtime …… 「現在時刻」を1秒戻す
+
+if $[ ${System.Debugger} == "on" ] $(
+	function date $(
+		.date
+			$[ $@arg[1] || "%y/%m/%d %H:%M:%S" ]
+			$[ $@arg[2] || ${System.Nowtime} || $(.date %s) ];
+	);
+	function SetNowtime $(
+		.setstr System.Nowtime $(NonNegative $@arg[1]);
+		.logprint "SetNowtime : "$(.date "%y/%m/%d %H:%M:%S" ${System.Nowtime})"("${System.Nowtime}")";
+;
+	);
+	function ResetNowtime $(
+		.clear System.Nowtime;
+		.logprint "ResetNowtime : "$(.date "%y/%m/%d %H:%M:%S")"("$(.date %s)")";
+	);
+	function IncNowtime $(
+		inc System.Nowtime;
+		.logprint "IncNowtime : "$(.date "%y/%m/%d %H:%M:%S" ${System.Nowtime})"("${System.Nowtime}")";
+	);
+	function DecNowtime $(
+		dec System.Nowtime 1 0;
+		.logprint "DecNowtime : "$(.date "%y/%m/%d %H:%M:%S" ${System.Nowtime})"("${System.Nowtime}")";
+	);
+);
+
+=end
+#==============================================================================
+
+
+#==============================================================================
+# サービスエントリ
+#==============================================================================
+
+# 時刻
+date.year   : $(date %y)
+date.month  : $(date %n)
+date.day    : $(date %e)
+time.hour   : $(date %k)
+time.minute : $(date %N)
+time.second : $(date %r)
+
+
+#==============================================================================
+# サーフィス設定等
+#==============================================================================
+
+#------------------------------------------------------------------------------
+# サーフィス制御システム コア部分
+
+# 現在のスコープ番号(0～)
+CharScope : 0
+
+# マルチキャラクタ同時トークフラグ、\_sタグ
+# MultiCharFlag : (初期状態では未定義)
+
+# 改行フラグ
+# キャラクタ切替があった場合、\n[half]にする判断用
+# CRLFFlag : (初期状態では未定義)
+
+=kis
+# スコープが指定のものと違ったら切り替える
+# 第1引数: 切り替えるスコープ番号
+# 戻り値 : 今のスコープ番号と第1引数が異なればスコープ切り替えタグ
+# 備考   : マルチキャラクタ同時トークフラグが立っていたら解除し、\_sタグ挿入
+function ChangeScopeIfNOT $(
+	if $[ $(.size @arg) != 2 ] $(return);
+	.setstr @cs $(NonNegative $@arg[1]);
+	# 改行フラグが立っていたら、直前に改行してからスコープを変更した時。
+	# 1行半改行にするため、"\n[half]"を追加出力
+	# 同時トークフラグ解除前に出力すること
+	if $[ ${CharScope} != ${@cs} && $(.size CRLFFlag) ] "\n[half]";
+	# 同時トークフラグが立って居たら解除
+	if $(.size MultiCharFlag) "\_s";
+	if $[ ${CharScope} != ${@cs} ] $(
+		# キャラクタスコープを変更し、切り替えタグを出力
+		.setstr CharScope ${@cs};
+		if $[ ${@cs} < 2 ] "\\"${@cs} else "\\p["${@cs}"]"
+	);
+	.clear MultiCharFlag;
+	.clear CRLFFlag;
+);
+
+# マルチキャラクタ同時トーク
+# 引数群: 同時にしゃべるキャラクタのスコープ番号を列挙
+# 戻り値: \_sタグ
+# 備考  : マルチキャラクタ同時トークフラグを立てる
+function MultiChar $(
+	if $[ $(.size @arg) <= 1 ] $(return);
+	.setstr MultiCharFlag 1;
+	.clear @arg[0];
+	return "\_s["$(.join @arg ",")"]";
+);
+=end
+
+# えんいー・終了
+# OnSuspend等に備え、以下の処理を必ずやること。
+#・キャラクタスコープ番号を0に初期化
+#・マルチキャラクタフラグを解除し、必要に応じて\_sタグも挿入
+#・改行フラグを解除
+
+=kis
+# 終了時共通処理
+function FinishCommon $(
+	.setstr CharScope 0;
+	.clear MultiCharFlag;
+	.clear CRLFFlag;
+);
+=end
+
+e            : $(
+	if $(.size MultiCharFlag) "\_s";
+	if $[ ${System.Request.ID} != "OnClose" ] "\\e";
+	FinishCommon;
+)
+終了         : $(if $(.size MultiCharFlag) "\_s" ; FinishCommon)\-
+切替終了     : $(
+	if $(.size MultiCharFlag) "\_s";
+	if $[ $(.size System.InstalledGhost) > 1 ] 
+		\!["change,ghost,random"]
+	else
+		\-
+	;
+	FinishCommon;
+)
+
+# 改行
+n            : \n$(.setstr CRLFFlag 1)
+# 次のスコープ変更で改行しない
+noCR         : $(.clear CRLFFlag)
+
+#------------------------------------------------------------------------------
+# 句点、記号など
+
+、           : 、\w4
+。           : 。\w8
+？           : ？\w8
+！           : ！\w8
+♪           : ♪\w8
+～           : ～\w8
+…           : …\w8
+……         : …\w8…\w8
+………       : …\w8…\w8…\w8
+‥           : ‥\w8
+‥‥         : ‥\w8‥\w8
+‥‥‥       : ‥\w8‥\w8‥\w8
+・           : ・\w4
+w4           : \w4
+w8           : \w8
+w16          : \w8\w8
+
+
+#------------------------------------------------------------------------------
+# サーフィス定義
+
+#------------------------------------------------------------------------------
+# サーフィスの初期化
+
+=kis
+# トーク開始時のためのサーフィス初期化
+# デフォルト基底関数
+# 第1引数 : 対象キャラのスコープ番号
+# 第2引数 : 対象キャラの基底状態サーフィス番号
+# 第3引数 : 初期設定タグ
+# 第4引数 : デフォルトとして使うキャラクタの表情指定エントリ名
+function デフォルト基底 $(
+	if $[ $(length $@arg[4]) == 0 ] $(
+		setstr @surface "\\s["$@arg[2]"]";
+		setstr @ename "@surface";
+	) else $(
+		setstr @ename $@arg[4];
+	);
+	echo $@arg[3];
+	setstr CharScope $@arg[1];
+	echo ${${@ename}};
+);
+# サーフィス初期化
+function デフォルト $(
+	デフォルト基底 0 0 \1\s[10]\0 $@arg[1];
+);
+=end
+# 初期化用のエントリ(過去互換のため)
+デフォルト     : $(デフォルト)
+
+
+#------------------------------------------------------------------------------
+# キャラクタの表情
+
+
+
+
+#------------------------------------------------------------------------------
+# 複数キャラクタの表情
+# 単独キャラクタの定義を使用し、最後にマルチキャラクタタグ挿入
+
+
+
+#------------------------------------------------------------------------------
+# その他
+
+わたし   : ${FPP}
+あなた   : ${SPP}
+ユーザー : ${username}
+
+
+#==============================================================================
+# 独自関数
+#==============================================================================
+
+=kis
+# SynchronizedTalkカスタム版
+# 書式   : $(mySynchronizedTalk 引数1 引数2 [引数3...])
+# 第1引数: \0側の発話内容
+# 第2引数: \1側の発話内容
+# 第3引数以降: 各スコープの発話内容(省略可能)
+# 戻り値 : 同時発話するスクリプト
+# 機能   : \0側と\1側のトークを一文字ごとに切り出し、スコープ切替を挟んで
+#          繋げて返す
+# 備考   : sslex_char_atを内部で使用しているので、発話内容にさくらスクリプトが
+#          含まれていても正常動作する
+function mySynchronizedTalk $(
+	if $[ $(.size @arg) < 3 ] $(return);
+
+	.clear @arg[0];
+	.setstr @scope 0;
+	loop $(.size @arg) $(
+		# 以降、各スコープに関する初期化
+		# 文字列ポインタ初期化
+		.setstr @p[${@scope}] 0;
+		# スコープタグ初期化
+		.setstr @prefix[${@scope}] $(
+			if $[ ${@scope} <= 1 ]
+				"\\"${@scope}
+			else
+				"\\p["${@scope}"]"
+		);
+		.inc @scope;
+	);
+
+	#すべての文字を表示しきるまでループ
+	.setstr @cond 0;
+	.setstr @lastscope $(NULL);
+	until $[ ${@cond} == $(.size @arg) ] $(
+		.setstr @cond 0;
+		.setstr @scope 0;
+		loop $(.size @arg) $(
+			.clear @char;
+			.setstr @char $(sslex_char_at $@arg[${@scope}] $@p[${@scope}]);
+			.setstr @p[${@scope}] $[ $@p[${@scope}] + $(.length ${@char}) ];
+			if $[ ${@char} != "" ] $(
+				# まだ末尾に達しておらず、文字がある
+				if $[ ${@scope} != ${@lastscope} ] $(
+					# 直前に文字があったスコープと違うならスコープ切り替え
+					.pushstr @talk $@prefix[${@scope}];
+					.setstr @lastscope ${@scope};
+				);
+				.pushstr @talk ${@char};
+			);
+			# 終了条件を計算
+			if $[ $@p[${@scope}] >= $(.length $@arg[${@scope}]) ] $(.inc @cond);
+			.inc @scope;
+		);
+	);
+
+	# まとめて出力
+	return $(.get @talk);
+
+	#lastscopeをCharScopeに設定
+	.setstr CharScope ${@lastscope};
+);
+=end
+#==============================================================================

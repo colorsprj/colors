@@ -1,0 +1,14 @@
+# 状態変化通知イベント
+
+#event.OnWindowStateMinimize : 
+event.OnWindowStateRestore : ${BootSentence}
+#event.OnSurfaceChange : 
+event.OnSurfaceRestore : ${BootSentence}
+#event.OnShellChanging : 
+#event.OnShellChanged : 
+#event.OnBalloonChange : 
+#event.OnSSTPBreak : 
+#event.OnNetworkHeavy : 
+#event.OnSSTPBlacklisting : 
+#event.OnWallpaperChange : 
+#event.OnDisplayChange : 

@@ -1,0 +1,36 @@
+declare	RECIPE/1.0	COLORS
+select	素体	肌_CC
+mayuselect	1
+paint	素体	肌_CC		232	180	136
+select	アクセサリー４	二連アームブレスレット右_CC
+paint	アクセサリー４	二連アームブレスレット右_CC		255	198	0
+select	アクセサリー４	二連アームブレスレット左_CC
+paint	アクセサリー４	二連アームブレスレット左_CC		255	198	0
+select	アクセサリー４	二連ブレスレット右_CC
+paint	アクセサリー４	二連ブレスレット右_CC		255	198	0
+select	アクセサリー４	二連ブレスレット左_CC
+paint	アクセサリー４	二連ブレスレット左_CC		255	198	0
+select	アクセサリー４	二連アンクレット右_CC
+paint	アクセサリー４	二連アンクレット右_CC		255	198	0
+select	アクセサリー４	二連アンクレット左_CC
+paint	アクセサリー４	二連アンクレット左_CC		255	198	0
+select	トップス４	条帛_CC
+paint	トップス４	条帛_CC		234	51	51
+select	眉１	下がりアーチ眉_CC
+select	耳	デフォルト_SKIN
+select	耳	福耳_SKIN
+select	素体オプション	鹿角_CCC
+paint	素体オプション	鹿角_CCC		156	103	54
+select	素体オプション	鼻_SKIN
+select	素体オプション	あごたるみ_SKIN
+select	肌オプション	白毫_CC
+paint	肌オプション	白毫_CC		192	192	192
+select	瞳色	左右_CC
+paint	瞳色	左右_CC		28	28	28
+select	目の形	せんとくん
+select	口	むにむに
+select	スカート	裳_CCT
+paint	スカート	裳_CCT	2toneCC1	69	87	186
+select	スカート装飾	裳帯_CC
+paint	スカート装飾	裳帯_CC		234	51	51
+paint	眉	下がりアーチ眉_CC		60	60	60

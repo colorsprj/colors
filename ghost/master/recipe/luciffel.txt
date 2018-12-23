@@ -1,0 +1,25 @@
+declare	RECIPE/1.0	COLORS
+select	素体	肌_CC
+mayuselect	1
+paint	素体	肌_CC		255	228	196
+select	背景装飾	足元影_CC
+paint	背景装飾	足元影_CC		18	18	18
+select	靴	革靴_CC
+paint	靴	革靴_CC		30	30	30
+select	ズボン	スリムパンツ_CC
+paint	ズボン	スリムパンツ_CC		49	49	49
+select	ズボン装飾	ベルト_CCT
+paint	ズボン装飾	ベルト_CCT	2toneCC2	128	128	128	230	230	230
+select	トップス１	Yシャツはだけ_CC
+paint	トップス１	Yシャツはだけ_CC		49	49	49
+select	眉１	低めつり眉_CC
+select	前髪	オールバックＭ字_CCC
+select	後髪	短髪逆毛_CC
+select	耳	デフォルト_SKIN
+select	瞳色	左右_CC
+paint	瞳色	左右_CC		172	123	123
+select	目の形	つり目シャープ
+select	瞳ハイライト	細目用
+select	口	デフォルト
+paint	眉	低めつり眉_CC		49	49	49
+paint	結髪	オールバックＭ字_CCC		64	64	64

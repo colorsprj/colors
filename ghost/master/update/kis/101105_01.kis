@@ -1,0 +1,29 @@
+=kis
+# 2010/11/3パーツの一部を修復する
+if $[ ${ColorsUpdate.vars.101103partsupdate} != "1" ] $(
+	PushCurrentShellName "COLORS";
+	# 1011103パーツ追加後なら実施
+	# 今回のネットワーク更新で、追加パーツは正常なものに差し替わったため
+	if $[ $(FindSurfaceID "アクセサリー５" "天使の輪") != "" ] $(
+		# @dir=差し替え画像データのパス
+		setstr @dir $(cncpath ${System.DataPath} "update/recipe/101103_01");
+		# @sid1=アクセサリー５・天使の輪のSurface ID
+		setstr @sid1 $(FindSurfaceID "アクセサリー５" "天使の輪");
+		# @sid2=アクセサリー５・着衣用胸増量のSurface ID
+		setstr @sid2 $(FindSurfaceID "アクセサリー５" "着衣用胸増量");
+
+		# 画像ファイル差し替え
+		# @sid1群
+		PNGCopy $(cncpath ${@dir} "76019_CCC_1_.png") ${@sid1}"_CCC_1";
+		PNGCopy $(cncpath ${@dir} "76019_CCC_1_.png") ${@sid1}"_CCC_2";
+		PNGCopy $(cncpath ${@dir} "76019_CCC_.png")   ${@sid1}"_CCC";
+		# @sid2群
+		PNGCopy $(cncpath ${@dir} "76020_CCC_1_.png") ${@sid2}"_CCC_1";
+		PNGCopy $(cncpath ${@dir} "76020_CCC_1_.png") ${@sid2}"_CCC_2";
+		PNGCopy $(cncpath ${@dir} "76020_CCC_.png")   ${@sid2}"_CCC";
+	);
+	# 後始末
+	PopCurrentShellName;
+	setstr ColorsUpdate.vars.101103partsupdate 1;
+);
+=end

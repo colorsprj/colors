@@ -1,0 +1,29 @@
+declare	RECIPE/1.0	COLORS
+select	素体	肌_CC
+mayuselect	1
+paint	素体	肌_CC		255	231	210
+select	背景装飾	足元影_CC
+paint	背景装飾	足元影_CC		18	18	18
+select	結髪	ハーフアップロング_CC
+select	後髪	結髪用シンプル_CC
+select	耳	デフォルト_SKIN
+select	瞳色	左右_CC
+paint	瞳色	左右_CC		191	183	215
+select	目の形	細たれ目
+select	瞳ハイライト	細目用
+select	口	デフォルト
+select	インナー２	襦袢風ノースリーブ_CC
+select	靴	クロスストラップシューズ_CCC
+paint	靴	クロスストラップシューズ_CCC		231	241	239
+select	服上下	オリエンタルドレス_CC
+paint	服上下	オリエンタルドレス_CC		255	225	251
+select	ネクタイ・帯	高め帯_CC
+paint	ネクタイ・帯	高め帯_CC		200	171	248
+select	タイピン・帯締め	玉飾り付き帯締め_CCT
+paint	タイピン・帯締め	玉飾り付き帯締め_CCT	2toneCC1	225	224	233
+select	眉１	下がり微アーチ_CC
+select	前髪	真ん中分けあご下丈_CCC
+select	アクセサリー５	髪飾り花右_CCT
+paint	アクセサリー５	髪飾り花右_CCT	2toneCC2	255	225	251	242	237	200
+paint	結髪	ハーフアップロング_CC		133	128	134
+paint	眉	下がり微アーチ_CC		133	128	134

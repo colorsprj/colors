@@ -1,0 +1,86 @@
+# 部位の名称とベースサーフィス番号対応表
+EditSurfaces.List : "背景/9000"
+EditSurfaces.List : "背景装飾/10000"
+EditSurfaces.List : "アクセサリー１/11000"
+EditSurfaces.List : "（帽子後部用）/12000"
+EditSurfaces.List : "結髪/13000"
+EditSurfaces.List : "アクセサリー２/14000"
+EditSurfaces.List : "後髪/15000"
+EditSurfaces.List : "（服後部用）/16000"
+EditSurfaces.List : "帽子・ヘッドドレス１/17000"
+EditSurfaces.List : "帽子・ヘッドドレス１装飾/18000"
+EditSurfaces.List : "アクセサリー３/19000"
+EditSurfaces.List : "素体オプション背後/20000"
+EditSurfaces.List : "素体/21000"
+EditSurfaces.List : "耳/22000"
+EditSurfaces.List : "素体オプション/23000"
+EditSurfaces.List : "肌オプション/24000"
+EditSurfaces.List : "瞳色/25000"
+EditSurfaces.List : "目の形/26000"
+EditSurfaces.List : "瞳ハイライト/27000"
+EditSurfaces.List : "（目アニメ）/28000"
+EditSurfaces.List : "口/29000"
+EditSurfaces.List : "（口アニメ）/30000"
+EditSurfaces.List : "（赤面）/31000"
+EditSurfaces.List : "眼鏡/32000"
+EditSurfaces.List : "インナー１/33000"
+EditSurfaces.List : "インナー１装飾/34000"
+EditSurfaces.List : "靴下/35000"
+EditSurfaces.List : "靴下装飾/36000"
+EditSurfaces.List : "インナー２/37000"
+EditSurfaces.List : "インナー２装飾/38000"
+EditSurfaces.List : "インナー３/39000"
+EditSurfaces.List : "インナー３装飾/40000"
+EditSurfaces.List : "靴/41000"
+EditSurfaces.List : "靴装飾/42000"
+EditSurfaces.List : "ズボン/43000"
+EditSurfaces.List : "ズボン装飾/44000"
+EditSurfaces.List : "スカート/45000"
+EditSurfaces.List : "スカート装飾/46000"
+EditSurfaces.List : "トップス１/47000"
+EditSurfaces.List : "トップス１装飾/48000"
+EditSurfaces.List : "服上下/49000"
+EditSurfaces.List : "服上下装飾/50000"
+EditSurfaces.List : "オーバースカート/51000"
+EditSurfaces.List : "オーバースカート装飾/52000"
+EditSurfaces.List : "ネクタイ・帯/53000"
+EditSurfaces.List : "タイピン・帯締め/54000"
+EditSurfaces.List : "トップス２/55000"
+EditSurfaces.List : "トップス２装飾/56000"
+EditSurfaces.List : "エプロン/57000"
+EditSurfaces.List : "トップス３/58000"
+EditSurfaces.List : "トップス３装飾/59000"
+EditSurfaces.List : "アクセサリー４/60000"
+EditSurfaces.List : "トップス４/61000"
+EditSurfaces.List : "トップス４装飾/62000"
+EditSurfaces.List : "コート/63000"
+EditSurfaces.List : "コート装飾/64000"
+EditSurfaces.List : "ケープ/65000"
+EditSurfaces.List : "ケープ装飾/66000"
+EditSurfaces.List : "眉１/67000"
+EditSurfaces.List : "（眉１パターン）/68000"
+EditSurfaces.List : "横髪/69000"
+EditSurfaces.List : "前髪/70000"
+EditSurfaces.List : "髪オプション/71000"
+EditSurfaces.List : "眉２/72000"
+EditSurfaces.List : "（眉２パターン）/73000"
+EditSurfaces.List : "帽子・ヘッドドレス２/74000"
+EditSurfaces.List : "帽子・ヘッドドレス２装飾/75000"
+EditSurfaces.List : "アクセサリー５/76000"
+EditSurfaces.List : "前景/77000"
+
+=kis
+# リストを検索用に変換
+clear EditSurfaces.Item;
+clear EditSurfaces.Num;
+loop $(size EditSurfaces.List) $(
+	setstr @i ${-1};
+	clear @element;
+	split @element $EditSurfaces.List[${@i}] "/";
+	pushstr EditSurfaces.Item $@element[0];
+	pushstr EditSurfaces.Num $@element[1];
+);
+# 番兵
+pushstr EditSurfaces.Item "__END_OF_ITEM_NAME__";
+pushstr EditSurfaces.Num $[ $EditSurfaces.Num[-1] + 1000 ];
+=end

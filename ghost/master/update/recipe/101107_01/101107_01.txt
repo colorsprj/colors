@@ -1,0 +1,4 @@
+declare	RECIPE/1.0	COLORS
+cct	帽子・ヘッドドレス２	中折れ帽	74016_CCT_1_.png	74016_CCT_3_.png
+cct	帽子・ヘッドドレス２	ウエスタンハット	74017_CCT_1_.png	74017_CCT_3_.png
+cc	アクセサリー５	薔薇コサージュ大・胸右側	76022_CC_1_.png
